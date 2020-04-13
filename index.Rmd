@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book
 output:
-  bookdown::gitbook: default
-github-repo: tillschwoerer/programming-presentation
-description: "This is a joint project of the whole class"  
+  bookdown::gitbook:
+    df_print: paged
+github-repo: tillschwoerer/programming-presentations-ss20
 ---

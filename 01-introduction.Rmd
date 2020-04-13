@@ -1,0 +1,13 @@
+# Introduction {#intro}
+
+In this book we document 
+
+- [text data](#stringr) using the stringr package, 
+- [dates and times](#lubridate) using the lubridate package
+- [categorial variables](#forcats) using the forcats package,
+- as well as [fast data wrangling](#data.table) using the data.table package.
+
+```{r}
+iris
+```
+
