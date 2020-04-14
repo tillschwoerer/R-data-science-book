@@ -8,4 +8,6 @@ Resources:
 - [Vignette Into](https://cran.r-project.org/web/packages/stringr/vignettes/stringr.html)
 - [Vignette Regular Expressions](https://cran.r-project.org/web/packages/stringr/vignettes/regular-expressions.html)
 
+Suggested data: recipes
+
 Advice: Many of the examples in the Vignettes just refer to vectors. How can we use stringr to create/modify character columns of a data frame?

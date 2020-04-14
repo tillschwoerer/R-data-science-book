@@ -7,3 +7,4 @@ Resources:
 - [Book Chapter in R4DS](https://r4ds.had.co.nz/dates-and-times.html)
 - [Vignette](https://cran.r-project.org/web/packages/lubridate/vignettes/lubridate.html)
 
+Suggested data set: weather-kiel-holtenau

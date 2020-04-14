@@ -8,5 +8,7 @@ Resources:
 - [Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/master/datatable.pdf)
 - [data.table vs. dplyr](https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly)
 
+Suggested data: any
+
 Possible approach: take different sequences of operations in dplyr and translate it into data.table syntax. Then summarise differences and pros/cons vis-à-vis dplyr 
 

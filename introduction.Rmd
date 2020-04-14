@@ -13,12 +13,12 @@ All of the R packages that we are going to cover in this book are already extens
 ## Data
 The whole book is supposed to be based on the data contained in the _data_ subdirectory. Please ask me if you would like to add another data set (e.g. because it would allow you to better demonstrate the functionalities of package). Currently, the following data sets are covered:
 
-- **diamonds.csv**: data on about 50.000 diamonds containing categorical and numeric variables
-- **gapminder.csv**: ... categorical, numeric data 
-- **spotify.Rds**: categorical and numeric data and date related information
-- **olympic-games.csv**: categorical and numeric data
-- **recipes**: character and date related information
-- **weather**: ...
+- **diamonds.csv**: data on diamonds; 50000 rows; categorical and numeric variables
+- **spotify-charts-germany.csv**: German daily top 200 charts for one year; 70000 rows; mostly numeric variables and dates 
+- **olympic-games.csv**: data on olympic games medallists; 250000 rows, categorical and numeric data
+- **recipes**: data on recipes; 60000 rows; character, date, and numeric variables related information
+- **weather-kiel-holtenau**: weather data for Kiel-Holtenau in 10-Minute intervals for one year, 50000 rows; Date, time and numeric variables
+
 
 ## Git and GitHub
 We will work in teams of 2 students per topic. An important part of the book project is practicing collaborative workflows using Git and Github. We will use the Forking Workflow which is typical of open source projects. This involves the following steps:
