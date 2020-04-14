@@ -2,12 +2,11 @@
 
 ## Goals
 
-We develop this book jointly , in order to understand how we can solve typical data wrangling tasks using the programming language R, and in order to practice collaborative programming workflows using Git and GitHub. 
+We develop this book jointly, in order to understand how we can solve typical data wrangling tasks using the programming language R, and in order to practice collaborative programming workflows using Git and GitHub. 
 
 All of the R packages that we are going to cover in this book are already extensively documented in help files, cheat sheets, R Vignettes etc. Our mission for this book is to investigate what these packages are good for, think about good example use cases in the context of data that we know, and apply their functionalities to these data.
 
-- We start off with an introduction to [base R](#base-R). 
-- We cover core tidyverse packages that help facilitating the data science workflow: tidying the data using the [tidyr](#tidyr) package, and exploring/wrangling the data using the [dplyr](#dplyr) package.
+- We start with an introduction to [base R](#base-R) and with core tidyverse packages that facilitate the data science workflow: tidying the data using the [tidyr](#tidyr) package, and exploring the data using the [dplyr](#dplyr) package.
 - We work on tidyverse packages dedicated for specific data types: [stringr](#stringr) for text data, [lubridate](#lubridate) for dates and times, and [forcats](#forcats) for categorical variables.
 - If data sets are huge we may run into performance problems. Hence, we explore the advantages of the [data.table](#data.table) package for high performance computing in R.
 
@@ -22,10 +21,32 @@ The whole book is supposed to be based on the data contained in the _data_ subdi
 - **weather**: ...
 
 ## Git and GitHub
-An important part of the project is practicing collaborative workflows using Git and Github. We will use the Forking Workflow which is typical of open source projects.
-
-![](img/forking-workflow.png){height="300px"}
+We will work in teams of 2 students per topic. An important part of the book project is practicing collaborative workflows using Git and Github. We will use the Forking Workflow which is typical of open source projects. This involves the following steps:
 
 
-## Orga
-If possible, we work in teams of two students. Each team works on a separate topic. Within a team it is up to you how you organize the work.
+![](img/fork-and-clone.png){width=49%} ![](img/pull-upstream.png){width=49%}
+
+
+
+1. Fork the 'official' GitHub repository ("upstream"). This creates your own GitHub copy ("origin").
+2. Clone your fork to your local system.
+3. Connect your local clone to the upstream repo by adding a remote path.
+4. Create a new local feature branch.
+5. Make changes on the new branch and create commits for these changes.
+6. Push the branch to your GitHub repo ("origin")
+8. Open a pull request on GitHub to the upstream repository.
+9. Your team mate reviews your pull request. Once approved, it is merged into the upstream repo.
+
+Note 1: To connect your local clone to the upstream repo, use:
+```git
+git remote -v                     # Check the currently registered remote repositories
+git remote add upstream .... git  # Add the main repo as a remote repo, using the name "upstream"
+git remote -v                     # Now, you should see both "origin" and "upstream"
+```
+
+Note 2: To pull changes from the upstream repo to your local system use `git pull upstream master`. Usually, it is good practice to pull upstream changes regularly. But in our case, this step is less important, since teams are working on independent sub-projects.
+
+Further literature:
+
+- https://happygitwithr.com/fork-and-clone.html
+- https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow

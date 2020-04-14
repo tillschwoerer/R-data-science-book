@@ -1,1 +1,9 @@
 # Dates and times: lubridate {#lubridate}
+
+Resources:
+
+- [Lubridate homepage](https://lubridate.tidyverse.org/)
+- [Cheatsheet](https://rawgit.com/rstudio/cheatsheets/master/lubridate.pdf)
+- [Book Chapter in R4DS](https://r4ds.had.co.nz/dates-and-times.html)
+- [Vignette](https://cran.r-project.org/web/packages/lubridate/vignettes/lubridate.html)
+

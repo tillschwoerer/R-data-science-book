@@ -1,1 +1,12 @@
 # High performance computing: data.table {#data.table}
+
+Resources:
+
+- [Vignette Intro](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html)
+- [Vignette on reference semantics](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-reference-semantics.html)
+- [Github Wiki](https://github.com/Rdatatable/data.table/wiki)
+- [Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/master/datatable.pdf)
+- [data.table vs. dplyr](https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly)
+
+Possible approach: take different sequences of operations in dplyr and translate it into data.table syntax. Then summarise differences and pros/cons vis-à-vis dplyr 
+
