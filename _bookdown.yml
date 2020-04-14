@@ -1,3 +1,4 @@
-rmd_files: ["index.Rmd", "introduction.Rmd", "lubridate.Rmd", "forcats.Rmd", "stringr.Rmd", "datatable.Rmd"]
+rmd_files: ["index.Rmd", "introduction.Rmd", "base-R.Rmd", "tidyr.Rmd", "dplyr.Rmd", "lubridate.Rmd",
+            "forcats.Rmd", "stringr.Rmd", "datatable.Rmd"]
 view: https://github.com/tillschwoerer/programming-presentations-ss20/blob/master/%s
 new_session: no
