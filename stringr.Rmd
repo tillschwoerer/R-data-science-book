@@ -1,1 +1,1 @@
-# Strings (stringr package) {#stringr}
+# Character data: stringr {#stringr}
