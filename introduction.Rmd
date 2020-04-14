@@ -1,13 +1,31 @@
 # Introduction {#intro}
 
-In this book we document 
+## Goals
 
-- [text data](#stringr) using the stringr package, 
-- [dates and times](#lubridate) using the lubridate package
-- [categorial variables](#forcats) using the forcats package,
-- as well as [fast data wrangling](#data.table) using the data.table package.
+We develop this book jointly , in order to understand how we can solve typical data wrangling tasks using the programming language R, and in order to practice collaborative programming workflows using Git and GitHub. 
 
-```{r}
-iris
-```
+All of the R packages that we are going to cover in this book are already extensively documented in help files, cheat sheets, R Vignettes etc. Our mission for this book is to investigate what these packages are good for, think about good example use cases in the context of data that we know, and apply their functionalities to these data.
 
+- We start off with an introduction to [base R](#base-R). 
+- We cover core tidyverse packages that help facilitating the data science workflow: tidying the data using the [tidyr](#tidyr) package, and exploring/wrangling the data using the [dplyr](#dplyr) package.
+- We work on tidyverse packages dedicated for specific data types: [stringr](#stringr) for text data, [lubridate](#lubridate) for dates and times, and [forcats](#forcats) for categorical variables.
+- If data sets are huge we may run into performance problems. Hence, we explore the advantages of the [data.table](#data.table) package for high performance computing in R.
+
+## Data
+The whole book is supposed to be based on the data contained in the _data_ subdirectory. Please ask me if you would like to add another data set (e.g. because it would allow you to better demonstrate the functionalities of package). Currently, the following data sets are covered:
+
+- **diamonds.csv**: data on about 50.000 diamonds containing categorical and numeric variables
+- **gapminder.csv**: ... categorical, numeric data 
+- **spotify.Rds**: categorical and numeric data and date related information
+- **olympic-games.csv**: categorical and numeric data
+- **recipes**: character and date related information
+- **weather**: ...
+
+## Git and GitHub
+An important part of the project is practicing collaborative workflows using Git and Github. We will use the Forking Workflow which is typical of open source projects.
+
+![](img/forking-workflow.png){height="300px"}
+
+
+## Orga
+If possible, we work in teams of two students. Each team works on a separate topic. Within a team it is up to you how you organize the work.
