@@ -1,4 +1,3 @@
-book_filename: "R-programming-book.Rmd"
 rmd_files: ["index.Rmd", "introduction.Rmd", "lubridate.Rmd", "forcats.Rmd", "stringr.Rmd", "datatable.Rmd"]
 view: https://github.com/tillschwoerer/programming-presentations-ss20/blob/master/%s
-edit: https://github.com/tillschwoerer/programming-presentations-ss20/edit/master/%s
+new_session: no
