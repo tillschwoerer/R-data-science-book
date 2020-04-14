@@ -1,5 +1,5 @@
 ---
-title: "Programming for Data Scientists"
+title: "Tools and Programming Languages for Data Scientists"
 author: "Data Science Master Class, FH Kiel, Summer Term 2020"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
