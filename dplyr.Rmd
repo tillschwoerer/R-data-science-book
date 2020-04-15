@@ -1,1 +1,16 @@
 # Wrangling data: dplyr {#dplyr}
+
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+
+```
+
+
+```{r}
+df <- read_csv("data/diamonds.csv")
+df %>% names()
+df %>% group_by(color) %>% summarise(mean_price = mean(price))
+```
+
+
