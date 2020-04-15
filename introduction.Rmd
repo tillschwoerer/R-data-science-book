@@ -6,7 +6,7 @@ This book is a joint effort of the course "Tools and Programming Languages for D
 
 All of the R packages that we are going to cover are already extensively documented in books, online, and R help files. Our mission for this book is to investigate what these packages are good for, think about good example use cases in the context of data that we know, and apply their functionalities to these data.
 
-- We start with an introduction to [base R](#base-R) and with core tidyverse packages that facilitate the data science workflow: tidying the data using the [tidyr](#tidyr) package, and exploring the data using the [dplyr](#dplyr) package.
+- We start with core tidyverse packages that facilitate the data science workflow: tidying the data using the [tidyr](#tidyr) package, and exploring the data using the [dplyr](#dplyr) package.
 - We work on tidyverse packages dedicated for specific data types: [stringr](#stringr) for text data, [lubridate](#lubridate) for dates and times, and [forcats](#forcats) for categorical variables.
 - If data sets are huge we may run into performance problems. Hence, we explore the advantages of the [data.table](#data.table) package for high performance computing in R.
 
