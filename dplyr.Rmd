@@ -10,7 +10,7 @@ library(tidyverse)
 ```{r}
 df <- read_csv("data/diamonds.csv")
 df %>% names()
-df %>% group_by(color) %>% summarise(mean_price = mean(price))
+df %>% group_by(color) %>% summarise(MEANPRICE = mean(price))
 ```
 
 
