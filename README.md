@@ -5,3 +5,4 @@ This book is a joint effort of the course "Tools and Programming Languages for D
 All of the R packages that we are going to cover are already extensively documented in books, online, and R help files. Our mission for this book is to investigate what these packages are good for, think about good example use cases in the context of data that we know, and apply their functionalities to these data.
 
 Meine wichtigen Ergänzungen zur README Datei
+hier einen test einzufügen....
