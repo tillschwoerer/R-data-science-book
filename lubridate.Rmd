@@ -20,6 +20,7 @@ Part of tidyverse? In short - what is tidyverse
 
 package.install("lubridate")
 package.install("tidyverse")
+package.install("time-series")
 
 
 ## Basics
