@@ -20,3 +20,47 @@ olympic<-read_csv("data/olympic-games.csv")
 head(diamonds)
 head(olympic)
 ```
+
+## General functions
+### Create
+Basically two things are needed to create a factor. A vector which contains the values to be analyzed and a vector which divides the values into levels. As an example we will use the column "clarity" of the diamonds dataset. It is a categorical evaluation of the clarity of a diamond (I1 (worst), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (best)). If you are interested in the distribution of the diamonds in this category, you could do this by using a suitable query:
+
+```{r}
+diamonds%>%
+  group_by(clarity)%>%
+  count()%>%
+  ggplot(aes(clarity, n))+
+  geom_col()
+```
+
+A sorting of the x-axis, which is based on the degree of clarity, is unfortunately not possible in this form. A workaround is to convert this column into a factor, which allows us to evaluate the individual categories. For this purpose we first define a vector, which ranks the categories according to their value:
+
+```{r}
+levels_clarity<-c("I1", "SI2", "SI1", "VS2", "VS1", "VVS2", "VVS1", "IF")
+```
+
+In the next step we lay this newly created levels vector on the column "clarity" of our data set to create a factor. This is a base-R function.
+
+```{r}
+factor_clarity<-factor(diamonds$clarity, levels_clarity)
+```
+
+### Count values per level
+Now we repeat the analysis of the distribution within our dataset using the created factor.
+
+```{r}
+fct_count(factor_clarity)%>%
+  ggplot(aes(clarity, n))+          #the definition aes is only used here to label the axes
+  geom_col(aes(f, n))
+```
+It becomes obvious that the distribution can now be displayed in the desired order (by valence). Functions of the package forcats always start with the prefix "fct_".
+
+### Inspect the levels
+
+
+
+### Inspect unique values 
+## Combine factors
+## Order of levels
+## Value of levels
+## Add or drop levels
