@@ -68,15 +68,22 @@ It becomes obvious that the distribution can now be displayed in the desired ord
 With the function ***levels()*** the levels of a factor can be both read and defined. ***But beware ***: this can only be used to change the names, not the order of the levels. The base-R function ***unclass()*** gives information about the internal memory structure of a factor.
 
 ```{r}
-levels(factor_clarity)                       #shows the original levels of our factor
-unclass(factor_clarity[1:25])                #shows the internal structure
+factor_clarity%>%levels()                   #shows the original levels of our factor
+factor_clarity[1:25]%>%unclass()            #shows the internal structure
 #remain the semantic order but replace the technical jargon with something understandable
 levels(factor_clarity)<-c("c8", "c7", "c6", "c5", "c4", "c3", "c2", "c1")   
-head(factor_clarity, 25)
+factor_clarity%>%head(25)
+```
+
+### Inspect unique values 
+The function ***fct_unique*** can be used to output unique values of a factor. In contrast to the base-R function ***unique()*** the values are returned in the order of the levels and not in the order of their appearance.
+
+```{r}
+factor_clarity%>%fct_unique()
+factor_clarity%>%unique()
 ```
 
 
-### Inspect unique values 
 ## Combine factors
 ## Order of levels
 ## Value of levels
