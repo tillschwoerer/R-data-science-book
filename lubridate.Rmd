@@ -8,3 +8,73 @@ Resources:
 - [Vignette](https://cran.r-project.org/web/packages/lubridate/vignettes/lubridate.html)
 
 Suggested data set: weather-kiel-holtenau
+
+## Background
+
+### What is Lubridate?
+Lubridate is an R-Package designed to ease working with date/time variables. These can be quite challenging in baseR and lubridate makes working with dates and times more frictionless, hence the name.
+
+How to install package and what are usefull other libraries?
+
+Part of tidyverse? In short - what is tidyverse
+
+package.install("lubridate")
+package.install("tidyverse")
+
+
+## Basics
+
+Some examples of real world time formats found in datasets:
+
+Three types of date/time data
+Sys.time() functions
+Time Formats
+
+## Application - Import, Clean Data / date-time
+
+Weather data from on stationary sensor in Kiel-Holtenau. 
+Import the data with readr - create a tibble
+
+(Idea - check, if data is openly available as well. This could lead to an excurse about how to generate a raw dataset from this weatherstation.)
+
+Examine the data - - summarise, glimpse an other exploration functions
+
+Parse the date-time Variable into a productive format
+
+The result should be a tidy data frame.
+
+Create an overview over the units of measured variables.
+
+possible: Formats and representation of the data. European vs. US number formats etc.
+
+possible: check time-series package, if this would help us in any way to make data even more accessible?
+
+## Application - Create new date-time Variables
+
+week of year (mutate)
+separate daytime vs. nighttime
+separate seasons (spring, summer, fall, winter)
+
+
+## Application - Exploration - Analysis
+
+Calculate Average Temperatures (d/m/season/y)
+Calculate Averages for humdity, rainfall etc.
+Plus many more insights, that are not apparent at this draft stage.
+
+
+## Application - Visualisation of core findings
+
+- How has the climate changed during the observed intervall?
+- How can relevant intervalls be compared?
+- can we find historic KPIs to compare our findings (eg. average temperature in January in Kiel 1900)
+
+What Visualisations make sense for our kind of data/insights? Research and try&error
+
+## Wrap up - outlook date-time / time-series
+what potential problems have not been adressed?
+
+## Wrap up - What's next/out there?
+Insights from data / data vis
+
+What potential problems have not been adressed? (Time series package? etc?)
