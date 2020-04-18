@@ -1,0 +1,22 @@
+# Categorical data: forcats {#forcats}
+
+## Introduction
+This chapter is dedicated to the handling of categorical variables. This becomes important if information is to be presented in a non-alphabetical order or aggregated in a meaningful way. Within the R programming language, categorical variables are converted into a form that can be used for analysis using factors. While many Base-R functions automatically convert character vectors into factors, tidyverse requires an explicit treatment. The core-tidyverse provides the package forcats, which will be described here. Further information and exercises are available at the sources shown.
+
+Resources:
+
+- [Homepage](https://forcats.tidyverse.org/)
+- [Cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/factors.pdf)
+- [Chapter in R4DS](https://r4ds.had.co.nz/factors.html)
+- [Vignette](https://forcats.tidyverse.org/articles/forcats.html)
+
+In this chapter the demo data set "diamonds" from the ggplot2-package ([more information](https://ggplot2.tidyverse.org/reference/diamonds.html)) and a dataset "olympic-games" which shows the medal success of olympic athletes from 1896 to 2016 are used.
+
+```{r message=FALSE, warning=FALSE, paged.print=TRUE}
+library(tidyverse)
+diamonds<-read_csv("data/diamonds.csv")
+olympic<-read_csv("data/olympic-games.csv")
+
+head(diamonds)
+head(olympic)
+```
