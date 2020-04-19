@@ -65,7 +65,7 @@ fct_count(factor_clarity)%>%
 It becomes obvious that the distribution can now be displayed in the desired order (by valence). Functions of the package forcats always start with the prefix ***fct_***. 
 
 ### Inspect and set levels
-With the function ***levels()*** the levels of a factor can be both read and defined. ***But beware ***: this can only be used to change the names, not the order of the levels. The base-R function ***unclass()*** gives information about the internal memory structure of a factor.
+With the function ***levels()*** the levels of a factor can be both read and defined. ***But be aware ***: this can only be used to change the names, not the order of the levels. The base-R function ***unclass()*** gives information about the internal memory structure of a factor.
 
 ```{r}
 factor_clarity%>%levels()                   #shows the original levels of our factor
