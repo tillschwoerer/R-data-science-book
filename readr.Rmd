@@ -4,13 +4,12 @@
 ```{r message=FALSE, warning=FALSE}
 library(readr)  # reading data (we could also load it via package tidyverse)
 library(dplyr)  # wrangling data (we could also load it via package tidyverse) 
-library(scales) # formatted Output (dates, currencies, ...)
 ```
 
 We are working with crudly formatted contract data (_vertragsdaten.csv_), to demonstrate the functionalites of the `readr` package. This is how the data looks like:
 
 ```{r}
-read_lines(file = "data/vertragsdaten.csv", n_max = 5)
+readr::read_lines(file = "data/vertragsdaten.csv", n_max = 5)
 ```
 
 The Challenges are:
@@ -22,7 +21,7 @@ The Challenges are:
 - In order to create readible reports, it is sometimes helpful to display Euro amounts not as a number, but as a character that includes the Euro symbol (€) and comma/big mark signs
 
 ```{r}
-df <- read_delim(file = "data/vertragsdaten.csv", 
+df <- readr::read_delim(file = "data/vertragsdaten.csv", 
                  
                  # Specify semicolon as separator
                  delim = ";", 
@@ -41,16 +40,24 @@ df <- read_delim(file = "data/vertragsdaten.csv",
                  # White spaces are sometimes important, so we don't want to trim them
                  trim_ws = FALSE)
 
+head(df)
+```
 
-# We need a separate step to correct the column Beitr_Neu. 
-# Here we need to trim the white spaces and again use the locale from above
+
+The column `Beitr_Neu` is not yet correctly recognized as numeric, due to the fact that we did not trim white spaces. Hence, we need to correct this column in a separate step.
+
+```{r}
 df <- df %>% 
-  mutate(Beitr_Neu = parse_number(Beitr_Neu, 
-                                  locale = locale(date_names = "de", 
-                                                  decimal_mark = ",", 
-                                                  grouping_mark = ".",
-                                                  encoding = "UTF-8"), 
-                                  trim_ws = TRUE))
+  mutate(Beitr_Neu = readr::parse_number(Beitr_Neu, 
+                                  
+                                  # We trim White psaces
+                                  trim_ws = TRUE,
+                                  
+                                  # Set the German number separator marks
+                                  locale = locale(decimal_mark = ",", grouping_mark = "."), 
+                                  
+                                  ))
 
 head(df)
 ```
+
