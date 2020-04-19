@@ -12,12 +12,11 @@ Resources:
 In this chapter the demo data set "diamonds" from the ggplot2-package ([more information](https://ggplot2.tidyverse.org/reference/diamonds.html)) and a dataset "olympic-games" which shows the medal success of olympic athletes from 1896 to 2016 are used. Before you start reading, you should have read the chapter ***Wrangling Data: dplyr*** or already have basic knowledge in this field. 
 
 ```{r message=FALSE, warning=FALSE, paged.print=TRUE}
-library(tidyverse)
-diamonds <- read_csv("data/diamonds.csv")
-olympic <- read_csv("data/olympic-games.csv")
-
-head(diamonds)
-head(olympic)
+library(tidyverse)                                     # the package tidyverse contains all libraries necessary for this chapter
+diamonds <- read_csv("data/diamonds.csv")              # Importing the "diamonds" dataset
+olympic <- read_csv("data/olympic-games.csv")          # Importing the "olympic-games" dataset
+head(diamonds, 2)                                      # Have a short look at the data
+head(olympic,2 )                                       # Have a short look at the data
 ```
 
 ## General functions
@@ -82,8 +81,38 @@ factor_clarity %>% fct_unique()
 factor_clarity %>% unique()
 ```
 
-
 ## Combine factors
+### Combine factors with different levels
+With the function ***fct_c()*** factors with different levels can be combined to one factor covering all levels. First we create two factors which represent a number of Olympic athletes from different countries using the dataset olympic-games
+
+```{r}
+levels_country1 <- c("Finland", "Denmark", "Netherlands")
+levels_country2 <- c("Finland", "Norway", "Sweden")
+factor_countries_1 <- factor(olympic$country[1:2000], levels_country1)     # transforming a data slice into a factor
+factor_countries_2 <- factor(olympic$country[2001:4000], levels_country2)  # transforming another data slice into a factor
+```
+
+Both factors differ both in their stored categorical data and in their set levels. A simple query makes this clear:
+
+```{r}
+factor_countries_1 %>%  fct_count()
+factor_countries_2 %>%  fct_count()
+```
+
+Now we combine the factors with ***fct_c()***:
+
+```{r}
+fct_c(factor_countries_1, factor_countries_2) %>% fct_count()
+```
+
+Both the underlying categorical data and the set levels were combined in one factor.
+
+### Standardize levels of different factors
+
+```{r}
+fct_unify(list(factor_countries_1, factor_countries_2)) %>% str()
+```
+
 ## Order of levels
 ## Value of levels
 ## Add or drop levels
