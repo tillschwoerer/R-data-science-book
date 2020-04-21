@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5 Categorical data: forcats | R Data Science Book</title>
+  <meta name="description" content="5 Categorical data: forcats | R Data Science Book" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5 Categorical data: forcats | R Data Science Book" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  <meta name="github-repo" content="tillschwoerer/R-data-science-book" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5 Categorical data: forcats | R Data Science Book" />
+  
+  
+  
+
+<meta name="author" content="Tools and Programming Languages for Data Scientists, FH Kiel, Summer Term 2020" />
+
+
+<meta name="date" content="2020-04-21" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="lubridate.html"/>
+<link rel="next" href="stringr.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#goals"><i class="fa fa-check"></i><b>1.1</b> Goals</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#data"><i class="fa fa-check"></i><b>1.2</b> Data</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#git-and-github"><i class="fa fa-check"></i><b>1.3</b> Git and GitHub</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="tidyr.html"><a href="tidyr.html"><i class="fa fa-check"></i><b>2</b> Tidying data: tidyr</a></li>
+<li class="chapter" data-level="3" data-path="dplyr.html"><a href="dplyr.html"><i class="fa fa-check"></i><b>3</b> Wrangling data: dplyr</a></li>
+<li class="chapter" data-level="4" data-path="lubridate.html"><a href="lubridate.html"><i class="fa fa-check"></i><b>4</b> Dates and times: lubridate</a><ul>
+<li class="chapter" data-level="4.1" data-path="lubridate.html"><a href="lubridate.html#background"><i class="fa fa-check"></i><b>4.1</b> Background</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="lubridate.html"><a href="lubridate.html#what-is-lubridate"><i class="fa fa-check"></i><b>4.1.1</b> What is Lubridate?</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="lubridate.html"><a href="lubridate.html#basics"><i class="fa fa-check"></i><b>4.2</b> Basics</a></li>
+<li class="chapter" data-level="4.3" data-path="lubridate.html"><a href="lubridate.html#application---import-clean-data-date-time"><i class="fa fa-check"></i><b>4.3</b> Application - Import, Clean Data / date-time</a></li>
+<li class="chapter" data-level="4.4" data-path="lubridate.html"><a href="lubridate.html#application---create-new-date-time-variables"><i class="fa fa-check"></i><b>4.4</b> Application - Create new date-time Variables</a></li>
+<li class="chapter" data-level="4.5" data-path="lubridate.html"><a href="lubridate.html#application---exploration---analysis"><i class="fa fa-check"></i><b>4.5</b> Application - Exploration - Analysis</a></li>
+<li class="chapter" data-level="4.6" data-path="lubridate.html"><a href="lubridate.html#application---visualisation-of-core-findings"><i class="fa fa-check"></i><b>4.6</b> Application - Visualisation of core findings</a></li>
+<li class="chapter" data-level="4.7" data-path="lubridate.html"><a href="lubridate.html#wrap-up---outlook-date-time-time-series"><i class="fa fa-check"></i><b>4.7</b> Wrap up - outlook date-time / time-series</a></li>
+<li class="chapter" data-level="4.8" data-path="lubridate.html"><a href="lubridate.html#wrap-up---whats-nextout-there"><i class="fa fa-check"></i><b>4.8</b> Wrap up - What’s next/out there?</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="forcats.html"><a href="forcats.html"><i class="fa fa-check"></i><b>5</b> Categorical data: forcats</a><ul>
+<li class="chapter" data-level="5.1" data-path="forcats.html"><a href="forcats.html#introduction"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="forcats.html"><a href="forcats.html#general-functions"><i class="fa fa-check"></i><b>5.2</b> General functions</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="forcats.html"><a href="forcats.html#create"><i class="fa fa-check"></i><b>5.2.1</b> Create</a></li>
+<li class="chapter" data-level="5.2.2" data-path="forcats.html"><a href="forcats.html#count-values-per-level"><i class="fa fa-check"></i><b>5.2.2</b> Count values per level</a></li>
+<li class="chapter" data-level="5.2.3" data-path="forcats.html"><a href="forcats.html#inspect-and-set-levels"><i class="fa fa-check"></i><b>5.2.3</b> Inspect and set levels</a></li>
+<li class="chapter" data-level="5.2.4" data-path="forcats.html"><a href="forcats.html#inspect-unique-values"><i class="fa fa-check"></i><b>5.2.4</b> Inspect unique values</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="forcats.html"><a href="forcats.html#combine-factors"><i class="fa fa-check"></i><b>5.3</b> Combine factors</a></li>
+<li class="chapter" data-level="5.4" data-path="forcats.html"><a href="forcats.html#order-of-levels"><i class="fa fa-check"></i><b>5.4</b> Order of levels</a></li>
+<li class="chapter" data-level="5.5" data-path="forcats.html"><a href="forcats.html#value-of-levels"><i class="fa fa-check"></i><b>5.5</b> Value of levels</a></li>
+<li class="chapter" data-level="5.6" data-path="forcats.html"><a href="forcats.html#add-or-drop-levels"><i class="fa fa-check"></i><b>5.6</b> Add or drop levels</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="stringr.html"><a href="stringr.html"><i class="fa fa-check"></i><b>6</b> Character data: stringr</a></li>
+<li class="chapter" data-level="7" data-path="data-table.html"><a href="data-table.html"><i class="fa fa-check"></i><b>7</b> High performance computing: data.table</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Data Science Book</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="forcats" class="section level1">
+<h1><span class="header-section-number">5</span> Categorical data: forcats</h1>
+<div id="introduction" class="section level2">
+<h2><span class="header-section-number">5.1</span> Introduction</h2>
+<p>This chapter is dedicated to the handling of categorical variables. This becomes important if information is to be presented in a non-alphabetical order or aggregated in a meaningful way. Within the R programming language, categorical variables are converted into a form that can be used for analysis using factors. While many Base-R functions automatically convert character vectors into factors, tidyverse requires an explicit treatment. The core-tidyverse provides the package forcats, which will be described here. Further information and exercises are available at the sources shown.</p>
+<p>Resources:</p>
+<ul>
+<li><a href="https://forcats.tidyverse.org/">Homepage</a></li>
+<li><a href="https://github.com/rstudio/cheatsheets/raw/master/factors.pdf">Cheatsheet</a></li>
+<li><a href="https://r4ds.had.co.nz/factors.html">Chapter in R4DS</a></li>
+<li><a href="https://forcats.tidyverse.org/articles/forcats.html">Vignette</a></li>
+</ul>
+<p>In this chapter the demo data set “diamonds” from the ggplot2-package (<a href="https://ggplot2.tidyverse.org/reference/diamonds.html">more information</a>) and a dataset “olympic-games” which shows the medal success of olympic athletes from 1896 to 2016 are used. Before you start reading, you should have read the chapter <strong><em>Wrangling Data: dplyr</em></strong> or already have basic knowledge in this field.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb8-2" title="2">diamonds &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/diamonds.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb8-3" title="3">olympic &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/olympic-games.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb8-4" title="4"></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="kw">head</span>(diamonds)</a></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["carat"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["cut"],"name":[2],"type":["chr"],"align":["left"]},{"label":["color"],"name":[3],"type":["chr"],"align":["left"]},{"label":["clarity"],"name":[4],"type":["chr"],"align":["left"]},{"label":["depth"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["table"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["price"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["x"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["y"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["z"],"name":[10],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.23","2":"Ideal","3":"E","4":"SI2","5":"61.5","6":"55","7":"326","8":"3.95","9":"3.98","10":"2.43"},{"1":"0.21","2":"Premium","3":"E","4":"SI1","5":"59.8","6":"61","7":"326","8":"3.89","9":"3.84","10":"2.31"},{"1":"0.23","2":"Good","3":"E","4":"VS1","5":"56.9","6":"65","7":"327","8":"4.05","9":"4.07","10":"2.31"},{"1":"0.29","2":"Premium","3":"I","4":"VS2","5":"62.4","6":"58","7":"334","8":"4.20","9":"4.23","10":"2.63"},{"1":"0.31","2":"Good","3":"J","4":"SI2","5":"63.3","6":"58","7":"335","8":"4.34","9":"4.35","10":"2.75"},{"1":"0.24","2":"Very Good","3":"J","4":"VVS2","5":"62.8","6":"57","7":"336","8":"3.94","9":"3.96","10":"2.48"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">head</span>(olympic)</a></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["game"],"name":[1],"type":["chr"],"align":["left"]},{"label":["city"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sport"],"name":[3],"type":["chr"],"align":["left"]},{"label":["discipline"],"name":[4],"type":["chr"],"align":["left"]},{"label":["athlete"],"name":[5],"type":["chr"],"align":["left"]},{"label":["country"],"name":[6],"type":["chr"],"align":["left"]},{"label":["age"],"name":[7],"type":["chr"],"align":["left"]},{"label":["height"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["weight"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["bmi"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["sex"],"name":[11],"type":["chr"],"align":["left"]},{"label":["medal"],"name":[12],"type":["chr"],"align":["left"]}],"data":[{"1":"1992 Summer","2":"NA","3":"Basketball","4":"Basketball Men's Basketball","5":"A Dijiang","6":"China","7":"24","8":"180","9":"80","10":"24.69136","11":"M","12":"NA"},{"1":"2012 Summer","2":"NA","3":"Judo","4":"Judo Men's Extra-Lightweight","5":"A Lamusi","6":"China","7":"23","8":"170","9":"60","10":"20.76125","11":"M","12":"NA"},{"1":"1920 Summer","2":"NA","3":"Football","4":"Football Men's Football","5":"Gunnar Nielsen Aaby","6":"Denmark","7":"24","8":"NA","9":"NA","10":"NA","11":"M","12":"NA"},{"1":"1900 Summer","2":"NA","3":"Tug-Of-War","4":"Tug-Of-War Men's Tug-Of-War","5":"Edgar Lindenau Aabye","6":"Denmark","7":"34","8":"NA","9":"NA","10":"NA","11":"M","12":"Gold"},{"1":"1988 Winter","2":"NA","3":"Speed Skating","4":"Speed Skating Women's 500 metres","5":"Christine Jacoba Aaftink","6":"Netherlands","7":"21","8":"185","9":"82","10":"23.95909","11":"F","12":"NA"},{"1":"1988 Winter","2":"NA","3":"Speed Skating","4":"Speed Skating Women's 1,000 metres","5":"Christine Jacoba Aaftink","6":"Netherlands","7":"21","8":"185","9":"82","10":"23.95909","11":"F","12":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="general-functions" class="section level2">
+<h2><span class="header-section-number">5.2</span> General functions</h2>
+<div id="create" class="section level3">
+<h3><span class="header-section-number">5.2.1</span> Create</h3>
+<p>Basically two things are needed to create a factor. A vector which contains the values to be analyzed and a vector which divides the values into levels. As an example we will use the column “clarity” of the diamonds dataset. It is a categorical evaluation of the clarity of a diamond (I1 (worst), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (best)). If you are interested in the distribution of the diamonds in this category, you could do this by using a suitable query:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">diamonds <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(clarity) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb10-3" title="3"><span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb10-4" title="4"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(clarity, n)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb10-5" title="5"><span class="st">  </span><span class="kw">geom_col</span>()</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>A sorting of the x-axis, which is based on the degree of clarity, is unfortunately not possible in this form. A workaround is to convert this column into a factor, which allows us to evaluate the individual categories. For this purpose we first define a vector, which ranks the categories according to their value:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">levels_clarity &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;I1&quot;</span>, <span class="st">&quot;SI2&quot;</span>, <span class="st">&quot;SI1&quot;</span>, <span class="st">&quot;VS2&quot;</span>, <span class="st">&quot;VS1&quot;</span>, <span class="st">&quot;VVS2&quot;</span>, <span class="st">&quot;VVS1&quot;</span>, <span class="st">&quot;IF&quot;</span>)</a></code></pre></div>
+<p>In the next step we lay this newly created levels vector on the column “clarity” of our data set to create a factor. <strong><em>factor()</em></strong> is a base-R function.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">factor_clarity &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="dt">x =</span> diamonds<span class="op">$</span>clarity, <span class="dt">levels =</span> levels_clarity)</a></code></pre></div>
+<p>Another possibility to create a factor is to convert a vector using <strong><em>as_factor().</em></strong>. Here the levels are created automatically. Their order depends on the appearance of the corresponding value in the source vector.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">as_factor</span>(diamonds<span class="op">$</span>clarity) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb13-2" title="2"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<pre><code>## [1] &quot;SI2&quot;  &quot;SI1&quot;  &quot;VS1&quot;  &quot;VS2&quot;  &quot;VVS2&quot; &quot;VVS1&quot; &quot;I1&quot;   &quot;IF&quot;</code></pre>
+</div>
+<div id="count-values-per-level" class="section level3">
+<h3><span class="header-section-number">5.2.2</span> Count values per level</h3>
+<p>Now we repeat the analysis of the distribution within our dataset using the created factor. The function <strong><em>fct_count()</em></strong> returns the frequency of a categorical value within a factor. The order of the levels remains unchanged.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">fct_count</span>(factor_clarity) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb15-2" title="2"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(clarity, n)) <span class="op">+</span><span class="st">          </span><span class="co">#the definition of aes. mapping in this line is only used to label the axes</span></a>
+<a class="sourceLine" id="cb15-3" title="3"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(f, n))</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>It becomes obvious that the distribution can now be displayed in the desired order (by valence). Functions of the package forcats always start with the prefix <strong><em>fct_</em></strong>.</p>
+</div>
+<div id="inspect-and-set-levels" class="section level3">
+<h3><span class="header-section-number">5.2.3</span> Inspect and set levels</h3>
+<p>With the function <strong><em>levels()</em></strong> the levels of a factor can be both read and defined. <strong><em>But be aware </em></strong>: this can only be used to change the names, not the order of the levels. The base-R function <strong><em>unclass()</em></strong> gives information about the internal memory structure of a factor.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">levels</span>()                   <span class="co">#shows the original levels of our factor</span></a></code></pre></div>
+<pre><code>## [1] &quot;I1&quot;   &quot;SI2&quot;  &quot;SI1&quot;  &quot;VS2&quot;  &quot;VS1&quot;  &quot;VVS2&quot; &quot;VVS1&quot; &quot;IF&quot;</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1">factor_clarity[<span class="dv">1</span><span class="op">:</span><span class="dv">25</span>] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">unclass</span>()            <span class="co">#shows the internal structure</span></a></code></pre></div>
+<pre><code>##  [1] 2 3 5 4 2 6 7 3 4 5 3 5 3 2 2 1 2 3 3 3 2 4 5 3 3
+## attr(,&quot;levels&quot;)
+## [1] &quot;I1&quot;   &quot;SI2&quot;  &quot;SI1&quot;  &quot;VS2&quot;  &quot;VS1&quot;  &quot;VVS2&quot; &quot;VVS1&quot; &quot;IF&quot;</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1"><span class="co">#remain the semantic order but replace the technical jargon with something understandable</span></a>
+<a class="sourceLine" id="cb20-2" title="2"><span class="kw">levels</span>(factor_clarity) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;c8&quot;</span>, <span class="st">&quot;c7&quot;</span>, <span class="st">&quot;c6&quot;</span>, <span class="st">&quot;c5&quot;</span>, <span class="st">&quot;c4&quot;</span>, <span class="st">&quot;c3&quot;</span>, <span class="st">&quot;c2&quot;</span>, <span class="st">&quot;c1&quot;</span>)   </a>
+<a class="sourceLine" id="cb20-3" title="3">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">25</span>)</a></code></pre></div>
+<pre><code>##  [1] c7 c6 c4 c5 c7 c3 c2 c6 c5 c4 c6 c4 c6 c7 c7 c8 c7 c6 c6 c6 c7 c5 c4 c6 c6
+## Levels: c8 c7 c6 c5 c4 c3 c2 c1</code></pre>
+</div>
+<div id="inspect-unique-values" class="section level3">
+<h3><span class="header-section-number">5.2.4</span> Inspect unique values</h3>
+<p>The function <strong><em>fct_unique</em></strong> can be used to output unique values of a factor. In contrast to the base-R function <strong><em>unique()</em></strong> the values are returned in the order of the levels and not in the order of their appearance.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">fct_unique</span>()</a></code></pre></div>
+<pre><code>## [1] c8 c7 c6 c5 c4 c3 c2 c1
+## Levels: c8 c7 c6 c5 c4 c3 c2 c1</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">unique</span>()</a></code></pre></div>
+<pre><code>## [1] c7 c6 c4 c5 c3 c2 c8 c1
+## Levels: c8 c7 c6 c5 c4 c3 c2 c1</code></pre>
+</div>
+</div>
+<div id="combine-factors" class="section level2">
+<h2><span class="header-section-number">5.3</span> Combine factors</h2>
+</div>
+<div id="order-of-levels" class="section level2">
+<h2><span class="header-section-number">5.4</span> Order of levels</h2>
+</div>
+<div id="value-of-levels" class="section level2">
+<h2><span class="header-section-number">5.5</span> Value of levels</h2>
+</div>
+<div id="add-or-drop-levels" class="section level2">
+<h2><span class="header-section-number">5.6</span> Add or drop levels</h2>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="lubridate.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="stringr.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://github.com/tillschwoerer/R-data-science-book/blob/master/forcats.Rmd",
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
