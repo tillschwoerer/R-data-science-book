@@ -160,7 +160,26 @@ factor_clarity %>%
 
 As you can see, only the function ***fct_relevel*** allows a correct relevel.
 
-### Reordering bei frequency
+### Reordering by frequency
+Especially for plots it is often useful to orient the order of the levels on the frequency of the corresponding values. The function ***fct_infreq()*** allows exactly this. Plotting the unsorted factor leads to a difficult readability.
+
+```{r}
+summer_1896 %>%
+  fct_count() %>%
+  ggplot(aes(n,f)) +
+  geom_col()
+```
+
+The better approach is to sort the data before plotting.
+
+```{r}
+summer_1896 %>%
+  fct_infreq() %>%    #insert fct_infreg() to get the data ordered
+  fct_count() %>%
+  ggplot(aes(n,f)) +
+  geom_col()
+```
+
 
 
 ## Value of levels
