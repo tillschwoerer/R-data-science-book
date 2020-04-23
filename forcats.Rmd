@@ -196,6 +196,26 @@ olympic_1896$country %>%
   levels()
 ```
 
+### Reverse level order
+The function ***fct_rev*** reverses the existing order of the levels of a factor. First have a look at the original order:
+```{r}
+summer_1896 %>%
+  fct_infreq() %>%    #insert fct_infreg() to get the data ordered
+  fct_count() %>%
+  ggplot(aes(n,f)) +
+  geom_col()
+```
+Now we reverse the order:
+
+```{r}
+summer_1896 %>%
+  fct_infreq() %>%    #insert fct_infreg() to get the data ordered
+  fct_rev() %>%       #insert fct_rev() to reverse this order
+  fct_count() %>%
+  ggplot(aes(n,f)) +
+  geom_col()
+```
+
 
 ## Value of levels
 ## Add or drop levels
