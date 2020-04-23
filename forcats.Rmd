@@ -16,7 +16,7 @@ library(tidyverse)                                     # the package tidyverse c
 diamonds <- read_csv("data/diamonds.csv")              # Importing the "diamonds" dataset
 olympic <- read_csv("data/olympic-games.csv")          # Importing the "olympic-games" dataset
 head(diamonds, 2)                                      # Have a short look at the data
-head(olympic,2 )                                       # Have a short look at the data
+head(olympic, 2)                                       # Have a short look at the data
 ```
 
 ## General functions
