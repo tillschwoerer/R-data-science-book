@@ -69,7 +69,8 @@ With the function ***levels()*** the levels of a factor can be both read and def
 factor_clarity %>% levels()                   #shows the original levels of our factor
 factor_clarity[1:25] %>% unclass()            #shows the internal structure
 #remain the semantic order but replace the technical jargon with something understandable
-levels(factor_clarity) <- c("c8", "c7", "c6", "c5", "c4", "c3", "c2", "c1")   
+levels_clarity_c <- c("c8", "c7", "c6", "c5", "c4", "c3", "c2", "c1")
+levels(factor_clarity) <- levels_clarity_c   
 factor_clarity %>% head(25)
 ```
 
@@ -138,5 +139,29 @@ factor_list[[2]] %>%
 In this case, the underlying categorical data was left unchanged for both factors, but the levels were standardised. This is especially useful when comparing the categorical data of two different factors. 
 
 ## Order of levels
+### Manual reordering of levels
+With the function ***fct_relevel*** the levels of a factor can be reordered. In contrast to the function ***levels()***, which only allows the renaming of factor levels, ***fct_relevel*** also adjusts the internal memory structure of the factor. An example should clarify this.
+
+```{r}
+# have a look at the original levels
+factor_clarity %>% 
+  fct_count()
+# The wrong approach (this is semantical wrong):
+levels(factor_clarity) <- c("c1","c3","c5","c7","c2","c4","c6","c8")
+factor_clarity %>% 
+  fct_count()
+#tidy up
+levels(factor_clarity) <- levels_clarity_c
+# The right approach:
+factor_clarity %>%
+  fct_relevel(c("c1","c3","c5","c7","c2","c4","c6","c8")) %>%
+  fct_count()
+```
+
+As you can see, only the function ***fct_relevel*** allows a correct relevel.
+
+### Reordering bei frequency
+
+
 ## Value of levels
 ## Add or drop levels
