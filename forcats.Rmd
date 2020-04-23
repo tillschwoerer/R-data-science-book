@@ -216,6 +216,18 @@ summer_1896 %>%
   geom_col()
 ```
 
+### Shift levels
+By using the function ***fct_shift()*** it is possible to shift levels to the left (n = -...L) or the right (n = ...L), wrapping around end.
+
+```{r}
+summer_1896 %>%
+  fct_infreq() %>%          #insert fct_infreg() to get the data ordered
+  fct_shift(n = -1L) %>%    #insert fct_shift() to shift levels
+  fct_count() %>%
+  ggplot(aes(n,f)) +
+  geom_col()
+```
+
 
 ## Value of levels
 ## Add or drop levels
