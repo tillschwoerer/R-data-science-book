@@ -201,7 +201,7 @@ olympic_1896$country %>%
 The function ***fct_rev*** reverses the existing order of the levels of a factor. First have a look at the original order:
 ```{r}
 summer_1896 %>%
-  fct_infreq() %>%    #insert fct_infreg() to get the data ordered
+  fct_infreq() %>%    #insert fct_infreq() to get the data ordered
   fct_count() %>%
   ggplot(aes(n,f)) +
   geom_col()
@@ -210,7 +210,7 @@ Now we reverse the order:
 
 ```{r}
 summer_1896 %>%
-  fct_infreq() %>%    #insert fct_infreg() to get the data ordered
+  fct_infreq() %>%    #insert fct_infreq() to get the data ordered
   fct_rev() %>%       #insert fct_rev() to reverse this order
   fct_count() %>%
   ggplot(aes(n,f)) +
@@ -218,11 +218,12 @@ summer_1896 %>%
 ```
 
 ### Shift levels
-By using the function ***fct_shift()*** it is possible to shift levels to the left (n = -...L) or the right (n = ...L), wrapping around end.
+The argument `n` in the function `fct_shift()` allows to shift the levels to the left (right) for negative (positive) integer values of `n`, wrapping around end.
+Thus a value of `n = -1L` would shift the order of the levels to the left by one location.
 
 ```{r}
 summer_1896 %>%
-  fct_infreq() %>%          #insert fct_infreg() to get the data ordered
+  fct_infreq() %>%          #insert fct_infreq() to get the data ordered
   fct_shift(n = -1L) %>%    #insert fct_shift() to shift levels
   fct_count() %>%
   ggplot(aes(n,f)) +
