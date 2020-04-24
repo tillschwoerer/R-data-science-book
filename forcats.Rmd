@@ -140,7 +140,7 @@ In this case, the underlying categorical data was left unchanged for both factor
 
 ## Order of levels
 ### Manual reordering of levels
-With the function ***fct_relevel*** the levels of a factor can be reordered. In contrast to the function ***levels()***, which only allows the renaming of factor levels, ***fct_relevel*** also adjusts the internal memory structure of the factor. An example should clarify this.
+With the function ***fct_relevel*** the levels of a factor can be reordered. In contrast to the function ***levels()***, which only allows the renaming of factor levels, ***fct_relevel*** also adjusts the order of the levels themselves, that is the way they are stored internally. An example should clarify this.
 
 ```{r}
 # have a look at the original levels
