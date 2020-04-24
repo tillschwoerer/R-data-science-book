@@ -181,11 +181,12 @@ summer_1896 %>%
 ```
 
 ### Reordering by appearance 
-The package ***forcats*** offers with the function ***fct_inorder()*** the possibility to orientate the order of the levels of a factor to the occurence of the corresponding categorical data in the data set. A look at the first 20 entries in the corresponding data sets makes this clear:
+The package ***forcats*** offers with the function ***fct_inorder()*** the possibility to orientate the order of the levels of a factor to the occurence of the corresponding categorical data in the data set. To make this clear, we take a look at the unique values with the first 20 entries in the corresponding data set:
 
 ```{r}
 olympic_1896$country %>%
-  head(20)
+  head(20) %>%
+  unique()
 ```
 
 Create a factor in the appropriate order of levels:
