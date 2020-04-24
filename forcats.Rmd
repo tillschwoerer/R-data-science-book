@@ -174,7 +174,7 @@ The better approach is to sort the data before plotting.
 
 ```{r}
 summer_1896 %>%
-  fct_infreq() %>%    #insert fct_infreg() to get the data ordered
+  fct_infreq() %>%    #insert fct_infreq() to get the data ordered
   fct_count() %>%
   ggplot(aes(n,f)) +
   geom_col()
