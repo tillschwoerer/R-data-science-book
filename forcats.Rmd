@@ -9,7 +9,7 @@ Resources:
 - [Chapter in R4DS](https://r4ds.had.co.nz/factors.html)
 - [Vignette](https://forcats.tidyverse.org/articles/forcats.html)
 
-In this chapter the demo data set "diamonds" from the ggplot2-package ([more information](https://ggplot2.tidyverse.org/reference/diamonds.html)) and a dataset "olympic-games" which shows the medal success of olympic athletes from 1896 to 2016 are used. Before you start reading, you should have read the chapter ***Wrangling Data: dplyr*** or already have basic knowledge in this field. 
+In this chapter we use the demo data set "diamonds" from the ggplot2-package ([more information](https://ggplot2.tidyverse.org/reference/diamonds.html)) as well as a dataset "olympic-games" which shows the medal success of olympic athletes from 1896 to 2016. For the latter we focus on the summer games 1896 and the winter games 1924 for practical reasons. Before you start reading, you should have read the chapter ***Wrangling Data: dplyr*** or  be familiar with this field. 
 
 ```{r message=FALSE, warning=FALSE, paged.print=TRUE}
 library(tidyverse)                                     # the package tidyverse contains all libraries necessary for this chapter
@@ -21,29 +21,52 @@ head(olympic, 2)                                       # Have a short look at th
 
 ## General functions
 ### Create
-Basically two things are needed to create a factor. A vector which contains the values to be analyzed and a vector which divides the values into levels. As an example we will use the column "clarity" of the diamonds dataset. It is a categorical evaluation of the clarity of a diamond (I1 (worst), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (best)). If you are interested in the distribution of the diamonds in this category, you could do this by using a suitable query:
+Basically two things are needed to create a factor:
+
+a. a vector which contains the values to be analyzed
+b. another vector which divides the values into levels
+
+As an example we will use the column `clarity` of the diamonds dataset.
+It is a categorical evaluation of the clarity of a diamond and a subset of the grades according to the Gemological Institute of America (GIA) grading system. The grades according to GIA read as follows:
+
+|GIA grade|Category                      |Included in `diamonds`             |
+|---------|------------------------------|:---------------------------------:|
+|FL       |Flawless                      |<font color="red">&#10008;</font>  | 
+|IF       |Internally Flawless           |<font color="green">&#10004;</font>|
+|VVS~1~   |Very Very Slightly Included~1~|<font color="green">&#10004;</font>|
+|VVS~2~   |Very Very Slightly Included~2~|<font color="green">&#10004;</font>|
+|VS~1~    |Very Slightly Included~1~     |<font color="green">&#10004;</font>|
+|VS~2~    |Very Slightly Included~2~     |<font color="green">&#10004;</font>|
+|SI~1~    |Slightly Included~1~          |<font color="green">&#10004;</font>|
+|SI~2~    |Slightly Included~2~          |<font color="green">&#10004;</font>|
+|I~1~     |Included~1~                   |<font color="green">&#10004;</font>|
+|I~2~     |Included~2~                   |<font color="red">&#10008;</font>  |
+|I~3~     |Included~3~                   |<font color="red">&#10008;</font>  |
+
+If you are interested in the distribution of the diamonds in this category, you could do this by using a suitable query:
 
 ```{r}
 diamonds %>%
   group_by(clarity) %>%
-  count() %>%
+  count() %>%              # count the number of observations per clarity grade
   ggplot(aes(clarity, n)) +
   geom_col()
 ```
 
-A sorting of the x-axis, which is based on the degree of clarity, is unfortunately not possible in this form. A workaround is to convert this column into a factor, which allows us to evaluate the individual categories. For this purpose we first define a vector, which ranks the categories according to their value:
+A sorting of the x-axis, which follows the order of the grades as shown in the table above, is unfortunately not possible in this form. A workaround is to convert the column `clarity` into a factor, which allows us to evaluate the individual categories. For this purpose we first define a vector, which ranks the categories according to their grade (from *bad* to *good*):
 
 ```{r}
 levels_clarity <- c("I1", "SI2", "SI1", "VS2", "VS1", "VVS2", "VVS1", "IF")
 ```
 
-In the next step we lay this newly created levels vector on the column "clarity" of our data set to create a factor. `factor()` is a base-R function.
+In the next step we lay this newly created levels vector on the column `clarity` of our data set to create a factor. `factor()` is a base-R function.
 
 ```{r}
 factor_clarity <- factor(x = diamonds$clarity, levels = levels_clarity)
 ```
+`factor_clarity` consists solely of the `clarity` column of the original `diamonds` data set.
 
-Another possibility to create a factor is to convert a vector using `as_factor()`. Here the levels are created automatically. Their order depends on the appearance of the corresponding value in the source vector.
+Another possibility to create a factor is to convert a vector using `as_factor()`. Here the levels are created automatically. Their order however depends on the appearance of the corresponding value in the source vector.
 
 ```{r}
 as_factor(diamonds$clarity) %>%
