@@ -37,13 +37,13 @@ A sorting of the x-axis, which is based on the degree of clarity, is unfortunate
 levels_clarity <- c("I1", "SI2", "SI1", "VS2", "VS1", "VVS2", "VVS1", "IF")
 ```
 
-In the next step we lay this newly created levels vector on the column "clarity" of our data set to create a factor. ***factor()*** is a base-R function.
+In the next step we lay this newly created levels vector on the column "clarity" of our data set to create a factor. `factor()` is a base-R function.
 
 ```{r}
 factor_clarity <- factor(x = diamonds$clarity, levels = levels_clarity)
 ```
 
-Another possibility to create a factor is to convert a vector using ***as_factor().***. Here the levels are created automatically. Their order depends on the appearance of the corresponding value in the source vector.
+Another possibility to create a factor is to convert a vector using `as_factor()`. Here the levels are created automatically. Their order depends on the appearance of the corresponding value in the source vector.
 
 ```{r}
 as_factor(diamonds$clarity) %>%
@@ -52,7 +52,7 @@ as_factor(diamonds$clarity) %>%
 
 
 ### Count values per level
-Now we repeat the analysis of the distribution within our dataset using the created factor. The function ***fct_count()*** returns the frequency of a categorical value within a factor. The order of the levels remains unchanged.
+Now we repeat the analysis of the distribution within our dataset using the created factor. The function `fct_count()` returns the frequency of a categorical value within a factor. The order of the levels remains unchanged.
 
 ```{r}
 fct_count(factor_clarity) %>%
@@ -60,10 +60,10 @@ fct_count(factor_clarity) %>%
   geom_col(aes(f, n))
 ```
 
-It becomes obvious that the distribution can now be displayed in the desired order (by valence). Functions of the package forcats always start with the prefix ***fct_***. 
+It becomes obvious that the distribution can now be displayed in the desired order (by valence). Functions of the package forcats always start with the prefix `fct_`. 
 
 ### Inspect and set levels
-With the function ***levels()*** the levels of a factor can be both read and defined. **But be aware:** this can only be used to change the names, not the order of the levels. The base-R function ***unclass()*** gives information about the internal memory structure of a factor.
+With the function `levels()` the levels of a factor can be both read and defined. **But be aware:** this can only be used to change the names, not the order of the levels. The base-R function `unclass()` gives information about the internal memory structure of a factor.
 
 ```{r}
 factor_clarity %>% levels()                   #shows the original levels of our factor
@@ -75,7 +75,7 @@ factor_clarity %>% head(25)
 ```
 
 ### Inspect unique values 
-The function ***fct_unique*** can be used to output unique values of a factor. In contrast to the base-R function ***unique()*** the values are returned in the order of the levels and not in the order of their appearance.
+The function `fct_unique()` can be used to output unique values of a factor. In contrast to the base-R function `unique()` the values are returned in the order of the levels and not in the order of their appearance.
 
 ```{r}
 factor_clarity %>% fct_unique()
@@ -84,7 +84,7 @@ factor_clarity %>% unique()
 
 ## Combine factors
 ### Combine factors with different levels
-With the function ***fct_c()*** factors with different levels can be combined to one factor covering all levels. First we create two factors. The first one shows the amount of contested disciplines by several countries during the olympic sommer games 1896. The second one shows the amount of contested disciplines by countries during the olympic winter games 1924.
+With the function `fct_c()` factors with different levels can be combined to one factor covering all levels. First we create two factors. The first one shows the amount of contested disciplines by several countries during the olympic sommer games 1896. The second one shows the amount of contested disciplines by countries during the olympic winter games 1924.
 
 ```{r}
 olympic_1896 <- olympic %>% filter(game == "1896 Summer")
@@ -99,15 +99,15 @@ The factors differ both in their stored categorical data and in their set levels
 summer_1896 %>%
   fct_count() %>%
   ggplot(aes(`amount of disciplines`, country))+
-  geom_col(aes(n,f))
+  geom_col(aes(n, f))
 
 winter_1924 %>%
   fct_count() %>%
   ggplot(aes(`amount of disciplines`, country))+
-  geom_col(aes(n,f))
+  geom_col(aes(n, f))
 ```
 
-Now we combine the factors with ***fct_c()*** and plot it:
+Now we combine the factors with `fct_c()` and plot it:
 
 ```{r}
 fct_c(summer_1896, winter_1924) %>%
@@ -119,7 +119,7 @@ fct_c(summer_1896, winter_1924) %>%
 Both the underlying categorical data and the defined levels were combined in one factor.
 
 ### Standardise levels of various factors
-With the function ***fct_unify*** the levels of different factors can be standardised. Please note, both input and output are in list form.
+With the function `fct_unify()` the levels of different factors can be standardised. Please note, both input and output are in list form.
 ```{r}
 factor_list <- fct_unify(list(summer_1896, winter_1924))
 
@@ -140,7 +140,7 @@ In this case, the underlying categorical data was left unchanged for both factor
 
 ## Order of levels
 ### Manual reordering of levels
-With the function ***fct_relevel*** the levels of a factor can be reordered. In contrast to the function ***levels()***, which only allows the renaming of factor levels, ***fct_relevel*** also adjusts the order of the levels themselves, that is the way they are stored internally. An example should clarify this.
+With the function `fct_relevel()` the levels of a factor can be reordered. In contrast to the function `levels()`, which only allows the renaming of factor levels, `fct_relevel()` also adjusts the order of the levels themselves, that is the way they are stored internally. An example should clarify this.
 
 ```{r}
 # have a look at the original levels
@@ -158,15 +158,15 @@ factor_clarity %>%
   fct_count()
 ```
 
-As you can see, only the function ***fct_relevel*** allows a correct relevel.
+As you can see, only the function `fct_relevel()` allows a correct relevel.
 
 ### Reordering by frequency
-Especially for plots it is often useful to orient the order of the levels on the frequency of the corresponding values. The function ***fct_infreq()*** allows exactly this. Plotting the unsorted factor leads to a difficult readability.
+Especially for plots it is often useful to orient the order of the levels on the frequency of the corresponding values. The function `fct_infreq()` allows exactly this. Plotting the unsorted factor leads to a difficult readability.
 
 ```{r}
 summer_1896 %>%
   fct_count() %>%
-  ggplot(aes(n,f)) +
+  ggplot(aes(n, f)) +
   geom_col()
 ```
 
@@ -176,12 +176,12 @@ The better approach is to sort the data before plotting.
 summer_1896 %>%
   fct_infreq() %>%    #insert fct_infreq() to get the data ordered
   fct_count() %>%
-  ggplot(aes(n,f)) +
+  ggplot(aes(n, f)) +
   geom_col()
 ```
 
 ### Reordering by appearance 
-The package ***forcats*** offers with the function ***fct_inorder()*** the possibility to orientate the order of the levels of a factor to the occurence of the corresponding categorical data in the data set. To make this clear, we take a look at the unique values with the first 20 entries in the corresponding data set:
+The package `forcats` offers with the function `fct_inorder()` the possibility to orientate the order of the levels of a factor to the occurence of the corresponding categorical data in the data set. To make this clear, we take a look at the unique values with the first 20 entries in the corresponding data set:
 
 ```{r}
 olympic_1896$country %>%
@@ -198,12 +198,12 @@ olympic_1896$country %>%
 ```
 
 ### Reverse level order
-The function ***fct_rev*** reverses the existing order of the levels of a factor. First have a look at the original order:
+The function `fct_rev()` reverses the existing order of the levels of a factor. First have a look at the original order:
 ```{r}
 summer_1896 %>%
   fct_infreq() %>%    #insert fct_infreq() to get the data ordered
   fct_count() %>%
-  ggplot(aes(n,f)) +
+  ggplot(aes(n, f)) +
   geom_col()
 ```
 Now we reverse the order:
@@ -213,7 +213,7 @@ summer_1896 %>%
   fct_infreq() %>%    #insert fct_infreq() to get the data ordered
   fct_rev() %>%       #insert fct_rev() to reverse this order
   fct_count() %>%
-  ggplot(aes(n,f)) +
+  ggplot(aes(n, f)) +
   geom_col()
 ```
 
@@ -226,7 +226,7 @@ summer_1896 %>%
   fct_infreq() %>%          #insert fct_infreq() to get the data ordered
   fct_shift(n = -1L) %>%    #insert fct_shift() to shift levels
   fct_count() %>%
-  ggplot(aes(n,f)) +
+  ggplot(aes(n, f)) +
   geom_col()
 ```
 
