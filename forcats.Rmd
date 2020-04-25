@@ -252,6 +252,7 @@ summer_1896 %>%
   ggplot(aes(n, f)) +
   geom_col()
 ```
+
 ### Randomly permute levels
 The level of a factor can also be randomly shuffeled using `fct_shuffle()`. The input argument can be either a factor or a character vector, whereas the output will be a factor. By way of example, this is demonstrated using the factor `summer_1896`:
 ```{r}
@@ -262,7 +263,13 @@ shuffled_factor <- orig_levels %>% fct_shuffle()
 shuffled_levels <- shuffled_factor %>% levels() # the shuffled levels are randomly sorted
 shuffled_levels %>% print()
 ```
-
+### Reordering levels by other variables
+The functions presented in this section bare great similarity to the `fct_relevel()` function introduced in the beginning of this section.
+`fct_relevel()` allows for a direct manipuation of the levels by passing the new order to the `levels` keyword argument. In this regard `fct_reorder()` and `fct_reorder2()` are different, as the levels are reordered according to the result of a function applied to a vector. The example below is intended to unravel this behavior.
+```{r}
+# TODO: Need to think of an example here. 
+# fct_reorder() for fun(x); fct_reorder2() for fun(x, y)
+```
 
 ## Value of levels
 ## Add or drop levels
