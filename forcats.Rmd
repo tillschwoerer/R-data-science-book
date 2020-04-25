@@ -23,8 +23,8 @@ head(olympic, 2)                                       # Have a short look at th
 ### Create
 Basically two things are needed to create a factor:
 
-a. a vector which contains the values to be analyzed
-b. another vector which divides the values into levels
+1. a vector which contains the values to be analyzed
+2. another vector which divides the values into levels
 
 As an example we will use the column `clarity` of the diamonds dataset.
 It is a categorical evaluation of the clarity of a diamond and a subset of the grades according to the Gemological Institute of America (GIA) grading system. The grades according to GIA read as follows:
