@@ -44,21 +44,79 @@ Time Formats
 ## Application - Import, Clean Data / date-time
 We will apply the lubridate package to Weather data from on stationary sensor in northern Germany, the weather station in Kiel-Holtenau to be more exact.
 
+Before we introduce the library, the prerequisites must be created.
+```{r}
+# zum Lesen von Dateien
+library(readr)
+library(lubridate)
+
+```
+
 A first step is to import the data, which is given in a csv-format. We will use the tidyverse version of read_csv to accomplish this step.
 
 The data will be called df in order to make reference in code an writing more efficient further down.
 
+This is the simple approach to read a file with suffix csv.
 ```{r}
-library(readr)
-df <- read_csv("data/weather_kiel_holtenau.csv", 
-    col_types = cols(STATIONS_ID = col_integer()), 
-    locale = locale())
+df <- read_csv("data/weather_kiel_holtenau.csv")
 head(df)
 ```
+All columns are recognized as double values.
+
 
 We will examine the data further in a few seconds. At this point it should be mentioned that we generated the code to import the data by using the data import readr tool of RStudio. This tool allows a first look at the raw csv data before import and some tweaking. 
 
 By looking at the "MESS_DATUM" column it became apparent that this is a timestamp that was created every 10 minutes. The "normal" column type definitions of the import tool would not have sufficed to format this appropriately, which is why we chose to keep the column defined as a double until after import.
+```{r}
+df$MESS_DATUM <- ymd_hm(df$MESS_DATUM)
+head(df)
+
+```
+
+When you importing the column "MESS_DATUM" as character, you can use the following function:
+
+```{r}
+df_a2 <- read_csv("data/weather_kiel_holtenau.csv", 
+    col_types = cols(MESS_DATUM = col_character()))
+
+df_a2$MESS_DATUM <- parse_date_time(df_a2$MESS_DATUM, orders ="Ymd HM")
+head(df_a2)
+
+```
+
+
+If you no longer want to process or analyze the data, you can also display a date-time object in a specific format.
+```{r}
+df$MESS_DATUM <- format(df$MESS_DATUM, "%d.%m.%Y-%H:%M")
+#TODO
+# statt format( df$MESS_DATUM, "%Y%m%d%H%M") geht auch
+# strftime(Sys.time(), "%Y%m%d%H%M")
+# return character
+# der nächste Ansatz müsste wieder von einer list zu einem character-array gewandelt werden, sonst Anzeigen von NA
+#  strptime(df$MESS_DATUM, "%Y%m%d%H%M")
+# strptime(Sys.time(), "%Y%m%d%H%M")
+# return list
+
+head(df)
+
+```
+This approach is ok, but not yet ideal for further processing.
+
+The second approach is a little better.
+You can already specify data types for each column when reading in.
+For this Step you can use the RStudio "Import Dataset"-Wizard.
+
+Is DF immutable?
+```{r}
+df_a3 <- read_csv("data/weather_kiel_holtenau.csv", 
+    col_types = cols(MESS_DATUM = col_datetime(format = "%Y%m%d%H%M"), 
+        NIEDERSCHLAGSDAUER = col_integer(), 
+        NIEDERSCHLAGSINDIKATOR = col_integer(), 
+        STATIONS_ID = col_integer()))
+#View(weather_kiel_holtenau)
+head(df_a3)
+```
+
 
 
 
