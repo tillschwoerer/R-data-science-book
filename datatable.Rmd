@@ -12,3 +12,80 @@ Suggested data: any
 
 Possible approach: take different sequences of operations in dplyr and translate it into data.table syntax. Then summarise differences and pros/cons vis-à-vis dplyr 
 
+Okay, let's get started with this chapter on high performance computing using the R package data.table.
+First we will install exactly this package.
+
+```{r}
+print("Hello Data.Table")
+install.packages("data.table" , repos="http://cran.us.r-project.org")
+```
+
+
+```{r}
+library(tidyverse) 
+library(data.table)
+inpOlympic <- if (file.exists("data/olympic-games.csv")) {
+   "data/olympic-games.csv"
+} 
+
+
+inpWeather <- if (file.exists("data/weather_kiel_holtenau.csv")) {
+   "data/weather_kiel_holtenau.csv"
+} 
+
+inpSpoti <- if (file.exists("data/spotify_charts_germany.csv")) {
+   "data/spotify_charts_germany.csv"
+} 
+
+olympics <- fread(inpOlympic)
+weather <- fread(inpWeather)
+spotify <- fread(inpSpoti)
+```
+### Data exploration
+
+Datatype data.table
+
+```{r}
+
+class(olympics)
+```
+
+
+## Subsetting rows
+We can condition on the rows one time
+
+```{r}
+swimmers <- olympics[sport == "Swimming"]
+```
+
+and two or more times
+
+```{r}
+swimmers <- olympics[sport == "Swimming" & medal == "Gold"]
+```
+
+ordering data like
+
+```{r}
+var <- swimmers[order(height)]
+```
+
+Now we want to condition on the colums too
+
+```{r}
+cols <- c("athlete", "medal")
+```
+
+
+or let us use regualr expression to find someone
+
+```{r}
+ledecky <- swimmers[athlete %like% "Ledecky"]
+```
+
+
+
+
+
+
+
