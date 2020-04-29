@@ -115,7 +115,7 @@ olympic_1896 <- olympic %>% filter(game == "1896 Summer")
 countries_in_1896 <- factor(olympic_1896$country)
 
 olympic_1924 <- olympic %>% filter(game == "1924 Winter")
-# The defualt option for the `levels` argument in factor
+# The default option for the `levels` argument in factor
 countries_in_1924 <- factor(olympic_1924$country)
 ```
 
