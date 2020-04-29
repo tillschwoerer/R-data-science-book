@@ -24,7 +24,7 @@
 <meta name="author" content="Tools and Programming Languages for Data Scientists, FH Kiel, Summer Term 2020" />
 
 
-<meta name="date" content="2020-04-25" />
+<meta name="date" content="2020-04-29" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -173,7 +173,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.6" data-path="forcats.html"><a href="forcats.html#add-or-drop-levels"><i class="fa fa-check"></i><b>5.6</b> Add or drop levels</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="stringr.html"><a href="stringr.html"><i class="fa fa-check"></i><b>6</b> Character data: stringr</a></li>
-<li class="chapter" data-level="7" data-path="data-table.html"><a href="data-table.html"><i class="fa fa-check"></i><b>7</b> High performance computing: data.table</a></li>
+<li class="chapter" data-level="7" data-path="data-table.html"><a href="data-table.html"><i class="fa fa-check"></i><b>7</b> High performance computing: data.table</a><ul>
+<li class="chapter" data-level="7.0.1" data-path="data-table.html"><a href="data-table.html#data-exploration"><i class="fa fa-check"></i><b>7.0.1</b> Data exploration</a></li>
+<li class="chapter" data-level="7.1" data-path="data-table.html"><a href="data-table.html#subsetting-rows"><i class="fa fa-check"></i><b>7.1</b> Subsetting rows</a></li>
+</ul></li>
 </ul>
 
       </nav>
@@ -229,20 +232,90 @@ Time Formats</p>
 <div id="application---import-clean-data-date-time" class="section level2">
 <h2><span class="header-section-number">4.3</span> Application - Import, Clean Data / date-time</h2>
 <p>We will apply the lubridate package to Weather data from on stationary sensor in northern Germany, the weather station in Kiel-Holtenau to be more exact.</p>
+<p>Before we introduce the library, the prerequisites must be created.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="co"># zum Lesen von Dateien</span></a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="kw">library</span>(readr)</a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="kw">library</span>(lubridate)</a></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     date</code></pre>
 <p>A first step is to import the data, which is given in a csv-format. We will use the tidyverse version of read_csv to accomplish this step.</p>
 <p>The data will be called df in order to make reference in code an writing more efficient further down.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">library</span>(readr)</a>
-<a class="sourceLine" id="cb8-2" title="2">df &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/weather_kiel_holtenau.csv&quot;</span>, </a>
-<a class="sourceLine" id="cb8-3" title="3">    <span class="dt">col_types =</span> <span class="kw">cols</span>(<span class="dt">STATIONS_ID =</span> <span class="kw">col_integer</span>()), </a>
-<a class="sourceLine" id="cb8-4" title="4">    <span class="dt">locale =</span> <span class="kw">locale</span>())</a>
-<a class="sourceLine" id="cb8-5" title="5"><span class="kw">head</span>(df)</a></code></pre></div>
+<p>This is the simple approach to read a file with suffix csv.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">df &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/weather_kiel_holtenau.csv&quot;</span>)</a></code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   STATIONS_ID = col_double(),
+##   MESS_DATUM = col_double(),
+##   TEMPERATUR = col_double(),
+##   RELATIVE_FEUCHTE = col_double(),
+##   NIEDERSCHLAGSDAUER = col_double(),
+##   NIEDERSCHLAGSHOEHE = col_double(),
+##   NIEDERSCHLAGSINDIKATOR = col_double()
+## )</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">head</span>(df)</a></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["STATIONS_ID"],"name":[1],"type":["int"],"align":["right"]},{"label":["MESS_DATUM"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["TEMPERATUR"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["RELATIVE_FEUCHTE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSDAUER"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSHOEHE"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSINDIKATOR"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"2564","2":"201904140000","3":"3.6","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"201904140010","3":"3.6","4":"75.6","5":"6","6":"0","7":"1"},{"1":"2564","2":"201904140020","3":"3.6","4":"76.5","5":"0","6":"0","7":"0"},{"1":"2564","2":"201904140030","3":"3.5","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"201904140040","3":"3.6","4":"75.3","5":"0","6":"0","7":"0"},{"1":"2564","2":"201904140050","3":"3.7","4":"75.1","5":"2","6":"0","7":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["STATIONS_ID"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["MESS_DATUM"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["TEMPERATUR"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["RELATIVE_FEUCHTE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSDAUER"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSHOEHE"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSINDIKATOR"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"2564","2":"201904140000","3":"3.6","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"201904140010","3":"3.6","4":"75.6","5":"6","6":"0","7":"1"},{"1":"2564","2":"201904140020","3":"3.6","4":"76.5","5":"0","6":"0","7":"0"},{"1":"2564","2":"201904140030","3":"3.5","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"201904140040","3":"3.6","4":"75.3","5":"0","6":"0","7":"0"},{"1":"2564","2":"201904140050","3":"3.7","4":"75.1","5":"2","6":"0","7":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p>All columns are recognized as double values.</p>
 <p>We will examine the data further in a few seconds. At this point it should be mentioned that we generated the code to import the data by using the data import readr tool of RStudio. This tool allows a first look at the raw csv data before import and some tweaking.</p>
 <p>By looking at the “MESS_DATUM” column it became apparent that this is a timestamp that was created every 10 minutes. The “normal” column type definitions of the import tool would not have sufficed to format this appropriately, which is why we chose to keep the column defined as a double until after import.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">df<span class="op">$</span>MESS_DATUM &lt;-<span class="st"> </span><span class="kw">ymd_hm</span>(df<span class="op">$</span>MESS_DATUM)</a>
+<a class="sourceLine" id="cb14-2" title="2"><span class="kw">head</span>(df)</a></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["STATIONS_ID"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["MESS_DATUM"],"name":[2],"type":["S3: POSIXct"],"align":["right"]},{"label":["TEMPERATUR"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["RELATIVE_FEUCHTE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSDAUER"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSHOEHE"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSINDIKATOR"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"2564","2":"2019-04-14 00:00:00","3":"3.6","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:10:00","3":"3.6","4":"75.6","5":"6","6":"0","7":"1"},{"1":"2564","2":"2019-04-14 00:20:00","3":"3.6","4":"76.5","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:30:00","3":"3.5","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:40:00","3":"3.6","4":"75.3","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:50:00","3":"3.7","4":"75.1","5":"2","6":"0","7":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>When you importing the column “MESS_DATUM” as character, you can use the following function:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">df_a2 &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/weather_kiel_holtenau.csv&quot;</span>, </a>
+<a class="sourceLine" id="cb15-2" title="2">    <span class="dt">col_types =</span> <span class="kw">cols</span>(<span class="dt">MESS_DATUM =</span> <span class="kw">col_character</span>()))</a>
+<a class="sourceLine" id="cb15-3" title="3"></a>
+<a class="sourceLine" id="cb15-4" title="4">df_a2<span class="op">$</span>MESS_DATUM &lt;-<span class="st"> </span><span class="kw">parse_date_time</span>(df_a2<span class="op">$</span>MESS_DATUM, <span class="dt">orders =</span><span class="st">&quot;Ymd HM&quot;</span>)</a>
+<a class="sourceLine" id="cb15-5" title="5"><span class="kw">head</span>(df_a2)</a></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["STATIONS_ID"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["MESS_DATUM"],"name":[2],"type":["S3: POSIXct"],"align":["right"]},{"label":["TEMPERATUR"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["RELATIVE_FEUCHTE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSDAUER"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSHOEHE"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSINDIKATOR"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"2564","2":"2019-04-14 00:00:00","3":"3.6","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:10:00","3":"3.6","4":"75.6","5":"6","6":"0","7":"1"},{"1":"2564","2":"2019-04-14 00:20:00","3":"3.6","4":"76.5","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:30:00","3":"3.5","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:40:00","3":"3.6","4":"75.3","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:50:00","3":"3.7","4":"75.1","5":"2","6":"0","7":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>If you no longer want to process or analyze the data, you can also display a date-time object in a specific format.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1">df<span class="op">$</span>MESS_DATUM &lt;-<span class="st"> </span><span class="kw">format</span>(df<span class="op">$</span>MESS_DATUM, <span class="st">&quot;%d.%m.%Y-%H:%M&quot;</span>)</a>
+<a class="sourceLine" id="cb16-2" title="2"><span class="co">#TODO</span></a>
+<a class="sourceLine" id="cb16-3" title="3"><span class="co"># statt format( df$MESS_DATUM, &quot;%Y%m%d%H%M&quot;) geht auch</span></a>
+<a class="sourceLine" id="cb16-4" title="4"><span class="co"># strftime(Sys.time(), &quot;%Y%m%d%H%M&quot;)</span></a>
+<a class="sourceLine" id="cb16-5" title="5"><span class="co"># return character</span></a>
+<a class="sourceLine" id="cb16-6" title="6"><span class="co"># der nächste Ansatz müsste wieder von einer list zu einem character-array gewandelt werden, sonst Anzeigen von NA</span></a>
+<a class="sourceLine" id="cb16-7" title="7"><span class="co">#  strptime(df$MESS_DATUM, &quot;%Y%m%d%H%M&quot;)</span></a>
+<a class="sourceLine" id="cb16-8" title="8"><span class="co"># strptime(Sys.time(), &quot;%Y%m%d%H%M&quot;)</span></a>
+<a class="sourceLine" id="cb16-9" title="9"><span class="co"># return list</span></a>
+<a class="sourceLine" id="cb16-10" title="10"></a>
+<a class="sourceLine" id="cb16-11" title="11"><span class="kw">head</span>(df)</a></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["STATIONS_ID"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["MESS_DATUM"],"name":[2],"type":["chr"],"align":["left"]},{"label":["TEMPERATUR"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["RELATIVE_FEUCHTE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSDAUER"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSHOEHE"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSINDIKATOR"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"2564","2":"14.04.2019-00:00","3":"3.6","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"14.04.2019-00:10","3":"3.6","4":"75.6","5":"6","6":"0","7":"1"},{"1":"2564","2":"14.04.2019-00:20","3":"3.6","4":"76.5","5":"0","6":"0","7":"0"},{"1":"2564","2":"14.04.2019-00:30","3":"3.5","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"14.04.2019-00:40","3":"3.6","4":"75.3","5":"0","6":"0","7":"0"},{"1":"2564","2":"14.04.2019-00:50","3":"3.7","4":"75.1","5":"2","6":"0","7":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>This approach is ok, but not yet ideal for further processing.</p>
+<p>The second approach is a little better.
+You can already specify data types for each column when reading in.
+For this Step you can use the RStudio “Import Dataset”-Wizard.</p>
+<p>Is DF immutable?</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1">df_a3 &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/weather_kiel_holtenau.csv&quot;</span>, </a>
+<a class="sourceLine" id="cb17-2" title="2">    <span class="dt">col_types =</span> <span class="kw">cols</span>(<span class="dt">MESS_DATUM =</span> <span class="kw">col_datetime</span>(<span class="dt">format =</span> <span class="st">&quot;%Y%m%d%H%M&quot;</span>), </a>
+<a class="sourceLine" id="cb17-3" title="3">        <span class="dt">NIEDERSCHLAGSDAUER =</span> <span class="kw">col_integer</span>(), </a>
+<a class="sourceLine" id="cb17-4" title="4">        <span class="dt">NIEDERSCHLAGSINDIKATOR =</span> <span class="kw">col_integer</span>(), </a>
+<a class="sourceLine" id="cb17-5" title="5">        <span class="dt">STATIONS_ID =</span> <span class="kw">col_integer</span>()))</a>
+<a class="sourceLine" id="cb17-6" title="6"><span class="co">#View(weather_kiel_holtenau)</span></a>
+<a class="sourceLine" id="cb17-7" title="7"><span class="kw">head</span>(df_a3)</a></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["STATIONS_ID"],"name":[1],"type":["int"],"align":["right"]},{"label":["MESS_DATUM"],"name":[2],"type":["S3: POSIXct"],"align":["right"]},{"label":["TEMPERATUR"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["RELATIVE_FEUCHTE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSDAUER"],"name":[5],"type":["int"],"align":["right"]},{"label":["NIEDERSCHLAGSHOEHE"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSINDIKATOR"],"name":[7],"type":["int"],"align":["right"]}],"data":[{"1":"2564","2":"2019-04-14 00:00:00","3":"3.6","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:10:00","3":"3.6","4":"75.6","5":"6","6":"0","7":"1"},{"1":"2564","2":"2019-04-14 00:20:00","3":"3.6","4":"76.5","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:30:00","3":"3.5","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:40:00","3":"3.6","4":"75.3","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:50:00","3":"3.7","4":"75.1","5":"2","6":"0","7":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <p>(Idea - check, if data is openly available as well. This could lead to an excurse about how to generate a raw dataset from this weatherstation.)</p>
 <p>Examine the data - - summarise, glimpse an other exploration functions</p>
 <p>Parse the date-time Variable into a productive format</p>
