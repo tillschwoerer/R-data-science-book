@@ -513,9 +513,9 @@ Thus a value of <code>n = -1L</code> would shift the order of the levels to the 
 <div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" title="1">shuffled_factor &lt;-<span class="st"> </span>orig_levels <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">fct_shuffle</span>()</a>
 <a class="sourceLine" id="cb56-2" title="2">shuffled_levels &lt;-<span class="st"> </span>shuffled_factor <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">levels</span>() <span class="co"># the shuffled levels are randomly sorted</span></a>
 <a class="sourceLine" id="cb56-3" title="3">shuffled_levels <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">print</span>()</a></code></pre></div>
-<pre><code>##  [1] &quot;Austria&quot;       &quot;Australia&quot;     &quot;Greece&quot;        &quot;France&quot;       
-##  [5] &quot;Italy&quot;         &quot;Germany&quot;       &quot;Sweden&quot;        &quot;United States&quot;
-##  [9] &quot;Switzerland&quot;   &quot;Great Britain&quot; &quot;Hungary&quot;       &quot;Denmark&quot;</code></pre>
+<pre><code>##  [1] &quot;Denmark&quot;       &quot;France&quot;        &quot;Switzerland&quot;   &quot;United States&quot;
+##  [5] &quot;Australia&quot;     &quot;Hungary&quot;       &quot;Sweden&quot;        &quot;Greece&quot;       
+##  [9] &quot;Germany&quot;       &quot;Italy&quot;         &quot;Austria&quot;       &quot;Great Britain&quot;</code></pre>
 </div>
 <div id="reordering-levels-by-other-variables" class="section level3">
 <h3><span class="header-section-number">5.4.7</span> Reordering levels by other variables</h3>
