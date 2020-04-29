@@ -24,7 +24,7 @@
 <meta name="author" content="Tools and Programming Languages for Data Scientists, FH Kiel, Summer Term 2020" />
 
 
-<meta name="date" content="2020-04-25" />
+<meta name="date" content="2020-04-29" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -173,7 +173,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.6" data-path="forcats.html"><a href="forcats.html#add-or-drop-levels"><i class="fa fa-check"></i><b>5.6</b> Add or drop levels</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="stringr.html"><a href="stringr.html"><i class="fa fa-check"></i><b>6</b> Character data: stringr</a></li>
-<li class="chapter" data-level="7" data-path="data-table.html"><a href="data-table.html"><i class="fa fa-check"></i><b>7</b> High performance computing: data.table</a></li>
+<li class="chapter" data-level="7" data-path="data-table.html"><a href="data-table.html"><i class="fa fa-check"></i><b>7</b> High performance computing: data.table</a><ul>
+<li class="chapter" data-level="7.0.1" data-path="data-table.html"><a href="data-table.html#data-exploration"><i class="fa fa-check"></i><b>7.0.1</b> Data exploration</a></li>
+<li class="chapter" data-level="7.1" data-path="data-table.html"><a href="data-table.html#subsetting-rows"><i class="fa fa-check"></i><b>7.1</b> Subsetting rows</a></li>
+</ul></li>
 </ul>
 
       </nav>
@@ -203,7 +206,72 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <p>Suggested data: any</p>
 <p>Possible approach: take different sequences of operations in dplyr and translate it into data.table syntax. Then summarise differences and pros/cons vis-à-vis dplyr</p>
+<p>Okay, let’s get started with this chapter on high performance computing using the R package data.table.
+First we will install exactly this package.</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" title="1"><span class="kw">print</span>(<span class="st">&quot;Hello Data.Table&quot;</span>)</a></code></pre></div>
+<pre><code>## [1] &quot;Hello Data.Table&quot;</code></pre>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;data.table&quot;</span> , <span class="dt">repos=</span><span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</a></code></pre></div>
+<pre><code>## Installing package into &#39;C:/Users/pizza/OneDrive/Dokumente/R/win-library/3.6&#39;
+## (as &#39;lib&#39; is unspecified)</code></pre>
+<pre><code>## package &#39;data.table&#39; successfully unpacked and MD5 sums checked
+## 
+## The downloaded binary packages are in
+##  C:\Users\pizza\AppData\Local\Temp\RtmpkrCXuT\downloaded_packages</code></pre>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb64-1" title="1"><span class="kw">library</span>(tidyverse) </a>
+<a class="sourceLine" id="cb64-2" title="2"><span class="kw">library</span>(data.table)</a></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;data.table&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:lubridate&#39;:
+## 
+##     hour, isoweek, mday, minute, month, quarter, second, wday, week,
+##     yday, year</code></pre>
+<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
+## 
+##     between, first, last</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     transpose</code></pre>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" title="1">inpOlympic &lt;-<span class="st"> </span><span class="cf">if</span> (<span class="kw">file.exists</span>(<span class="st">&quot;data/olympic-games.csv&quot;</span>)) {</a>
+<a class="sourceLine" id="cb69-2" title="2">   <span class="st">&quot;data/olympic-games.csv&quot;</span></a>
+<a class="sourceLine" id="cb69-3" title="3">} </a>
+<a class="sourceLine" id="cb69-4" title="4"></a>
+<a class="sourceLine" id="cb69-5" title="5"></a>
+<a class="sourceLine" id="cb69-6" title="6">inpWeather &lt;-<span class="st"> </span><span class="cf">if</span> (<span class="kw">file.exists</span>(<span class="st">&quot;data/weather_kiel_holtenau.csv&quot;</span>)) {</a>
+<a class="sourceLine" id="cb69-7" title="7">   <span class="st">&quot;data/weather_kiel_holtenau.csv&quot;</span></a>
+<a class="sourceLine" id="cb69-8" title="8">} </a>
+<a class="sourceLine" id="cb69-9" title="9"></a>
+<a class="sourceLine" id="cb69-10" title="10">inpSpoti &lt;-<span class="st"> </span><span class="cf">if</span> (<span class="kw">file.exists</span>(<span class="st">&quot;data/spotify_charts_germany.csv&quot;</span>)) {</a>
+<a class="sourceLine" id="cb69-11" title="11">   <span class="st">&quot;data/spotify_charts_germany.csv&quot;</span></a>
+<a class="sourceLine" id="cb69-12" title="12">} </a>
+<a class="sourceLine" id="cb69-13" title="13"></a>
+<a class="sourceLine" id="cb69-14" title="14">olympics &lt;-<span class="st"> </span><span class="kw">fread</span>(inpOlympic)</a>
+<a class="sourceLine" id="cb69-15" title="15">weather &lt;-<span class="st"> </span><span class="kw">fread</span>(inpWeather)</a></code></pre></div>
+<pre><code>## Warning in require_bit64_if_needed(ans): Some columns are type &#39;integer64&#39;
+## but package bit64 is not installed. Those columns will print as strange
+## looking floating point data. There is no need to reload the data. Simply
+## install.packages(&#39;bit64&#39;) to obtain the integer64 print method and print the
+## data again.</code></pre>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" title="1">spotify &lt;-<span class="st"> </span><span class="kw">fread</span>(inpSpoti)</a></code></pre></div>
+<div id="data-exploration" class="section level3">
+<h3><span class="header-section-number">7.0.1</span> Data exploration</h3>
+<p>Datatype data.table</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb72-1" title="1"><span class="kw">class</span>(olympics)</a></code></pre></div>
+<pre><code>## [1] &quot;data.table&quot; &quot;data.frame&quot;</code></pre>
+</div>
+<div id="subsetting-rows" class="section level2">
+<h2><span class="header-section-number">7.1</span> Subsetting rows</h2>
+<p>We can condition on the rows one time</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" title="1">swimmers &lt;-<span class="st"> </span>olympics[sport <span class="op">==</span><span class="st"> &quot;Swimming&quot;</span>]</a></code></pre></div>
+<p>and two or more times</p>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb75-1" title="1">swimmers &lt;-<span class="st"> </span>olympics[sport <span class="op">==</span><span class="st"> &quot;Swimming&quot;</span> <span class="op">&amp;</span><span class="st"> </span>medal <span class="op">==</span><span class="st"> &quot;Gold&quot;</span>]</a></code></pre></div>
+<p>ordering data like</p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb76-1" title="1">var &lt;-<span class="st"> </span>swimmers[<span class="kw">order</span>(height)]</a></code></pre></div>
+<p>Now we want to condition on the colums too</p>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb77-1" title="1">cols &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;athlete&quot;</span>, <span class="st">&quot;medal&quot;</span>)</a></code></pre></div>
+<p>or let us use regualr expression to find someone</p>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb78-1" title="1">ledecky &lt;-<span class="st"> </span>swimmers[athlete <span class="op">%like%</span><span class="st"> &quot;Ledecky&quot;</span>]</a></code></pre></div>
 
+</div>
 </div>
             </section>
 

@@ -108,23 +108,26 @@ factor_clarity %>% unique()
 ## Combine factors
 ### Combine factors with different levels
 With the function `fct_c()` factors with different levels can be combined to one factor covering all levels. First we create two factors. The first one shows the amount of contested disciplines by several countries during the olympic sommer games 1896. The second one shows the amount of contested disciplines by countries during the olympic winter games 1924.
-
+Note, that the default option for the `levels` argument in `factor()` is a sorted set of the given values. As R sorts characters lexicographically. the corresponding levels are the countries sorted alphabetically from A to Z.
 ```{r}
 olympic_1896 <- olympic %>% filter(game == "1896 Summer")
-summer_1896 <- factor(olympic_1896$country)
+# Using default option for `levels` argument in factor()
+countries_in_1896 <- factor(olympic_1896$country)
+
 olympic_1924 <- olympic %>% filter(game == "1924 Winter")
-winter_1924 <- factor(olympic_1924$country)
+# The defualt option for the `levels` argument in factor
+countries_in_1924 <- factor(olympic_1924$country)
 ```
 
 The factors differ both in their stored categorical data and in their set levels. A plot makes this clear:
 
 ```{r}
-summer_1896 %>%
+countries_in_1896 %>%
   fct_count() %>%
   ggplot(aes(`amount of disciplines`, country))+
   geom_col(aes(n, f))
 
-winter_1924 %>%
+countries_in_1924 %>%
   fct_count() %>%
   ggplot(aes(`amount of disciplines`, country))+
   geom_col(aes(n, f))
@@ -133,7 +136,7 @@ winter_1924 %>%
 Now we combine the factors with `fct_c()` and plot it:
 
 ```{r}
-fct_c(summer_1896, winter_1924) %>%
+fct_c(countries_in_1896, countries_in_1924) %>%
   fct_count() %>%
   ggplot(aes(`amount of disciplines`, country))+
   geom_col(aes(n,f))
@@ -144,7 +147,7 @@ Both the underlying categorical data and the defined levels were combined in one
 ### Standardise levels of various factors
 With the function `fct_unify()` the levels of different factors can be standardised. Please note, both input and output are in list form.
 ```{r}
-factor_list <- fct_unify(list(summer_1896, winter_1924))
+factor_list <- fct_unify(list(countries_in_1896, countries_in_1924))
 
 # plotting the first factor
 factor_list[[1]] %>%
@@ -187,7 +190,7 @@ As you can see, only the function `fct_relevel()` allows a correct relevel.
 Especially for plots it is often useful to orient the order of the levels on the frequency of the corresponding values. The function `fct_infreq()` allows exactly this. Plotting the unsorted factor leads to a difficult readability.
 
 ```{r}
-summer_1896 %>%
+countries_in_1896 %>%
   fct_count() %>%
   ggplot(aes(n, f)) +
   geom_col()
@@ -196,7 +199,7 @@ summer_1896 %>%
 The better approach is to sort the data before plotting.
 
 ```{r}
-summer_1896 %>%
+countries_in_1896 %>%
   fct_infreq() %>%    #insert fct_infreq() to get the data ordered
   fct_count() %>%
   ggplot(aes(n, f)) +
@@ -223,7 +226,7 @@ olympic_1896$country %>%
 ### Reverse level order
 The function `fct_rev()` reverses the existing order of the levels of a factor. First have a look at the original order:
 ```{r}
-summer_1896 %>%
+countries_in_1896 %>%
   fct_infreq() %>%    #insert fct_infreq() to get the data ordered
   fct_count() %>%
   ggplot(aes(n, f)) +
@@ -232,7 +235,7 @@ summer_1896 %>%
 Now we reverse the order:
 
 ```{r}
-summer_1896 %>%
+countries_in_1896 %>%
   fct_infreq() %>%    #insert fct_infreq() to get the data ordered
   fct_rev() %>%       #insert fct_rev() to reverse this order
   fct_count() %>%
@@ -245,7 +248,7 @@ The argument `n` in the function `fct_shift()` allows to shift the levels to the
 Thus a value of `n = -1L` would shift the order of the levels to the left by one location.
 
 ```{r}
-summer_1896 %>%
+countries_in_1896 %>%
   fct_infreq() %>%          #insert fct_infreq() to get the data ordered
   fct_shift(n = -1L) %>%    #insert fct_shift() to shift levels
   fct_count() %>%
@@ -254,9 +257,9 @@ summer_1896 %>%
 ```
 
 ### Randomly permute levels
-The level of a factor can also be randomly shuffeled using `fct_shuffle()`. The input argument can be either a factor or a character vector, whereas the output will be a factor. By way of example, this is demonstrated using the factor `summer_1896`:
+The level of a factor can also be randomly shuffeled using `fct_shuffle()`. The input argument can be either a factor or a character vector, whereas the output will be a factor. By way of example, this is demonstrated using the factor `countries_in_1896`:
 ```{r}
-orig_levels <- summer_1896 %>% levels() # the original levels are sorted alphabetically
+orig_levels <- countries_in_1896 %>% levels() # the original levels are sorted alphabetically
 orig_levels %>% print()
 
 shuffled_factor <- orig_levels %>% fct_shuffle()
