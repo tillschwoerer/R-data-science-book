@@ -307,6 +307,22 @@ renamed_factor_clarity <- factor_clarity %>%
 ```
 Note, that this approach is in fact similar to the steps described in  [5.2.3  Inspect and set levels](#anchor).
 
+One could also combine multiple levels into one using `fct_recode()` as shown in the example below, where the numerical distinction within the GIA categories is dropped, that is *Slightly Included 2* and *Slightly Included 1* will be combined into the level *Slightly Included*, etc.
+```{r}
+# Since the level notation is somewhat cryptic, we want to change it and drop the numerical distinction within each category
+renamed_factor_clarity_2 <- factor_clarity %>% 
+  fct_recode(`Included (worst)`="I1",
+             `Slightly Included`="SI2",
+             `Slightly Included`="SI1",
+             `Very Slightly Included`="VS2",
+             `Very Slightly Included`="VS1",
+             `Very Very Slightly Included`="VVS2",
+             `Very Very Slightly Included`="VVS1",
+             `Internally Flawless (best)`="IF")
+
+```
+The resulting `renamed_factor_clarity_2` now has only five distinct levels as compared to eight distinct levels in `renamed_factor_clarity`.
+
 Another scenario might be that we want to add either a pre- or a suffix or both to the current level or change the levels in some other general matter. To this end, the forcats package provides the `fct_relabel()` function. Its second argument (or its first argument in case of piping) is a function that has to return a character vector. The `countries_in_1896` factor variable is used to showcase how `fct_relabel()` works.
 ```{r}
 add_prefix <- function(input_char) {
