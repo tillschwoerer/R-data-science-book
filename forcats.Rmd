@@ -85,7 +85,7 @@ fct_count(factor_clarity) %>%
 
 It becomes obvious that the distribution can now be displayed in the desired order (by valence). Functions of the package forcats always start with the prefix `fct_`. 
 
-### Inspect and set levels
+### Inspect and set levels {#anchor}
 With the function `levels()` the levels of a factor can be both read and defined. **But be aware:** this can only be used to change the names, not the order of the levels. The base-R function `unclass()` gives information about the internal memory structure of a factor.
 
 ```{r}
@@ -259,12 +259,12 @@ countries_in_1896 %>%
 ### Randomly permute levels
 The level of a factor can also be randomly shuffeled using `fct_shuffle()`. The input argument can be either a factor or a character vector, whereas the output will be a factor. By way of example, this is demonstrated using the factor `countries_in_1896`:
 ```{r}
-orig_levels <- countries_in_1896 %>% levels() # the original levels are sorted alphabetically
-orig_levels %>% print()
+orig_country_levels <- countries_in_1896 %>% levels() # the original levels are sorted alphabetically
+orig_country_levels %>% print()
 
-shuffled_factor <- orig_levels %>% fct_shuffle()
-shuffled_levels <- shuffled_factor %>% levels() # the shuffled levels are randomly sorted
-shuffled_levels %>% print()
+shuffled_country_factor <- orig_country_levels %>% fct_shuffle()
+shuffled_country_levels <- shuffled_country_factor %>% levels() # the shuffled levels are randomly sorted
+shuffled_country_levels %>% print()
 ```
 ### Reordering levels by other variables
 The functions presented in this section bare great similarity to the `fct_relevel()` function introduced in the beginning of this section.
@@ -283,5 +283,28 @@ The example below is intended to unravel this behavior.
 # fct_reorder() for fun(x); fct_reorder2() for fun(x, y)
 ```
 
-## Value of levels
+## Change the value of levels
+### Renaming the levels
+Let's say you want to change the name of the levels (which also impies changing the corresponding value elements) because you are unhappy with the current naming. `fct_recode()` allows to manually give new names to certain levels, without affecting the order of the levels or levels that are not included in the function call. 
+The `diamonds$clarity` column is an ideal example for the use of `fct_recode()`. For you conviniece we repeat some of the steps made in the beginning of this chapter:
+```{r}
+# Define the correct order of the levels in ascending order
+levels_clarity <- c("I1", "SI2", "SI1", "VS2", "VS1", "VVS2", "VVS1", "IF")
+# Make `diamonds$clarity` a factor and assign the correctly ordered levels
+factor_clarity <- factor(x = diamonds$clarity, levels = levels_clarity)
+
+# Since the level notation is somewhat cryptic, we want to change it
+renamed_factor_clarityv <- factor_clarity %>% 
+  fct_recode(`Included 1 (worst)`="I1",
+             `Slightly Included 2`="SI2",
+             `Slightly Included 1`="SI1",
+             `Very Slightly Included 2`="VS2",
+             `Very Slightly Included 1`="VS1",
+             `Very Very Slightly Included 2`="VVS2",
+             `Very Very Slightly Included 1`="VVS1",
+             `Internally Flawless (best)`="IF")
+
+```
+Note, that this approach is in fact similar to the steps described in  [5.2.3  Inspect and set levels](#anchor).
+
 ## Add or drop levels
