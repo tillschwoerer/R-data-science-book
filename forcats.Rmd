@@ -268,7 +268,16 @@ shuffled_levels %>% print()
 ```
 ### Reordering levels by other variables
 The functions presented in this section bare great similarity to the `fct_relevel()` function introduced in the beginning of this section.
-`fct_relevel()` allows for a direct manipuation of the levels by passing the new order to the `levels` keyword argument. In this regard `fct_reorder()` and `fct_reorder2()` are different, as the levels are reordered according to the result of a function applied to a vector. The example below is intended to unravel this behavior.
+`fct_relevel()` allows for a direct manipuation of the levels by passing the new order to the `levels` keyword argument. In this regard `fct_reorder()` and `fct_reorder2()` are different, as the levels are reordered according to the result of a function applied to one vector `x` in case of `fct_reorder()` and two vectors `x` and `y` in case of `fct_reorder2()`.
+
+**Note:** We want to point out a few things that have to be kept in mind when using these functions
+
+: 1. The length of the factor `f` to be reordered has the be equal to the lenght of the vector(s) passed to the function. 
+That is an error will be provoked, if `length(f) != length(x)` or `length(f) != length(y)`.
+2. In case the function returns the same value for two different elements of the vector(s), R will arrange the levels automatically.
+3. In case there are multiple occurences of an element, the level assigned to this element will be based on the result of the function for the first corresponding elements in `x` (and `y`).
+
+The example below is intended to unravel this behavior.
 ```{r}
 # TODO: Need to think of an example here. 
 # fct_reorder() for fun(x); fct_reorder2() for fun(x, y)
