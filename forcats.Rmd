@@ -358,7 +358,7 @@ renamed_factor_clarity_3 <- factor_clarity %>%
 It should be noted, that `fct_recode()` could be easily replaced with `fct_collapse()` in the [2nd example for `fct_recode()`](#recode-2) as `fct_collapse()` also works with single element character vectors. Replacing `fct_collapse()` with `fct_recode()` in the example above on the other hand is not possible, because `fct_recode()` cannot work with multiple element vectors such as `c("SI2", "SI1")`. In this regard, we rather recommend using `fct_collapse()` than `fct_recode()` for combining different levels.
 
 ### Create a Lump 
-This topic is related to the rationale behind `fct_collapse()` describe in the previous section. In contrast to specifying the levels to be combined explicitly, the forcats package also offers the possibility to lump together levels. There are several different functions that allow lumping based on different criteria.  
+This topic is related to the rationale behind `fct_collapse()` described in the previous section. In contrast to specifying the levels to be combined explicitly, the forcats package also offers the possibility to lump levels together. That is combining several levels together to a single lump level called `Other` by default  There are several different functions that allow lumping based on different criteria.  
 The functions which is probably easiest to grasp is `fct_lump_n()` which takes an integer value `n` as the second (or the first argument in case of piping). 
 It allows to preserve the `n` most (least) frequent levels for `n>0` (`n<0`). All other levels will be lumped together into one level that has the lowest order and referred to as `Other` by default.
 Once again, we use data from the Summer Olympic Games in 1896 to give an example.
@@ -406,7 +406,21 @@ unique_countries_in_1924 %>%
 ```
 
 
-###
+### Manually lump levels
+In the previous section, we have combined levels into a lump called `Other` based on numerical criteria. In addition to this, we can also create our own lump using `fct_other()`.In this function, we specify the levels we want to keep (drop) as a vector to the `keep` (`drop`) keyword argument. 
+The following code demonstrates how to only keep the levels `Denmark` and `Australia` in the `unique_countires_in_1896` factor variable.
+```{r}
+# Only keep the levels `Denmark` and `Australia`
+unique_countries_in_1896 %>% 
+  fct_other(keep=c("Denmark", "Australia")) %>% 
+  levels()
+
+# Keep all levels except for `Denmark` and `Australia`
+unique_countries_in_1896 %>% 
+  fct_other(drop=c("Denmark", "Australia")) %>% 
+  levels()
+```
+Note that the latter example is equivalent to using `fct_collapse(Other=c("Denmark", "Australia"))`.
 
 
 ## Add or drop levels
