@@ -85,7 +85,7 @@ fct_count(factor_clarity) %>%
 
 It becomes obvious that the distribution can now be displayed in the desired order (by valence). Functions of the package forcats always start with the prefix `fct_`. 
 
-### Inspect and set levels {#anchor}
+### Inspect and set levels {#Inspect-and-set-levels}
 With the function `levels()` the levels of a factor can be both read and defined. **But be aware:** this can only be used to change the names, not the order of the levels. The base-R function `unclass()` gives information about the internal memory structure of a factor.
 
 ```{r}
@@ -284,7 +284,7 @@ The example below is intended to unravel this behavior.
 ```
 
 ## Change the value of levels
-### Renaming the levels
+### Renaming the levels 
 Let's say you want to change the name of the levels (which also impies changing the corresponding value elements) because you are unhappy with the current naming. `fct_recode()` allows to manually give new names to certain levels, without affecting the order of the levels or levels that are not included in the function call. 
 The `diamonds$clarity` column is an ideal example for the use of `fct_recode()`. For you conviniece we repeat some of the steps made in the beginning of this chapter:
 ```{r}
@@ -305,9 +305,9 @@ renamed_factor_clarity <- factor_clarity %>%
              `Internally Flawless (best)`="IF")
 
 ```
-Note, that this approach is in fact similar to the steps described in  [5.2.3  Inspect and set levels](#anchor).
+Note, that this approach is in fact similar to the steps described in  [5.2.3  Inspect and set levels](#Inspect-and-set-levels).
 
-One could also combine multiple levels into one using `fct_recode()` as shown in the example below, where the numerical distinction within the GIA categories is dropped, that is *Slightly Included 2* and *Slightly Included 1* will be combined into the level *Slightly Included*, etc.
+<a name="recode-2"></a>One could also combine multiple levels into one using `fct_recode()` as shown in the example below, where the numerical distinction within the GIA categories is dropped, that is *Slightly Included 2* and *Slightly Included 1* will be combined into the level *Slightly Included*, etc.
 ```{r}
 # Since the level notation is somewhat cryptic, we want to change it and drop the numerical distinction within each category
 renamed_factor_clarity_2 <- factor_clarity %>% 
@@ -344,6 +344,18 @@ anon_countries_in_1896 %>% levels() %>% min() # will always be "ID: 01"
 anon_countries_in_1896 %>% levels() %>% max() # will always be "ID: 12" 
 ```
 
+### Collapse multiple levels into one
+The `fct_collapse()` function provides essentially the same functionality as displayed in the [2nd example for `fct_recode()`](#recode-2).
+The Syntay however is slightly different as the levels to be combined are spcified in a single vector as shown in the example below.
+```{r}
+renamed_factor_clarity_3 <- factor_clarity %>% 
+  fct_collapse(`Included (worst)`="I1",
+               `Slightly Included`= c("SI2", "SI1"),
+               `Very Slightly Included`= c("VS2","VS1"),
+               `Very Very Slightly Included`= c("VVS2", "VVS1"),
+               `Internally Flawless (best)`="IF")
+```
+It should be noted, that `fct_recode()` could be easily replaced with `fct_collapse()` in the [2nd example for `fct_recode()`](#recode-2) as `fct_collapse()` also works with single element character vectors. Replacing `fct_collapse()` with `fct_recode()` in the example above on the other hand is not possible, because `fct_recode()` cannot work with multiple element vectors such as `c("SI2", "SI1")`. In this regard, we rather recommend using `fct_collapse()` than `fct_recode()` for combining different levels. 
 
 
 ## Add or drop levels
