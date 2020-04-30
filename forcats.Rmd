@@ -307,7 +307,7 @@ renamed_factor_clarity <- factor_clarity %>%
 ```
 Note, that this approach is in fact similar to the steps described in  [5.2.3  Inspect and set levels](#anchor).
 
-Another scenario might be that we want to either a pre- or a suffix or both to the current level. To this end, the forcats package provides the `fct_relabel()` function. Its second argument (or its first argument in case of piping) is a function that has to return a character vector. The `countries_in_1896` factor variable is used to showcase how `fct_relabel()` works.
+Another scenario might be that we want to add either a pre- or a suffix or both to the current level or change the levels in some other general matter. To this end, the forcats package provides the `fct_relabel()` function. Its second argument (or its first argument in case of piping) is a function that has to return a character vector. The `countries_in_1896` factor variable is used to showcase how `fct_relabel()` works.
 ```{r}
 add_prefix <- function(input_char) {
   paste("Country:", input_char)
@@ -317,6 +317,17 @@ prefixed_countries_in_1896 <- countries_in_1896 %>% fct_relabel(add_prefix)
 
 prefixed_countries_in_1896 %>% levels()
 ```
+
+### Anonymize levels
+There might be rare occasions, where you want or have to anonymize your factor data. Assigning numeric IDs is a good way to do this and `fct_anon()` does exactly this. It randomly assigns integer values (converted to characters) starting from `1` to the levels of a factor variable. The largest integer value to be assigned depends on the number of distict levels in the variable. In the following example the `countries_in_1896` factor variable with 12 distinct levels is randomly anonymized.
+```{r}
+# `fct_anon()` allows to additionally define a prefix for the new random integer levels
+anon_countries_in_1896 <- countries_in_1896 %>% fct_anon(prefix="ID: ")
+
+anon_countries_in_1896 %>% levels() %>% min() # will always be "ID: 01"
+anon_countries_in_1896 %>% levels() %>% max() # will always be "ID: 12" 
+```
+
 
 
 ## Add or drop levels
