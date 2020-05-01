@@ -363,13 +363,13 @@ The functions which is probably easiest to grasp is `fct_lump_n()` which takes a
 It allows to preserve the `n` most (least) frequent levels for `n>0` (`n<0`). All other levels will be lumped together into one level that has the lowest order and referred to as `Other` by default.
 Once again, we use data from the Summer Olympic Games in 1896 to give an example.
 ```{r}
-unique_athlethe_country_1896 <- olympic_1896 %>% 
+unique_athlete_country_1896 <- olympic_1896 %>% 
   select(athlete, country) %>% 
   # select the unique rows only as some athletes compete in more than one discipline
   unique()
 
 # create a facotr variable from the countries
-unique_countries_in_1896 <- unique_athlethe_country_1896$country %>% factor()
+unique_countries_in_1896 <- unique_athlete_country_1896$country %>% factor()
 
 # only keep the three most frequent countries and lump all other countries into `Other` 
 unique_countries_in_1896 %>% 
@@ -392,13 +392,13 @@ Now we know that there were only five countries who sent at least 10 athletes.
 
 We could also be interested in relative rather than absolute number, say countries that provide at least a 5.68\% share of the total number of athletes which corresponds to 10 athletes in 1896 (see above) and 18 athletes in 1924. To figure this out, we use `fcr_lump_prop()`
 ```{r}
-unique_athlethe_country_1924 <- olympic_1924 %>% 
+unique_athlete_country_1924 <- olympic_1924 %>% 
   select(athlete, country) %>% 
   # select the unique rows only as some athletes compete in more than one discipline
   unique()
 
 # create a facotr variable from the countries
-unique_countries_in_1924 <- unique_athlethe_country_1924$country %>% factor()
+unique_countries_in_1924 <- unique_athlete_country_1924$country %>% factor()
 
 unique_countries_in_1924 %>% 
   fct_lump_prop(0.0568) %>% 
@@ -459,3 +459,37 @@ all_dropped_factor_clarity <- reordered_expanded_factor_clarity %>% fct_drop()
 
 all_dropped_factor_clarity %>% levels()
 ```
+
+### Assign a level to `NA`s
+Usually when a vector contains `NA`s they are omitted in the conversion to a factor variable. The forcats package allows to explicitly assign a level to these values using the `fct_explicit_na()` function. To give an example, we return to the `olympic_1896` dataset but we focus on the `city` column this time.
+```{r}
+unique_athlete_cities_1896 <- olympic_1896 %>% 
+  select(city, athlete) %>% 
+   # select the unique rows only as some athletes compete in more than one discipline
+  unique()
+
+# check for NA and non-NA entries
+unique_athlete_cities_1896 %>% 
+  select(city) %>% 
+  summarise(sum(is.na(.)), sum(!is.na(.)))
+
+# convert the `city` columns into a factor variable
+unique_cities_in_1896 <- factor(unique_athlete_cities_1896$city)
+
+# show the levels in the `unique_cities_in_1896` factor variable
+unique_cities_in_1896 %>% 
+  levels()
+
+# explicitly label all NAs as "unknown cities" so they are included in the levels 
+explicit_unique_cities_in_1896 <- unique_cities_in_1896 %>% 
+  fct_explicit_na("unknown city") %>% 
+  levels()
+
+```
+Explictly labeling the `NA`s can come in handy when plotting factor variables. 
+```{r}
+fct_count(unique_cities_in_1896) %>%
+  ggplot(aes(x=city, y=`number of athletes`)) +          #the definition of aes. mapping in this line is only used to label the axes
+  geom_col(aes(x=f, y=n))
+```
+
