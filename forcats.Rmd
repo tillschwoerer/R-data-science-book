@@ -85,7 +85,7 @@ fct_count(factor_clarity) %>%
 
 It becomes obvious that the distribution can now be displayed in the desired order (by valence). Functions of the package forcats always start with the prefix `fct_`. 
 
-### Inspect and set levels
+### <a name="Inspect-and-set-levels"></a>Inspect and set levels
 With the function `levels()` the levels of a factor can be both read and defined. **But be aware:** this can only be used to change the names, not the order of the levels. The base-R function `unclass()` gives information about the internal memory structure of a factor.
 
 ```{r}
@@ -165,7 +165,7 @@ factor_list[[2]] %>%
 In this case, the underlying categorical data was left unchanged for both factors, but the levels were standardised. This is especially useful when comparing the categorical data of two different factors. 
 
 ## Order of levels
-### Manual reordering of levels
+### <a name="manual-reordering"></a>Manual reordering of levels
 With the function `fct_relevel()` the levels of a factor can be reordered. In contrast to the function `levels()`, which only allows the renaming of factor levels, `fct_relevel()` also adjusts the order of the levels themselves, that is the way they are stored internally. An example should clarify this.
 
 ```{r}
@@ -259,20 +259,237 @@ countries_in_1896 %>%
 ### Randomly permute levels
 The level of a factor can also be randomly shuffeled using `fct_shuffle()`. The input argument can be either a factor or a character vector, whereas the output will be a factor. By way of example, this is demonstrated using the factor `countries_in_1896`:
 ```{r}
-orig_levels <- countries_in_1896 %>% levels() # the original levels are sorted alphabetically
-orig_levels %>% print()
+orig_country_levels <- countries_in_1896 %>% levels() # the original levels are sorted alphabetically
+orig_country_levels %>% print()
 
-shuffled_factor <- orig_levels %>% fct_shuffle()
-shuffled_levels <- shuffled_factor %>% levels() # the shuffled levels are randomly sorted
-shuffled_levels %>% print()
+shuffled_country_factor <- orig_country_levels %>% fct_shuffle()
+shuffled_country_levels <- shuffled_country_factor %>% levels() # the shuffled levels are randomly sorted
+shuffled_country_levels %>% print()
 ```
 ### Reordering levels by other variables
 The functions presented in this section bare great similarity to the `fct_relevel()` function introduced in the beginning of this section.
-`fct_relevel()` allows for a direct manipuation of the levels by passing the new order to the `levels` keyword argument. In this regard `fct_reorder()` and `fct_reorder2()` are different, as the levels are reordered according to the result of a function applied to a vector. The example below is intended to unravel this behavior.
+`fct_relevel()` allows for a direct manipuation of the levels by passing the new order to the `levels` keyword argument. In this regard `fct_reorder()` and `fct_reorder2()` are different, as the levels are reordered according to the result of a function applied to one vector `x` in case of `fct_reorder()` and two vectors `x` and `y` in case of `fct_reorder2()`.
+
+**Note:** We want to point out a few things that have to be kept in mind when using these functions
+
+: 1. The length of the factor `f` to be reordered has the be equal to the lenght of the vector(s) passed to the function. 
+That is an error will be provoked, if `length(f) != length(x)` or `length(f) != length(y)`.
+2. In case the function returns the same value for two different elements of the vector(s), R will arrange the levels automatically.
+3. In case there are multiple occurences of an element, the level assigned to this element will be based on the result of the function for the first corresponding elements in `x` (and `y`).
+
+The example below is intended to unravel this behavior.
 ```{r}
 # TODO: Need to think of an example here. 
 # fct_reorder() for fun(x); fct_reorder2() for fun(x, y)
 ```
 
-## Value of levels
+## Change the value of levels
+### Renaming the levels 
+Let's say you want to change the name of the levels (which also impies changing the corresponding value elements) because you are unhappy with the current naming. `fct_recode()` allows to manually give new names to certain levels, without affecting the order of the levels or levels that are not included in the function call. 
+The `diamonds$clarity` column is an ideal example for the use of `fct_recode()`. For you conviniece we repeat some of the steps made in the beginning of this chapter:
+```{r}
+# Define the correct order of the levels in ascending order
+levels_clarity <- c("I1", "SI2", "SI1", "VS2", "VS1", "VVS2", "VVS1", "IF")
+# Make `diamonds$clarity` a factor and assign the correctly ordered levels
+factor_clarity <- factor(x = diamonds$clarity, levels = levels_clarity)
+
+# Since the level notation is somewhat cryptic, we want to change it
+renamed_factor_clarity <- factor_clarity %>% 
+  fct_recode(`Included 1 (worst)`="I1",
+             `Slightly Included 2`="SI2",
+             `Slightly Included 1`="SI1",
+             `Very Slightly Included 2`="VS2",
+             `Very Slightly Included 1`="VS1",
+             `Very Very Slightly Included 2`="VVS2",
+             `Very Very Slightly Included 1`="VVS1",
+             `Internally Flawless (best)`="IF")
+
+```
+Note, that this approach is in fact similar to the steps described in  [5.2.3  Inspect and set levels]().
+
+<a name="recode-2"></a>One could also combine multiple levels into one using `fct_recode()` as shown in the example below, where the numerical distinction within the GIA categories is dropped, that is *Slightly Included 2* and *Slightly Included 1* will be combined into the level *Slightly Included*, etc.
+```{r}
+# Since the level notation is somewhat cryptic, we want to change it and drop the numerical distinction within each category
+renamed_factor_clarity_2 <- factor_clarity %>% 
+  fct_recode(`Included (worst)`="I1",
+             `Slightly Included`="SI2",
+             `Slightly Included`="SI1",
+             `Very Slightly Included`="VS2",
+             `Very Slightly Included`="VS1",
+             `Very Very Slightly Included`="VVS2",
+             `Very Very Slightly Included`="VVS1",
+             `Internally Flawless (best)`="IF")
+
+```
+The resulting `renamed_factor_clarity_2` now has only five distinct levels as compared to eight distinct levels in `renamed_factor_clarity`.
+
+Another scenario might be that we want to add either a pre- or a suffix or both to the current level or change the levels in some other general matter. To this end, the forcats package provides the `fct_relabel()` function. Its second argument (or its first argument in case of piping) is a function that has to return a character vector. The `countries_in_1896` factor variable is used to showcase how `fct_relabel()` works.
+```{r}
+add_prefix <- function(input_char) {
+  paste("Country:", input_char)
+}
+# the `add_prefix` function is applied to each level returning a character vector. 
+prefixed_countries_in_1896 <- countries_in_1896 %>% fct_relabel(add_prefix)
+
+prefixed_countries_in_1896 %>% levels()
+```
+
+### Anonymize levels
+There might be rare occasions, where you want or have to anonymize your factor data. Assigning numeric IDs is a good way to do this and `fct_anon()` does exactly this. It randomly assigns integer values (converted to characters) starting from `1` to the levels of a factor variable. The largest integer value to be assigned depends on the number of distict levels in the variable. In the following example the `countries_in_1896` factor variable with 12 distinct levels is randomly anonymized.
+```{r}
+# `fct_anon()` allows to additionally define a prefix for the new random integer levels
+anon_countries_in_1896 <- countries_in_1896 %>% fct_anon(prefix="ID: ")
+
+anon_countries_in_1896 %>% levels() %>% min() # will always be "ID: 01"
+anon_countries_in_1896 %>% levels() %>% max() # will always be "ID: 12" 
+```
+
+### Collapse multiple levels into one
+The `fct_collapse()` function provides essentially the same functionality as displayed in the [2nd example for `fct_recode()`](#recode-2).
+The Syntay however is slightly different as the levels to be combined are spcified in a single vector as shown in the example below.
+```{r}
+renamed_factor_clarity_3 <- factor_clarity %>% 
+  fct_collapse(`Included (worst)`="I1",
+               `Slightly Included`= c("SI2", "SI1"),
+               `Very Slightly Included`= c("VS2","VS1"),
+               `Very Very Slightly Included`= c("VVS2", "VVS1"),
+               `Internally Flawless (best)`="IF")
+```
+It should be noted, that `fct_recode()` could be easily replaced with `fct_collapse()` in the [2nd example for `fct_recode()`](#recode-2) as `fct_collapse()` also works with single element character vectors. Replacing `fct_collapse()` with `fct_recode()` in the example above on the other hand is not possible, because `fct_recode()` cannot work with multiple element vectors such as `c("SI2", "SI1")`. In this regard, we rather recommend using `fct_collapse()` than `fct_recode()` for combining different levels.
+
+### Create a Lump 
+This topic is related to the rationale behind `fct_collapse()` described in the previous section. In contrast to specifying the levels to be combined explicitly, the forcats package also offers the possibility to lump levels together. That is combining several levels together to a single lump level called `Other` by default  There are several different functions that allow lumping based on different criteria.  
+The functions which is probably easiest to grasp is `fct_lump_n()` which takes an integer value `n` as the second (or the first argument in case of piping). 
+It allows to preserve the `n` most (least) frequent levels for `n>0` (`n<0`). All other levels will be lumped together into one level that has the lowest order and referred to as `Other` by default.
+Once again, we use data from the Summer Olympic Games in 1896 to give an example.
+```{r}
+unique_athlete_country_1896 <- olympic_1896 %>% 
+  select(athlete, country) %>% 
+  # select the unique rows only as some athletes compete in more than one discipline
+  unique()
+
+# create a facotr variable from the countries
+unique_countries_in_1896 <- unique_athlete_country_1896$country %>% factor()
+
+# only keep the three most frequent countries and lump all other countries into `Other` 
+unique_countries_in_1896 %>% 
+  fct_lump_n(3) %>% 
+  levels()
+```
+We just discovered that Germany was one of the countries with the most athletes during the Summer Olympic Games 1896 albeit quite laboriously.
+Note that we can however not conclude that most athletes came from Germany in 1896 as the levels are ordered alphabetically (except for `Other` which will always be last) and not by the number of athletes. In fact, Germany ranks second in the number of athletes with 102 athletes from Greece, 19 from Germany and 14 athletes from the US.
+
+Let's go one step further and assume we are only interested in the countries the sent at least 10 athletes to the Summer Olympic Games 1896.
+For that purpose we call the `fct_lump_min()` function specifying the threshold of 10 as the second (or as the first in case of piping) argument. 
+```{r}
+# only keep the countries with at least 20 athletes and lump all other countries into `Other` 
+unique_countries_in_1896 %>% 
+  fct_lump_min(10) %>% 
+  levels()
+
+```
+Now we know that there were only five countries who sent at least 10 athletes.
+
+We could also be interested in relative rather than absolute number, say countries that provide at least a 5.68\% share of the total number of athletes which corresponds to 10 athletes in 1896 (see above) and 18 athletes in 1924. To figure this out, we use `fcr_lump_prop()`
+```{r}
+unique_athlete_country_1924 <- olympic_1924 %>% 
+  select(athlete, country) %>% 
+  # select the unique rows only as some athletes compete in more than one discipline
+  unique()
+
+# create a facotr variable from the countries
+unique_countries_in_1924 <- unique_athlete_country_1924$country %>% factor()
+
+unique_countries_in_1924 %>% 
+  fct_lump_prop(0.0568) %>% 
+  levels()
+```
+
+
+### Manually lump levels
+In the previous section, we have combined levels into a lump called `Other` based on numerical criteria. In addition to this, we can also create our own lump using `fct_other()`.In this function, we specify the levels we want to keep (drop) as a vector to the `keep` (`drop`) keyword argument. 
+The following code demonstrates how to only keep the levels `Denmark` and `Australia` in the `unique_countires_in_1896` factor variable.
+```{r}
+# Only keep the levels `Denmark` and `Australia`
+unique_countries_in_1896 %>% 
+  fct_other(keep=c("Denmark", "Australia")) %>% 
+  levels()
+
+# Keep all levels except for `Denmark` and `Australia`
+unique_countries_in_1896 %>% 
+  fct_other(drop=c("Denmark", "Australia")) %>% 
+  levels()
+```
+Note that the latter example is equivalent to using `fct_collapse(Other=c("Denmark", "Australia"))`.
+
+
 ## Add or drop levels
+In order to add levels to a factor variable we can use the `fct_expand()` function, which takes the level to be added as the second argument (or in the case of piping the first argument). Let's switch to the `diamonds` dataset one more time as we want to use all GIA grades as levels now.
+```{r}
+additional_GIA_grades <- c("FL", "I2", "I3")
+expanded_factor_clarity <- factor_clarity %>% fct_expand(additional_GIA_grades)
+
+# Note that the new levels are appended
+expanded_factor_clarity %>% levels()
+```
+Note that the additional levels get appended which is not necessarily what we want. Thus an additional manual reordering of the levels as describe in [5.4.1 Manual reordering of levels](#manual-reordering) is required here:
+```{r}
+all_GIA_grades <- c("FL", "IF", "VVS1", "VVS2", "VS1", "VS2", "SI1", "SI2", "I1", "I2", "I3")
+
+reordered_expanded_factor_clarity <- expanded_factor_clarity %>% fct_relevel(all_GIA_grades)
+
+reordered_expanded_factor_clarity %>% levels()
+```
+A less tedious approach would be to include the additional levels already in the definition of the factor variable using `factor()` as shown in the following.
+```{r}
+expanded_factor_clarity2 <- factor(x = diamonds$clarity, levels=all_GIA_grades)
+
+expanded_factor_clarity2 %>% levels()
+```
+
+Unfortunately, we haven't found any flawless diamond, so the level `FL` is used. To drop unused levels, the forcats package provides a funtion called `fct_drop()`.
+```{r}
+# only drop the unused "FL" level
+FL_dropped_factor_clarity <- reordered_expanded_factor_clarity %>% fct_drop("FL")
+
+FL_dropped_factor_clarity %>% levels()
+
+# drop all unused levels
+all_dropped_factor_clarity <- reordered_expanded_factor_clarity %>% fct_drop()
+
+all_dropped_factor_clarity %>% levels()
+```
+
+### Assign a level to `NA`s
+Usually when a vector contains `NA`s they are omitted in the conversion to a factor variable. The forcats package allows to explicitly assign a level to these values using the `fct_explicit_na()` function. To give an example, we return to the `olympic_1896` dataset but we focus on the `city` column this time.
+```{r}
+unique_athlete_cities_1896 <- olympic_1896 %>% 
+  select(city, athlete) %>% 
+   # select the unique rows only as some athletes compete in more than one discipline
+  unique()
+
+# check for NA and non-NA entries
+unique_athlete_cities_1896 %>% 
+  select(city) %>% 
+  summarise(sum(is.na(.)), sum(!is.na(.)))
+
+# convert the `city` columns into a factor variable
+unique_cities_in_1896 <- factor(unique_athlete_cities_1896$city)
+
+# show the levels in the `unique_cities_in_1896` factor variable
+unique_cities_in_1896 %>% 
+  levels()
+
+# explicitly label all NAs as "unknown cities" so they are included in the levels 
+explicit_unique_cities_in_1896 <- unique_cities_in_1896 %>% 
+  fct_explicit_na("unknown city") %>% 
+  levels()
+
+```
+Explictly labeling the `NA`s can come in handy when plotting factor variables. 
+```{r}
+fct_count(unique_cities_in_1896) %>%
+  ggplot(aes(x=city, y=`number of athletes`)) +          #the definition of aes. mapping in this line is only used to label the axes
+  geom_col(aes(x=f, y=n))
+```
+
