@@ -1,16 +1,50 @@
 # Wrangling data: dplyr {#dplyr}
 
+The R package `dplry` is described as a grammar of data manipulation. It provides commands for the most frequently used types of data transformations, either for the purpose of exploration, data cleaning, or augmenting data.
+
+The package is part of the core tidyverse, which means that we can load it either explictly via `library(dplyr)` or implictly via `library(tidyverse)`. Note that in the following, all commands that are not `dplyr` commands are made explicit via `<package>::<command>`. To demonstrate the main features, we use data on Spotify's daily top 200 charts in Germany in the course of one year. 
 
 ```{r message=FALSE, warning=FALSE}
-library(tidyverse)
-
+library(dplyr)     # alternatively use library(tidyverse) which covers dplyr + more
+df <- readr::read_csv("data/spotify_charts_germany.csv")
 ```
 
+## Two typial workflows
+Before looking in detail into specific functions, let's start with two typical workflows. We will note that 
+
+- dplyr works with the pipe (`%`) such that multiple operations can be combined one after the other, without the need to create intermediate results. 
+- function names are quite expressive, basically telling us what they are doing.
+- there is a strong analogy to SQL: due to this analogy it is even possible to run dplyr commands with a database backend (the package `dbplyr` needs to be installed)
+
+The first workflow returns an ordered list of the 10 tracks with the highest number of streams on a single day, together with information on the number of streams, day, artist, and track name. 
 
 ```{r}
-df <- read_csv("data/diamonds.csv")
-df %>% names()
-df %>% group_by(color) %>% summarise(MEANPRICE = mean(price))
+df %>%                                              # data
+  arrange(-Streams) %>%                             # order rows by some variable 
+  select(Streams, date, Artist, Track.Name) %>%     # select columns by name
+  slice(1:10)                                       # select rows by position
+
+```
+The second workflow returns the average number of streams per day of week since the beginning of the year 2020. For this operation, the day of week is derived from the date and added as an additional variable via the `mutate` function. 
+
+```{r}
+df %>%                                 # data              
+  filter(date>="2020-01-01") %>%       # select rows where condition evaluates to TRUE
+                                       # create an additional variable 
+  mutate(day_of_week=lubridate::wday(date, label=TRUE, abbr=FALSE, 
+                                     locale="American_America.1252", week_start=1)) %>%
+  group_by(day_of_week) %>%            # group the data 
+  summarise(streams = mean(Streams))   # aggregate per group via functions such as mean, min, etc. 
+        
+```
+
+Note that in this particular case, we can write the code more concise by generating the new variable `day_of_week` inside the `group_by` function.
+
+```{r eval=FALSE}
+df %>%                                              
+  filter(date>="2020-01-01") %>%                    
+  group_by(day_of_week=lubridate::wday(date, label=TRUE, abbr=FALSE, locale="American_America.1252", week_start=1)) %>% 
+  summarise(streams = mean(Streams))          
 ```
 
 
