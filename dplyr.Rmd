@@ -4,7 +4,7 @@ The R package `dplry` is described as a grammar of data manipulation. It provide
 
 The package is part of the core tidyverse, which means that we can load it either explictly via `library(dplyr)` or implictly via `library(tidyverse)`. Note that in the following, all commands that are not `dplyr` commands are made explicit via `<package>::<command>`. To demonstrate the main features, we use data on Spotify's daily top 200 charts in Germany in the course of one year. 
 
-```{r message=FALSE, warning=FALSE}
+```{r load_data, message=FALSE, warning=FALSE}
 library(tidyverse)     # alternatively use library(tidyverse) which covers dplyr + more
 df <- readr::read_csv("data/spotify_charts_germany.csv")
 ```
@@ -18,7 +18,7 @@ Before looking in detail into specific functions, let's start with two typical w
 
 The first workflow returns an ordered list of the 10 tracks with the highest number of streams on a single day, together with information on the number of streams, day, artist, and track name. 
 
-```{r}
+```{r workflow1}
 df %>%                                              # data
   arrange(-Streams) %>%                             # order rows by some variable 
   select(Streams, date, Artist, Track.Name) %>%     # select columns by name
@@ -27,7 +27,7 @@ df %>%                                              # data
 ```
 The second workflow returns the average number of streams per day of week since the beginning of the year 2020. For this operation, the day of week is derived from the date and added as an additional variable via the `mutate` function. 
 
-```{r}
+```{r workflow2}
 df %>%                                 # data              
   filter(date>="2020-01-01") %>%       # select rows where condition evaluates to TRUE
                                        # create an additional variable 
@@ -40,7 +40,7 @@ df %>%                                 # data
 
 Note that in this particular case, we can write the code more concise by generating the new variable `day_of_week` inside the `group_by` function.
 
-```{r eval=FALSE}
+```{r workflow2b, eval=FALSE}
 df %>%                                              
   filter(date>="2020-01-01") %>%                    
   group_by(day_of_week=lubridate::wday(date, label=TRUE, abbr=FALSE, locale="American_America.1252", week_start=1)) %>% 
@@ -48,11 +48,10 @@ df %>%
 ```
 
 ## Manipulating rows
-### Subset of rows
+### Extract rows
 The `filter` function is the most frequently used function to extract a subset of rows. The command extracts all rows where the filter condition(s) evaluate to TRUE. The `distinct` function returns distinct rows by removing duplicates (either for the whole data or the specified variables).
 
-```{r}
-
+```{r filter}
 df %>% 
   filter(stringr::str_detect(Track.Name, "Santa")) %>% # extract rows where condition is TRUE
   distinct(Artist, Track.Name)          # extract distinct combinations of the two variables
@@ -60,7 +59,7 @@ df %>%
 
 We can select rows by position via `slice`. Alternatively, we can use the functions `top_n` of `top_fraq` to extract a specified number or fraction of rows. Different from `slice` these functions operate also on grouped data, and we can specify according to which variables the top rows shall be chosen. 
 
-```{r}
+```{r top_n}
 df %>%                        
   group_by(date) %>%        # group by date 
   top_n(1, wt=Streams) %>%  # select 1 row per date, the one with the highest number of streams
@@ -69,12 +68,12 @@ df %>%
 ```
 
 Another useful feature is selecting rows randomly via `sample_n` or `sample_frac`.
-```{r}
+```{r sample_n}
 df %>% sample_n(5, replace = TRUE) # Select 5 rows randomly with replacement
 ```
 ### Arranging rows
 The function `arrange` is used to order rows by some variable(s). Use minus (`-`) or the `desc` function for arranging in descending order. The following code returns the five most danceable chart tracks of 2019-03-30 by arranging first by date (ascending) and second by danceability (descending). 
-```{r}
+```{r arrange}
 df %>% 
   arrange(date, -danceability) %>% 
   slice(1:5) %>% 
@@ -84,7 +83,7 @@ df %>%
 ## Manipulating columns
 ### Extract and rename columns
 Subset of columns can be extracted via the `select` function. Selection is possible by name or position. Reversely, one can exclude specific columns via negative selection (using `-`). Noteworthy are are the many  helper functions, which are convenient for rapid exploration, but not recommendable for stable software: `start_with`, `last_col`, `everything`, `contains`, etc. One can rename columns while selecting them. If we want to rename a column while preserving the other columns we use the `rename` function.
-```{r eval=FALSE}
+```{r select, eval=FALSE}
 df %>% select(Position, Track.Name)       # select via column name
 df %>% select(1, 2)                       # select via column position
 df %>% select(-Track.Name)                # select all columns except Track.Name
@@ -96,7 +95,7 @@ df %>% rename(song = Track.Name)          # renames one column, but preserves al
 ### Create new columns
 The function `mutate` creates a new variable or overwrites an existing one. Note that we must assign back to make a permanent change to the data. 
 
-```{r}
+```{r mutate}
 df %>% 
   mutate(duration_s = round(duration_ms / 1000)) %>%  # create new variable
   mutate(Track.Name = as.factor(Track.Name)) %>%      # change existing variable
@@ -104,7 +103,7 @@ df %>%
   head(5)
 ```
 
-# Scoped functions
+## Scoped functions
 There are scoped variants of ,`mutate` which affect multiple columns at once: 
 
 - `mutate_all`: all columns
@@ -113,11 +112,11 @@ There are scoped variants of ,`mutate` which affect multiple columns at once:
 
 Equivalent scoped variants exist for `select`and `summarise` as well.
 
-```{r}
+```{r mutate_all}
 df %>% mutate_all(as.character) %>% str()  # change ALL columns to character type
 ```
 
-```{r}
+```{r mutate_at}
 # Apply the function round to ALL SPECIFIED columns
 df %>% 
   mutate_at(vars(danceability, valence), round, digits=1) %>% 
@@ -125,7 +124,7 @@ df %>%
   head(5)
 ```
 If there is no predefined function, one can define an anonymous function (which cannot be used outside this context) on the fly:
-```{r}
+```{r anonymous_function}
 # transmute is a variant of mutate
 df %>% 
   mutate_at(vars(danceability, valence), function(x) x*100) %>%
@@ -134,14 +133,14 @@ df %>%
 ```
 
 The typical use case for `mutate_if` is changing the variable types of all variables satisfying a specific condition. 
-```{r}
+```{r mutate_if}
 df %>% 
   mutate_if(is.character, as.factor) %>%  # turns all character variables into factors
   glimpse()
 ```
 
 Note that the condition above (`is.character`) refers to the column as a whole, i.e. the condition returns a single TRUE or FALSE. If we want to mutate a column conditional on the single elements within the column, we use the regular `mutate` function combined with an `if_else`:
-```{r}
+```{r if_else}
 df %>% 
   mutate(Top10 = if_else(Position<=10, "Top 10", "Top 11-200")) %>%
   select(Position, Top10, Track.Name) %>%
@@ -149,9 +148,9 @@ df %>%
 ```
 
 
-## Summarising
+## Summarise
 The `summarise` function is the generic way of calculating summary stats for specific variables. Within the function we can apply base R summary functions (`sum`, `mean` or `max`), one of dplyr's specific summary functions (`n`, `n_distinct`) or a user defined summary function. In the standard case the `summarise` function returns one row.
-```{r}
+```{r summarise}
 df %>% 
   filter(date == max(date)) %>%
   summarise(observations = n(),                       # number of observations (dplyr function)
@@ -161,7 +160,7 @@ df %>%
 ```
 
 However, we can also apply `summarise` to grouped data. Then one row is returned per group.
-```{r}
+```{r group_by}
 df %>% 
   group_by(month = stringr::str_sub(date, 1, 7)) %>%
   summarise(artists = n_distinct(Artist),             # number of distinct observations (dplyr)
@@ -170,13 +169,13 @@ df %>%
 ```
 
 The `count` function is a useful shortcut for `group_by` followed by `summarise(n = n())`.
-```{r}
+```{r count}
 df %>% count(Artist)
 # df %>% group_by(Artist) %>% summarise(n = n()) %>% ungroup()
 ```
 
 Sometimes, we want to add the (group) aggregates as a new column to the existing data frame. In this case we just use `mutate` rather than `summarise`. 
-```{r}
+```{r mutate_aggregates}
 df %>% 
   group_by(date) %>%
   mutate(Total_Streams = sum(Streams), Share = Streams/Total_Streams) %>%
