@@ -185,6 +185,77 @@ df %>%
 
 ## Combining tables
 ## Database backend
+### Motivation
+As mentioned before, the `dplyr` syntax reveals strong analogies with SQL. What is more, it is even possible to use `dplyr` with a database backend. 
+
+**What does this mean? And when is this useful?**
+
+In a company setting, raw data is usually stored in some form of database. When we want to work with the data in R, the standard way would be to open a connection to the database and read in the data into R's memory. However, if the size of data is large, there may be problems with this approach: 
+
+- Large data require long reading time 
+- Data sets might not even fit into memory
+- Computations might have low performance
+
+If we want to work on the raw data (e.g. for statistical / machine learning modelling), this constitutes a problem: either we need a system with larger memory / higher performance. Or we must restrict ourselves to a smaller sample of the data. Or we could connect R to a technology for distributed machine learning, such as Apache Spark.
+
+In some cases, however, we don't actually need to work on the raw data. We would be happy to let the database do the calculations for us (these are built to store and process huge amounts of data), and just read in the resulting data, which is often much smaller in size. This is precisely the use case for dplyr with a database backend.
+
+The idea is to write regular dplyr code. The code is translated into SQL under the hood. The data is retrieved from the database and only the results are actually read into R's memory. Since this data is often much smaller, this requires only litte time.
+
+### Set up
+First, we need to install a few things: 
+
+- **Database:** In a company setting, the database will already be there. If you want to install a database on your computer, popular choices are PostgreSQL or MySQL. Here is an [overview of possible choices](https://db.rstudio.com/databases/)S For this book we will use an in-memory SQLite database. The benefit is that everyone will be able to run the code without the need to set up a proper database.    
+- **DBI backend package:** DBI stands for database interface. We need a package that corresponds to our database. In our case we will use the package `RSQLite`. With many other databases, the package `odbc` would be proper choice.
+- **`dbplyr` package** This package needs to be installed, but we never need to load it explictly. Once installed, it is sufficient to load the regular `dplyr` package.
+
+Second, we need to connect R to the database. The arguments look slightly different, depending on the database that you are using. 
+```{r db-connect}
+con <- DBI::dbConnect(RSQLite::SQLite(), dbname = ":memory:")
+```
+
+Third, we need to have data in our database. In a company setting, the data would already be there. In our case, we are copying our data into a table called `spotify-charts-germany` of our SQLite in-memory database.
+```{r}
+copy_to(con, df, "spotify-charts-germany")
+```
+
+### Querying the database
+A standard way of reading data into R from a database would be via an explicit SQL query:
+```{r}
+query <- "SELECT `Track.Name`, Artist, Streams FROM `spotify-charts-germany` LIMIT 5"
+RSQLite::dbGetQuery(con, query)
+```
+
+But we want to do this differently: we are going to use `dplyr` syntax to query the database. For that we need to first register the database table via `tbl`. Now we can already preview the first rows of the table.
+
+```{r paged.print = FALSE}
+spotify_db <- tbl(con, "spotify-charts-germany")
+spotify_db
+```
+
+We see that the following query uses standad dplyr syntax, although we are now creating an SQL query, to be run against a database. 
+```{r}
+query <- 
+  spotify_db %>%                                    # data
+  arrange(-Streams) %>%                             # order rows by some variable 
+  select(Streams, date, Artist, Track.Name) %>%     # select columns by name
+  head(5)                                           # select rows by position  
+query
+```
+
+We can actually see the SQL generated in the background via `show_query`. 
+
+```{r}
+query %>% show_query()  # shows the translation into SQL
+```
+
+It is important to understand that the data is not in R's memory until we explicitly `collect` the data. Once the data is collected, it behaves like any regular R data frame.
+```{r}
+rdata <- query %>% collect()  # this pulls the data into R's memory
+class(rdata)                  # this is a regular R data frame / tibble
+class(query)                  # ... while query is a SQLite Connection object
+```
+
 
 
 
