@@ -86,12 +86,13 @@ df <- read_csv("data/weather_kiel_holtenau.csv",
 df$MESS_DATUM <- parse_date_time(df$MESS_DATUM, orders ="Ymd HM")
 head(df)
 ```
-# Evt. TODO - Ergänzung bzw. Alternativen mit S3 (baseR) Funktionen
-# strftime(Sys.time(), "%Y%m%d%H%M")
-# return character
-# strptime(df$MESS_DATUM, "%Y%m%d%H%M")
-# strptime(Sys.time(), "%Y%m%d%H%M")
-# return list
+
+> Evt. TODO - Ergänzung bzw. Alternativen mit S3 (baseR) Funktionen
+> strftime(Sys.time(), "%Y%m%d%H%M")
+> return character
+> strptime(df$MESS_DATUM, "%Y%m%d%H%M")
+> strptime(Sys.time(), "%Y%m%d%H%M")
+> return list
 
 OK we have successfully formated the time-stamp data into a productive format. The next steps are a check and elimination procedure to eliminate missing values (NAs) from the dataset, 
 if some observations might have failed to generate data successfully.
