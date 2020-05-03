@@ -19,7 +19,7 @@ First we will install exactly this package.
 print("Hello Data.Table")
 install.packages("data.table" , repos="http://cran.us.r-project.org")
 ```
-
+We also need to load the data.table library (and the tidyverse as well). Data.table objects are similar to a data.frame object but with some extensions. Let us first load some data with the data.table file reader fread(), which is optimised for performance and creates a data.table object.
 
 ```{r}
 library(tidyverse) 
@@ -41,47 +41,133 @@ olympics <- fread(inpOlympic)
 weather <- fread(inpWeather)
 spotify <- fread(inpSpoti)
 ```
-### Data exploration
+## Data exploration
 
-Datatype data.table
+The datatype data.table has the following structure: dt[i,j,by], where i conditon on the rows, j select the colums and by aggregates the results.
 
 ```{r}
-
 class(olympics)
 ```
 
-
-## Subsetting rows
-We can condition on the rows one time
+### Subsetting rows
+We can condition on the rows one time, which gives us all swimmers.
 
 ```{r}
 swimmers <- olympics[sport == "Swimming"]
 ```
 
-and two or more times
+and two or more times with the '&' operator ('|' operator for the logical or),for example all gold medal winners in swimming.
 
 ```{r}
-swimmers <- olympics[sport == "Swimming" & medal == "Gold"]
+swimmers_gold <- olympics[sport == "Swimming" & medal == "Gold"]
 ```
 
-ordering data like
+The colums can be treated like variables so the expression 'olympics$sport' is not necessary here but would work too.
+In additon we can select for the row numbers:
 
 ```{r}
-var <- swimmers[order(height)]
+var <- swimmers[1:5]
 ```
 
-Now we want to condition on the colums too
+This is especially useful after ordering the data:
+
+```{r}
+height <- swimmers[order(height)]
+```
+or in decreasing order
+```{r}
+height <- swimmers[order(-height)]
+```
+The order function, called on data.table objects calls the forder() function which is optimised on such objects.
+
+Counting rows is possible with different aproaches:
+
+```{r}
+usmedals <- olympics[sport == "Swimming" & !is.na(medal), length(medal)]
+```
+or with the .N approach
+```{r}
+usmedals <- olympics[sport == "Swimming" & !is.na(medal), .N]
+usmedals
+```
+
+
+### Selecting Columns
+
+Now we want to condition on the colums too. Here we have the option to store the colum names in an list and use the .. operation:
 
 ```{r}
 cols <- c("athlete", "medal")
+colums <- swimmers[, ..cols]
+head(colums)
 ```
-
-
-or let us use regualr expression to find someone
+or using the 'with' statement
 
 ```{r}
-ledecky <- swimmers[athlete %like% "Ledecky"]
+colums <- swimmers[, cols, with = FALSE]
+head(colums)
 ```
+
+and operations on the rows and colums at the same time:
+
+
+```{r}
+var <- olympics[sport == "Swimming" & medal == "Gold", ..cols]
+```
+
+### Grouping results
+
+Now we'll consider the third parameter of the data.table object DT[i, j, by].
+Let's count the competitions grouped by sports.
+(Hint: if we have a look at the data in teamsports, every athlete is listed so caution with this result.)
+
+```{r}
+sports <- olympics[, .N, by = "sport"]
+```
+So using all three arguments we find all swimmers, and grouping they by the country
+```{r}
+sw <- olympics[sport== "Swimming", .N,by = country]
+```
+grouping by more colums
+```{r}
+sw <- olympics[sport== "Swimming", .N,by = .(country,discipline)]
+```
+If we want to order the data we have to change by to keyby
+```{r}
+sw <- olympics[sport== "Swimming", .N,keyby = .(country,discipline)]
+```
+Chaining operations on the data.table object:
+```{r}
+ordOlym <- olympics[,.N, by = .(country,game)][order(-game,country)]
+```
+
+
+### Editing Data
+
+When we want to edit a Data set of the class dataframe like
+```{r}
+df = data.frame(name = c("D","a","t","a"), a = 1:4, b = 5:8, c = 9:12)
+df
+df$c <- 13:16
+df
+```
+this is done via copying the data set and a bad performance. Datatable provides the ':=' operator for an better performance. Here the Data object isn't copied but edited by reference
+
+Adding a column
+```{r}
+spotify[, ':='(duration_s=duration_ms/1000)]
+```
+this column is added 'by reference' which includes an higher performance.
+Edit an column
+```{r}
+olympics[sex=='M', sex := 'Male']
+olympics[sex=='F', sex := 'Female']
+```
+Deleting an column by reference
+```{r}
+spotify[, duration_ms := NULL]
+```
+
 
 
 
