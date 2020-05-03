@@ -9,20 +9,20 @@ library(tidyverse)     # alternatively use library(tidyverse) which covers dplyr
 df <- readr::read_csv("data/spotify_charts_germany.csv")
 ```
 
-## Two typial workflows
+## Two typial workflows {#typical-workflows}
 Before looking in detail into specific functions, let's start with two typical workflows. We will note that 
 
-- dplyr works with the pipe (`%`) such that multiple operations can be combined one after the other, without the need to create intermediate results. 
+- dplyr works with the pipe (`%>%`) such that multiple operations can be combined one after the other, without the need to create intermediate results. 
 - function names are quite expressive, basically telling us what they are doing.
 - there is a strong analogy to SQL: due to this analogy it is even possible to run dplyr commands with a database backend (the package `dbplyr` needs to be installed)
 
-The first workflow returns an ordered list of the 10 tracks with the highest number of streams on a single day, together with information on the number of streams, day, artist, and track name. 
+The first workflow returns an ordered list of the 5 tracks with the highest number of streams on a single day:
 
 ```{r workflow1}
 df %>%                                              # data
-  arrange(-Streams) %>%                             # order rows by some variable 
   select(Streams, date, Artist, Track.Name) %>%     # select columns by name
-  slice(1:10)                                       # select rows by position
+  arrange(-Streams) %>%                             # order rows by some variable 
+  slice(1:5)                                        # select rows by position
 
 ```
 The second workflow returns the average number of streams per day of week since the beginning of the year 2020. For this operation, the day of week is derived from the date and added as an additional variable via the `mutate` function. 
@@ -57,25 +57,35 @@ df %>%
   distinct(Artist, Track.Name)          # extract distinct combinations of the two variables
 ```
 
-We can select rows by position via `slice`. Alternatively, we can use the functions `top_n` of `top_fraq` to extract a specified number or fraction of rows. Different from `slice` these functions operate also on grouped data, and we can specify according to which variables the top rows shall be chosen. 
+We can select rows by position via `slice`. If we want to display the first or last n rows, we can also use the base R functions `head` and `tail`. The functions `top_n` of `top_fraq` allow us to extract the  specified number/fraction of rows, according to the ordering of a specified variable. In addition, `top_n` and `top_frac` also operate also on grouped data
+
+```{r slice}
+df %>% slice(c(1,3,5))   # selects rows by position (in the given order)
+df %>% head(3)           # selects first n rows (in the given order)
+df %>% top_n(3, Streams) # selects top n rows (based on the variable Streams)
+```
+
 
 ```{r top_n}
 df %>%                        
   group_by(date) %>%        # group by date 
   top_n(1, wt=Streams) %>%  # select 1 row per date, the one with the highest number of streams
-  slice(1:10) %>%           # return only the first 10 rows of the resulting data frame
-  select(date, Streams, Track.Name, Artist)
+  select(date, Streams, Track.Name, Artist) %>%
+  head(5)
+
 ```
 
-Another useful feature is selecting rows randomly via `sample_n` or `sample_frac`.
-```{r sample_n}
-df %>% sample_n(5, replace = TRUE) # Select 5 rows randomly with replacement
+Another useful feature is selecting rows randomly via `sample_n` or `sample_frac` (output hidden).
+```{r sample_n, eval=FALSE}
+df %>% sample_n(5)                     # Select 5 rows randomly with replacement
+df %>% sample_frac(0.1, replace=TRUE)  # Select a 10% random sample with replacement
 ```
+
 ### Arranging rows
 The function `arrange` is used to order rows by some variable(s). Use minus (`-`) or the `desc` function for arranging in descending order. The following code returns the five most danceable chart tracks of 2019-03-30 by arranging first by date (ascending) and second by danceability (descending). 
 ```{r arrange}
 df %>% 
-  arrange(date, -danceability) %>% 
+  arrange(date, -danceability) %>%     # orders the data first by date (asc), then by danceability (desc)
   slice(1:5) %>% 
   select(Track.Name, date, danceability)
 ```
@@ -113,30 +123,28 @@ There are scoped variants of ,`mutate` which affect multiple columns at once:
 Equivalent scoped variants exist for `select`and `summarise` as well.
 
 ```{r mutate_all}
-df %>% mutate_all(as.character) %>% str()  # change ALL columns to character type
+df %>% mutate_all(as.character) %>% head(5) # change ALL columns to character type
 ```
 
 ```{r mutate_at}
-# Apply the function round to ALL SPECIFIED columns
 df %>% 
-  mutate_at(vars(danceability, valence), round, digits=1) %>% 
-  select(Track.Name,danceability, valence)
+  mutate_at(vars(danceability, valence), round, digits=1) %>% # Round all specified columns
+  select(Track.Name,danceability, valence, energy) %>%        # We see that energy was not rounded
   head(5)
 ```
 If there is no predefined function, one can define an anonymous function (which cannot be used outside this context) on the fly:
 ```{r anonymous_function}
-# transmute is a variant of mutate
 df %>% 
-  mutate_at(vars(danceability, valence), function(x) x*100) %>%
-  select(Track.Name,danceability, valence)
+  mutate_at(vars(danceability, valence), function(x) x*100) %>% # Here we define a custom function in-line
+  select(Track.Name,danceability, valence) %>%
   head(5)
 ```
 
 The typical use case for `mutate_if` is changing the variable types of all variables satisfying a specific condition. 
 ```{r mutate_if}
 df %>% 
-  mutate_if(is.character, as.factor) %>%  # turns all character variables into factors
-  glimpse()
+  mutate_if(is.character, as.factor) %>%  # IF column has type character, change it to factor
+  glimpse()                               # We see that Track.Name and Artist were coerced to factor
 ```
 
 Note that the condition above (`is.character`) refers to the column as a whole, i.e. the condition returns a single TRUE or FALSE. If we want to mutate a column conditional on the single elements within the column, we use the regular `mutate` function combined with an `if_else`:
@@ -170,8 +178,8 @@ df %>%
 
 The `count` function is a useful shortcut for `group_by` followed by `summarise(n = n())`.
 ```{r count}
-df %>% count(Artist)
-# df %>% group_by(Artist) %>% summarise(n = n()) %>% ungroup()
+# df %>% group_by(Artist) %>% summarise(n = n()) %>% ungroup() %>% head(5)
+df %>% count(Artist) %>% head(5)
 ```
 
 Sometimes, we want to add the (group) aggregates as a new column to the existing data frame. In this case we just use `mutate` rather than `summarise`. 
@@ -179,7 +187,8 @@ Sometimes, we want to add the (group) aggregates as a new column to the existing
 df %>% 
   group_by(date) %>%
   mutate(Total_Streams = sum(Streams), Share = Streams/Total_Streams) %>%
-  select(Streams, Total_Streams, Share, Artist)
+  select(Streams, Total_Streams, Share, Artist) %>%
+  head(5)
 ```
 
 
@@ -200,7 +209,7 @@ If we want to work on the raw data (e.g. for statistical / machine learning mode
 
 In some cases, however, we don't actually need to work on the raw data. We would be happy to let the database do the calculations for us (these are built to store and process huge amounts of data), and just read in the resulting data, which is often much smaller in size. This is precisely the use case for dplyr with a database backend.
 
-The idea is to write regular dplyr code. The code is translated into SQL under the hood. The data is retrieved from the database and only the results are actually read into R's memory. Since this data is often much smaller, this requires only litte time.
+The idea is to write regular dplyr code. The code is translated into SQL under the hood. The data is retrieved from the database and only the results are actually read into R's memory.
 
 ### Set up
 First, we need to install a few things: 
@@ -209,51 +218,60 @@ First, we need to install a few things:
 - **DBI backend package:** DBI stands for database interface. We need a package that corresponds to our database. In our case we will use the package `RSQLite`. With many other databases, the package `odbc` would be proper choice.
 - **`dbplyr` package** This package needs to be installed, but we never need to load it explictly. Once installed, it is sufficient to load the regular `dplyr` package.
 
-Second, we need to connect R to the database. The arguments look slightly different, depending on the database that you are using. 
+Second, we need to connect R to the database. The arguments look slightly different, depending on the database that you are using. Usually, you would also need to specify a user name and password.
 ```{r db-connect}
 con <- DBI::dbConnect(RSQLite::SQLite(), dbname = ":memory:")
 ```
 
-Third, we need to have data in our database. In a company setting, the data would already be there. In our case, we are copying our data into a table called `spotify-charts-germany` of our SQLite in-memory database.
-```{r}
+Third, we need to have data in our database. In a company setting, the data would already be there. In our case, we create a table `spotify-charts-germany` in the database and copy the corresponding data from R's memory (df) into this table.
+
+```{r copy-to-db}
 copy_to(con, df, "spotify-charts-germany")
 ```
 
 ### Querying the database
-A standard way of reading data into R from a database would be via an explicit SQL query:
-```{r}
-query <- "SELECT `Track.Name`, Artist, Streams FROM `spotify-charts-germany` LIMIT 5"
-RSQLite::dbGetQuery(con, query)
-```
-
-But we want to do this differently: we are going to use `dplyr` syntax to query the database. For that we need to first register the database table via `tbl`. Now we can already preview the first rows of the table.
-
-```{r paged.print = FALSE}
+First, we register the database table via the `tbl` function. 
+```{r register-table, paged.print = FALSE}
 spotify_db <- tbl(con, "spotify-charts-germany")
-spotify_db
 ```
 
-We see that the following query uses standad dplyr syntax, although we are now creating an SQL query, to be run against a database. 
-```{r}
-query <- 
-  spotify_db %>%                                    # data
-  arrange(-Streams) %>%                             # order rows by some variable 
+Now we can query this database table using regular `dplyr` syntax. Note that this works smoothly for the majority but not for all `dplyr` commands. For instance the `slice` function is not implemented, i.e. it has no translation to SQL. Hence, in the following statement we extract the first five rows via `head(5)` instead of `slice(1:5)`. Otherwise the sequence of commands looks identical to the one [presented above based on a normal R data frame/tibble](#typical-workflows).
+
+```{r workflow1-db}
+spotify_db %>%                                      # reference to the database table
   select(Streams, date, Artist, Track.Name) %>%     # select columns by name
+  arrange(-Streams) %>%                             # order rows by some variable   
   head(5)                                           # select rows by position  
-query
 ```
 
-We can actually see the SQL generated in the background via `show_query`. 
+We can actually see the SQL generated by dplyr in the background via `show_query`. 
 
-```{r}
-query %>% show_query()  # shows the translation into SQL
+```{r workflow1-query}
+spotify_db %>%
+  select(Streams, date, Artist, Track.Name) %>%
+  arrange(-Streams) %>%
+  head(5) %>% 
+  show_query()                                      # shows the translation into SQL
+```
+
+Alternatively, we could achieve the same by writing the SQL query ourselves, and send the query to the database.
+```{r workflow1-sql, eval=FALSE}
+query <-  "SELECT Streams, date, Artist, `Track.Name` 
+          FROM `spotify-charts-germany`
+          ORDER BY Streams DESC
+          LIMIT 5"
+RMySQL::dbSendQuery(con, query)
 ```
 
 It is important to understand that the data is not in R's memory until we explicitly `collect` the data. Once the data is collected, it behaves like any regular R data frame.
 ```{r}
-rdata <- query %>% collect()  # this pulls the data into R's memory
+rdata <- 
+  spotify_db %>%
+  select(Streams, date, Artist, Track.Name) %>%
+  arrange(-Streams) %>%
+  head(5) %>% 
+  collect()                   # this pulls the data into R's memory
 class(rdata)                  # this is a regular R data frame / tibble
-class(query)                  # ... while query is a SQLite Connection object
 ```
 
 
