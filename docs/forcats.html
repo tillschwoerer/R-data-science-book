@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5 Categorical data: forcats | R Data Science Book</title>
+  <meta name="description" content="5 Categorical data: forcats | R Data Science Book" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5 Categorical data: forcats | R Data Science Book" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  <meta name="github-repo" content="tillschwoerer/R-data-science-book" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5 Categorical data: forcats | R Data Science Book" />
+  
+  
+  
+
+<meta name="author" content="Tools and Programming Languages for Data Scientists, FH Kiel, Summer Term 2020" />
+
+
+<meta name="date" content="2020-04-29" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="lubridate.html"/>
+<link rel="next" href="stringr.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#goals"><i class="fa fa-check"></i><b>1.1</b> Goals</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#data"><i class="fa fa-check"></i><b>1.2</b> Data</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#git-and-github"><i class="fa fa-check"></i><b>1.3</b> Git and GitHub</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="tidyr.html"><a href="tidyr.html"><i class="fa fa-check"></i><b>2</b> Tidying data: tidyr</a></li>
+<li class="chapter" data-level="3" data-path="dplyr.html"><a href="dplyr.html"><i class="fa fa-check"></i><b>3</b> Wrangling data: dplyr</a></li>
+<li class="chapter" data-level="4" data-path="lubridate.html"><a href="lubridate.html"><i class="fa fa-check"></i><b>4</b> Dates and times: lubridate</a><ul>
+<li class="chapter" data-level="4.1" data-path="lubridate.html"><a href="lubridate.html#background"><i class="fa fa-check"></i><b>4.1</b> Background</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="lubridate.html"><a href="lubridate.html#what-is-lubridate"><i class="fa fa-check"></i><b>4.1.1</b> What is Lubridate?</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="lubridate.html"><a href="lubridate.html#basics"><i class="fa fa-check"></i><b>4.2</b> Basics</a></li>
+<li class="chapter" data-level="4.3" data-path="lubridate.html"><a href="lubridate.html#application---import-clean-data-date-time"><i class="fa fa-check"></i><b>4.3</b> Application - Import, Clean Data / date-time</a></li>
+<li class="chapter" data-level="4.4" data-path="lubridate.html"><a href="lubridate.html#application---create-new-date-time-variables"><i class="fa fa-check"></i><b>4.4</b> Application - Create new date-time Variables</a></li>
+<li class="chapter" data-level="4.5" data-path="lubridate.html"><a href="lubridate.html#application---exploration---analysis"><i class="fa fa-check"></i><b>4.5</b> Application - Exploration - Analysis</a></li>
+<li class="chapter" data-level="4.6" data-path="lubridate.html"><a href="lubridate.html#application---visualisation-of-core-findings"><i class="fa fa-check"></i><b>4.6</b> Application - Visualisation of core findings</a></li>
+<li class="chapter" data-level="4.7" data-path="lubridate.html"><a href="lubridate.html#wrap-up---outlook-date-time-time-series"><i class="fa fa-check"></i><b>4.7</b> Wrap up - outlook date-time / time-series</a></li>
+<li class="chapter" data-level="4.8" data-path="lubridate.html"><a href="lubridate.html#wrap-up---whats-nextout-there"><i class="fa fa-check"></i><b>4.8</b> Wrap up - What’s next/out there?</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="forcats.html"><a href="forcats.html"><i class="fa fa-check"></i><b>5</b> Categorical data: forcats</a><ul>
+<li class="chapter" data-level="5.1" data-path="forcats.html"><a href="forcats.html#introduction"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="forcats.html"><a href="forcats.html#general-functions"><i class="fa fa-check"></i><b>5.2</b> General functions</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="forcats.html"><a href="forcats.html#create"><i class="fa fa-check"></i><b>5.2.1</b> Create</a></li>
+<li class="chapter" data-level="5.2.2" data-path="forcats.html"><a href="forcats.html#count-values-per-level"><i class="fa fa-check"></i><b>5.2.2</b> Count values per level</a></li>
+<li class="chapter" data-level="5.2.3" data-path="forcats.html"><a href="forcats.html#inspect-and-set-levels"><i class="fa fa-check"></i><b>5.2.3</b> Inspect and set levels</a></li>
+<li class="chapter" data-level="5.2.4" data-path="forcats.html"><a href="forcats.html#inspect-unique-values"><i class="fa fa-check"></i><b>5.2.4</b> Inspect unique values</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="forcats.html"><a href="forcats.html#combine-factors"><i class="fa fa-check"></i><b>5.3</b> Combine factors</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="forcats.html"><a href="forcats.html#combine-factors-with-different-levels"><i class="fa fa-check"></i><b>5.3.1</b> Combine factors with different levels</a></li>
+<li class="chapter" data-level="5.3.2" data-path="forcats.html"><a href="forcats.html#standardise-levels-of-various-factors"><i class="fa fa-check"></i><b>5.3.2</b> Standardise levels of various factors</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="forcats.html"><a href="forcats.html#order-of-levels"><i class="fa fa-check"></i><b>5.4</b> Order of levels</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="forcats.html"><a href="forcats.html#manual-reordering-of-levels"><i class="fa fa-check"></i><b>5.4.1</b> Manual reordering of levels</a></li>
+<li class="chapter" data-level="5.4.2" data-path="forcats.html"><a href="forcats.html#reordering-by-frequency"><i class="fa fa-check"></i><b>5.4.2</b> Reordering by frequency</a></li>
+<li class="chapter" data-level="5.4.3" data-path="forcats.html"><a href="forcats.html#reordering-by-appearance"><i class="fa fa-check"></i><b>5.4.3</b> Reordering by appearance</a></li>
+<li class="chapter" data-level="5.4.4" data-path="forcats.html"><a href="forcats.html#reverse-level-order"><i class="fa fa-check"></i><b>5.4.4</b> Reverse level order</a></li>
+<li class="chapter" data-level="5.4.5" data-path="forcats.html"><a href="forcats.html#shift-levels"><i class="fa fa-check"></i><b>5.4.5</b> Shift levels</a></li>
+<li class="chapter" data-level="5.4.6" data-path="forcats.html"><a href="forcats.html#randomly-permute-levels"><i class="fa fa-check"></i><b>5.4.6</b> Randomly permute levels</a></li>
+<li class="chapter" data-level="5.4.7" data-path="forcats.html"><a href="forcats.html#reordering-levels-by-other-variables"><i class="fa fa-check"></i><b>5.4.7</b> Reordering levels by other variables</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="forcats.html"><a href="forcats.html#value-of-levels"><i class="fa fa-check"></i><b>5.5</b> Value of levels</a></li>
+<li class="chapter" data-level="5.6" data-path="forcats.html"><a href="forcats.html#add-or-drop-levels"><i class="fa fa-check"></i><b>5.6</b> Add or drop levels</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="stringr.html"><a href="stringr.html"><i class="fa fa-check"></i><b>6</b> Character data: stringr</a></li>
+<li class="chapter" data-level="7" data-path="data-table.html"><a href="data-table.html"><i class="fa fa-check"></i><b>7</b> High performance computing: data.table</a><ul>
+<li class="chapter" data-level="7.0.1" data-path="data-table.html"><a href="data-table.html#data-exploration"><i class="fa fa-check"></i><b>7.0.1</b> Data exploration</a></li>
+<li class="chapter" data-level="7.1" data-path="data-table.html"><a href="data-table.html#subsetting-rows"><i class="fa fa-check"></i><b>7.1</b> Subsetting rows</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Data Science Book</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="forcats" class="section level1">
+<h1><span class="header-section-number">5</span> Categorical data: forcats</h1>
+<div id="introduction" class="section level2">
+<h2><span class="header-section-number">5.1</span> Introduction</h2>
+<p>This chapter is dedicated to the handling of categorical variables. This becomes important if information is to be presented in a non-alphabetical order or aggregated in a meaningful way. Within the R programming language, categorical variables are converted into a form that can be used for analysis using factors. While many Base-R functions automatically convert character vectors into factors, tidyverse requires an explicit treatment. The core-tidyverse provides the package forcats, which will be described here. Further information and exercises are available at the sources shown.</p>
+<p>Resources:</p>
+<ul>
+<li><a href="https://forcats.tidyverse.org/">Homepage</a></li>
+<li><a href="https://github.com/rstudio/cheatsheets/raw/master/factors.pdf">Cheatsheet</a></li>
+<li><a href="https://r4ds.had.co.nz/factors.html">Chapter in R4DS</a></li>
+<li><a href="https://forcats.tidyverse.org/articles/forcats.html">Vignette</a></li>
+</ul>
+<p>In this chapter we use the demo data set “diamonds” from the ggplot2-package (<a href="https://ggplot2.tidyverse.org/reference/diamonds.html">more information</a>) as well as a dataset “olympic-games” which shows the medal success of olympic athletes from 1896 to 2016. For the latter we focus on the summer games 1896 and the winter games 1924 for practical reasons. Before you start reading, you should have read the chapter <strong><em>Wrangling Data: dplyr</em></strong> or be familiar with this field.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1"><span class="kw">library</span>(tidyverse)                                     <span class="co"># the package tidyverse contains all libraries necessary for this chapter</span></a>
+<a class="sourceLine" id="cb18-2" title="2">diamonds &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/diamonds.csv&quot;</span>)              <span class="co"># Importing the &quot;diamonds&quot; dataset</span></a>
+<a class="sourceLine" id="cb18-3" title="3">olympic &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/olympic-games.csv&quot;</span>)          <span class="co"># Importing the &quot;olympic-games&quot; dataset</span></a>
+<a class="sourceLine" id="cb18-4" title="4"><span class="kw">head</span>(diamonds, <span class="dv">2</span>)                                      <span class="co"># Have a short look at the data</span></a></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["carat"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["cut"],"name":[2],"type":["chr"],"align":["left"]},{"label":["color"],"name":[3],"type":["chr"],"align":["left"]},{"label":["clarity"],"name":[4],"type":["chr"],"align":["left"]},{"label":["depth"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["table"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["price"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["x"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["y"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["z"],"name":[10],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.23","2":"Ideal","3":"E","4":"SI2","5":"61.5","6":"55","7":"326","8":"3.95","9":"3.98","10":"2.43"},{"1":"0.21","2":"Premium","3":"E","4":"SI1","5":"59.8","6":"61","7":"326","8":"3.89","9":"3.84","10":"2.31"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1"><span class="kw">head</span>(olympic, <span class="dv">2</span>)                                       <span class="co"># Have a short look at the data</span></a></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["game"],"name":[1],"type":["chr"],"align":["left"]},{"label":["city"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sport"],"name":[3],"type":["chr"],"align":["left"]},{"label":["discipline"],"name":[4],"type":["chr"],"align":["left"]},{"label":["athlete"],"name":[5],"type":["chr"],"align":["left"]},{"label":["country"],"name":[6],"type":["chr"],"align":["left"]},{"label":["age"],"name":[7],"type":["chr"],"align":["left"]},{"label":["height"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["weight"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["bmi"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["sex"],"name":[11],"type":["chr"],"align":["left"]},{"label":["medal"],"name":[12],"type":["chr"],"align":["left"]}],"data":[{"1":"1992 Summer","2":"NA","3":"Basketball","4":"Basketball Men's Basketball","5":"A Dijiang","6":"China","7":"24","8":"180","9":"80","10":"24.69136","11":"M","12":"NA"},{"1":"2012 Summer","2":"NA","3":"Judo","4":"Judo Men's Extra-Lightweight","5":"A Lamusi","6":"China","7":"23","8":"170","9":"60","10":"20.76125","11":"M","12":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="general-functions" class="section level2">
+<h2><span class="header-section-number">5.2</span> General functions</h2>
+<div id="create" class="section level3">
+<h3><span class="header-section-number">5.2.1</span> Create</h3>
+<p>Basically two things are needed to create a factor:</p>
+<ol style="list-style-type: decimal">
+<li>a vector which contains the values to be analyzed</li>
+<li>another vector which divides the values into levels</li>
+</ol>
+<p>As an example we will use the column <code>clarity</code> of the diamonds dataset.
+It is a categorical evaluation of the clarity of a diamond and a subset of the grades according to the Gemological Institute of America (GIA) grading system. The grades according to GIA read as follows:</p>
+<table>
+<thead>
+<tr class="header">
+<th>GIA grade</th>
+<th>Category</th>
+<th align="center">Included in <code>diamonds</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>FL</td>
+<td>Flawless</td>
+<td align="center"><font color="red">✘</font></td>
+</tr>
+<tr class="even">
+<td>IF</td>
+<td>Internally Flawless</td>
+<td align="center"><font color="green">✔</font></td>
+</tr>
+<tr class="odd">
+<td>VVS<sub>1</sub></td>
+<td>Very Very Slightly Included<sub>1</sub></td>
+<td align="center"><font color="green">✔</font></td>
+</tr>
+<tr class="even">
+<td>VVS<sub>2</sub></td>
+<td>Very Very Slightly Included<sub>2</sub></td>
+<td align="center"><font color="green">✔</font></td>
+</tr>
+<tr class="odd">
+<td>VS<sub>1</sub></td>
+<td>Very Slightly Included<sub>1</sub></td>
+<td align="center"><font color="green">✔</font></td>
+</tr>
+<tr class="even">
+<td>VS<sub>2</sub></td>
+<td>Very Slightly Included<sub>2</sub></td>
+<td align="center"><font color="green">✔</font></td>
+</tr>
+<tr class="odd">
+<td>SI<sub>1</sub></td>
+<td>Slightly Included<sub>1</sub></td>
+<td align="center"><font color="green">✔</font></td>
+</tr>
+<tr class="even">
+<td>SI<sub>2</sub></td>
+<td>Slightly Included<sub>2</sub></td>
+<td align="center"><font color="green">✔</font></td>
+</tr>
+<tr class="odd">
+<td>I<sub>1</sub></td>
+<td>Included<sub>1</sub></td>
+<td align="center"><font color="green">✔</font></td>
+</tr>
+<tr class="even">
+<td>I<sub>2</sub></td>
+<td>Included<sub>2</sub></td>
+<td align="center"><font color="red">✘</font></td>
+</tr>
+<tr class="odd">
+<td>I<sub>3</sub></td>
+<td>Included<sub>3</sub></td>
+<td align="center"><font color="red">✘</font></td>
+</tr>
+</tbody>
+</table>
+<p>If you are interested in the distribution of the diamonds in this category, you could do this by using a suitable query:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1">diamonds <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb20-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(clarity) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb20-3" title="3"><span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st">              </span><span class="co"># count the number of observations per clarity grade</span></a>
+<a class="sourceLine" id="cb20-4" title="4"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(clarity, n)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb20-5" title="5"><span class="st">  </span><span class="kw">geom_col</span>()</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>A sorting of the x-axis, which follows the order of the grades as shown in the table above, is unfortunately not possible in this form. A workaround is to convert the column <code>clarity</code> into a factor, which allows us to evaluate the individual categories. For this purpose we first define a vector, which ranks the categories according to their grade (from <em>bad</em> to <em>good</em>):</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1">levels_clarity &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;I1&quot;</span>, <span class="st">&quot;SI2&quot;</span>, <span class="st">&quot;SI1&quot;</span>, <span class="st">&quot;VS2&quot;</span>, <span class="st">&quot;VS1&quot;</span>, <span class="st">&quot;VVS2&quot;</span>, <span class="st">&quot;VVS1&quot;</span>, <span class="st">&quot;IF&quot;</span>)</a></code></pre></div>
+<p>In the next step we lay this newly created levels vector on the column <code>clarity</code> of our data set to create a factor. <code>factor()</code> is a base-R function.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1">factor_clarity &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="dt">x =</span> diamonds<span class="op">$</span>clarity, <span class="dt">levels =</span> levels_clarity)</a></code></pre></div>
+<p><code>factor_clarity</code> consists solely of the <code>clarity</code> column of the original <code>diamonds</code> data set.</p>
+<p>Another possibility to create a factor is to convert a vector using <code>as_factor()</code>. Here the levels are created automatically. Their order however depends on the appearance of the corresponding value in the source vector.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1"><span class="kw">as_factor</span>(diamonds<span class="op">$</span>clarity) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb23-2" title="2"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<pre><code>## [1] &quot;SI2&quot;  &quot;SI1&quot;  &quot;VS1&quot;  &quot;VS2&quot;  &quot;VVS2&quot; &quot;VVS1&quot; &quot;I1&quot;   &quot;IF&quot;</code></pre>
+</div>
+<div id="count-values-per-level" class="section level3">
+<h3><span class="header-section-number">5.2.2</span> Count values per level</h3>
+<p>Now we repeat the analysis of the distribution within our dataset using the created factor. The function <code>fct_count()</code> returns the frequency of a categorical value within a factor. The order of the levels remains unchanged.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1"><span class="kw">fct_count</span>(factor_clarity) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb25-2" title="2"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(clarity, n)) <span class="op">+</span><span class="st">          </span><span class="co">#the definition of aes. mapping in this line is only used to label the axes</span></a>
+<a class="sourceLine" id="cb25-3" title="3"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(f, n))</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>It becomes obvious that the distribution can now be displayed in the desired order (by valence). Functions of the package forcats always start with the prefix <code>fct_</code>.</p>
+</div>
+<div id="inspect-and-set-levels" class="section level3">
+<h3><span class="header-section-number">5.2.3</span> Inspect and set levels</h3>
+<p>With the function <code>levels()</code> the levels of a factor can be both read and defined. <strong>But be aware:</strong> this can only be used to change the names, not the order of the levels. The base-R function <code>unclass()</code> gives information about the internal memory structure of a factor.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" title="1">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">levels</span>()                   <span class="co">#shows the original levels of our factor</span></a></code></pre></div>
+<pre><code>## [1] &quot;I1&quot;   &quot;SI2&quot;  &quot;SI1&quot;  &quot;VS2&quot;  &quot;VS1&quot;  &quot;VVS2&quot; &quot;VVS1&quot; &quot;IF&quot;</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1">factor_clarity[<span class="dv">1</span><span class="op">:</span><span class="dv">25</span>] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">unclass</span>()            <span class="co">#shows the internal structure</span></a></code></pre></div>
+<pre><code>##  [1] 2 3 5 4 2 6 7 3 4 5 3 5 3 2 2 1 2 3 3 3 2 4 5 3 3
+## attr(,&quot;levels&quot;)
+## [1] &quot;I1&quot;   &quot;SI2&quot;  &quot;SI1&quot;  &quot;VS2&quot;  &quot;VS1&quot;  &quot;VVS2&quot; &quot;VVS1&quot; &quot;IF&quot;</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1"><span class="co">#remain the semantic order but replace the technical jargon with something understandable</span></a>
+<a class="sourceLine" id="cb30-2" title="2">levels_clarity_c &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;c8&quot;</span>, <span class="st">&quot;c7&quot;</span>, <span class="st">&quot;c6&quot;</span>, <span class="st">&quot;c5&quot;</span>, <span class="st">&quot;c4&quot;</span>, <span class="st">&quot;c3&quot;</span>, <span class="st">&quot;c2&quot;</span>, <span class="st">&quot;c1&quot;</span>)</a>
+<a class="sourceLine" id="cb30-3" title="3"><span class="kw">levels</span>(factor_clarity) &lt;-<span class="st"> </span>levels_clarity_c   </a>
+<a class="sourceLine" id="cb30-4" title="4">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">25</span>)</a></code></pre></div>
+<pre><code>##  [1] c7 c6 c4 c5 c7 c3 c2 c6 c5 c4 c6 c4 c6 c7 c7 c8 c7 c6 c6 c6 c7 c5 c4 c6 c6
+## Levels: c8 c7 c6 c5 c4 c3 c2 c1</code></pre>
+</div>
+<div id="inspect-unique-values" class="section level3">
+<h3><span class="header-section-number">5.2.4</span> Inspect unique values</h3>
+<p>The function <code>fct_unique()</code> can be used to output unique values of a factor. In contrast to the base-R function <code>unique()</code> the values are returned in the order of the levels and not in the order of their appearance.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">fct_unique</span>()</a></code></pre></div>
+<pre><code>## [1] c8 c7 c6 c5 c4 c3 c2 c1
+## Levels: c8 c7 c6 c5 c4 c3 c2 c1</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" title="1">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">unique</span>()</a></code></pre></div>
+<pre><code>## [1] c7 c6 c4 c5 c3 c2 c8 c1
+## Levels: c8 c7 c6 c5 c4 c3 c2 c1</code></pre>
+</div>
+</div>
+<div id="combine-factors" class="section level2">
+<h2><span class="header-section-number">5.3</span> Combine factors</h2>
+<div id="combine-factors-with-different-levels" class="section level3">
+<h3><span class="header-section-number">5.3.1</span> Combine factors with different levels</h3>
+<p>With the function <code>fct_c()</code> factors with different levels can be combined to one factor covering all levels. First we create two factors. The first one shows the amount of contested disciplines by several countries during the olympic sommer games 1896. The second one shows the amount of contested disciplines by countries during the olympic winter games 1924.
+Note, that the default option for the <code>levels</code> argument in <code>factor()</code> is a sorted set of the given values. As R sorts characters lexicographically. the corresponding levels are the countries sorted alphabetically from A to Z.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" title="1">olympic_<span class="dv">1896</span> &lt;-<span class="st"> </span>olympic <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(game <span class="op">==</span><span class="st"> &quot;1896 Summer&quot;</span>)</a>
+<a class="sourceLine" id="cb36-2" title="2"><span class="co"># Using default option for `levels` argument in factor()</span></a>
+<a class="sourceLine" id="cb36-3" title="3">countries_in_<span class="dv">1896</span> &lt;-<span class="st"> </span><span class="kw">factor</span>(olympic_<span class="dv">1896</span><span class="op">$</span>country)</a>
+<a class="sourceLine" id="cb36-4" title="4"></a>
+<a class="sourceLine" id="cb36-5" title="5">olympic_<span class="dv">1924</span> &lt;-<span class="st"> </span>olympic <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(game <span class="op">==</span><span class="st"> &quot;1924 Winter&quot;</span>)</a>
+<a class="sourceLine" id="cb36-6" title="6"><span class="co"># The default option for the `levels` argument in factor</span></a>
+<a class="sourceLine" id="cb36-7" title="7">countries_in_<span class="dv">1924</span> &lt;-<span class="st"> </span><span class="kw">factor</span>(olympic_<span class="dv">1924</span><span class="op">$</span>country)</a></code></pre></div>
+<p>The factors differ both in their stored categorical data and in their set levels. A plot makes this clear:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb37-2" title="2"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb37-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, country))<span class="op">+</span></a>
+<a class="sourceLine" id="cb37-4" title="4"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(n, f))</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" title="1">countries_in_<span class="dv">1924</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb38-2" title="2"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb38-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, country))<span class="op">+</span></a>
+<a class="sourceLine" id="cb38-4" title="4"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(n, f))</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-18-2.png" width="672" /></p>
+<p>Now we combine the factors with <code>fct_c()</code> and plot it:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1"><span class="kw">fct_c</span>(countries_in_<span class="dv">1896</span>, countries_in_<span class="dv">1924</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb39-2" title="2"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb39-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, country))<span class="op">+</span></a>
+<a class="sourceLine" id="cb39-4" title="4"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(n,f))</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p>Both the underlying categorical data and the defined levels were combined in one factor.</p>
+</div>
+<div id="standardise-levels-of-various-factors" class="section level3">
+<h3><span class="header-section-number">5.3.2</span> Standardise levels of various factors</h3>
+<p>With the function <code>fct_unify()</code> the levels of different factors can be standardised. Please note, both input and output are in list form.</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" title="1">factor_list &lt;-<span class="st"> </span><span class="kw">fct_unify</span>(<span class="kw">list</span>(countries_in_<span class="dv">1896</span>, countries_in_<span class="dv">1924</span>))</a>
+<a class="sourceLine" id="cb40-2" title="2"></a>
+<a class="sourceLine" id="cb40-3" title="3"><span class="co"># plotting the first factor</span></a>
+<a class="sourceLine" id="cb40-4" title="4">factor_list[[<span class="dv">1</span>]] <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb40-5" title="5"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb40-6" title="6"><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb40-7" title="7"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(n, f))</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" title="1"><span class="co"># plotting the second factor</span></a>
+<a class="sourceLine" id="cb41-2" title="2">factor_list[[<span class="dv">2</span>]] <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb41-3" title="3"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb41-4" title="4"><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb41-5" title="5"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(n, f))</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-20-2.png" width="672" /></p>
+<p>In this case, the underlying categorical data was left unchanged for both factors, but the levels were standardised. This is especially useful when comparing the categorical data of two different factors.</p>
+</div>
+</div>
+<div id="order-of-levels" class="section level2">
+<h2><span class="header-section-number">5.4</span> Order of levels</h2>
+<div id="manual-reordering-of-levels" class="section level3">
+<h3><span class="header-section-number">5.4.1</span> Manual reordering of levels</h3>
+<p>With the function <code>fct_relevel()</code> the levels of a factor can be reordered. In contrast to the function <code>levels()</code>, which only allows the renaming of factor levels, <code>fct_relevel()</code> also adjusts the order of the levels themselves, that is the way they are stored internally. An example should clarify this.</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" title="1"><span class="co"># have a look at the original levels</span></a>
+<a class="sourceLine" id="cb42-2" title="2">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb42-3" title="3"><span class="st">  </span><span class="kw">fct_count</span>()</a></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["f"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"c8","2":"741"},{"1":"c7","2":"9194"},{"1":"c6","2":"13065"},{"1":"c5","2":"12258"},{"1":"c4","2":"8171"},{"1":"c3","2":"5066"},{"1":"c2","2":"3655"},{"1":"c1","2":"1790"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1"><span class="co"># The wrong approach (this is semantical wrong):</span></a>
+<a class="sourceLine" id="cb43-2" title="2"><span class="kw">levels</span>(factor_clarity) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;c1&quot;</span>,<span class="st">&quot;c3&quot;</span>,<span class="st">&quot;c5&quot;</span>,<span class="st">&quot;c7&quot;</span>,<span class="st">&quot;c2&quot;</span>,<span class="st">&quot;c4&quot;</span>,<span class="st">&quot;c6&quot;</span>,<span class="st">&quot;c8&quot;</span>)</a>
+<a class="sourceLine" id="cb43-3" title="3">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb43-4" title="4"><span class="st">  </span><span class="kw">fct_count</span>()</a></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["f"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"c1","2":"741"},{"1":"c3","2":"9194"},{"1":"c5","2":"13065"},{"1":"c7","2":"12258"},{"1":"c2","2":"8171"},{"1":"c4","2":"5066"},{"1":"c6","2":"3655"},{"1":"c8","2":"1790"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" title="1"><span class="co">#tidy up</span></a>
+<a class="sourceLine" id="cb44-2" title="2"><span class="kw">levels</span>(factor_clarity) &lt;-<span class="st"> </span>levels_clarity_c</a>
+<a class="sourceLine" id="cb44-3" title="3"><span class="co"># The right approach:</span></a>
+<a class="sourceLine" id="cb44-4" title="4">factor_clarity <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb44-5" title="5"><span class="st">  </span><span class="kw">fct_relevel</span>(<span class="kw">c</span>(<span class="st">&quot;c1&quot;</span>,<span class="st">&quot;c3&quot;</span>,<span class="st">&quot;c5&quot;</span>,<span class="st">&quot;c7&quot;</span>,<span class="st">&quot;c2&quot;</span>,<span class="st">&quot;c4&quot;</span>,<span class="st">&quot;c6&quot;</span>,<span class="st">&quot;c8&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb44-6" title="6"><span class="st">  </span><span class="kw">fct_count</span>()</a></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["f"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"c1","2":"1790"},{"1":"c3","2":"5066"},{"1":"c5","2":"12258"},{"1":"c7","2":"9194"},{"1":"c2","2":"3655"},{"1":"c4","2":"8171"},{"1":"c6","2":"13065"},{"1":"c8","2":"741"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>As you can see, only the function <code>fct_relevel()</code> allows a correct relevel.</p>
+</div>
+<div id="reordering-by-frequency" class="section level3">
+<h3><span class="header-section-number">5.4.2</span> Reordering by frequency</h3>
+<p>Especially for plots it is often useful to orient the order of the levels on the frequency of the corresponding values. The function <code>fct_infreq()</code> allows exactly this. Plotting the unsorted factor leads to a difficult readability.</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb45-2" title="2"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb45-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(n, f)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb45-4" title="4"><span class="st">  </span><span class="kw">geom_col</span>()</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p>The better approach is to sort the data before plotting.</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" title="1">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb46-2" title="2"><span class="st">  </span><span class="kw">fct_infreq</span>() <span class="op">%&gt;%</span><span class="st">    </span><span class="co">#insert fct_infreq() to get the data ordered</span></a>
+<a class="sourceLine" id="cb46-3" title="3"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb46-4" title="4"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(n, f)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb46-5" title="5"><span class="st">  </span><span class="kw">geom_col</span>()</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+</div>
+<div id="reordering-by-appearance" class="section level3">
+<h3><span class="header-section-number">5.4.3</span> Reordering by appearance</h3>
+<p>The package <code>forcats</code> offers with the function <code>fct_inorder()</code> the possibility to orientate the order of the levels of a factor to the occurence of the corresponding categorical data in the data set. To make this clear, we take a look at the unique values with the first 20 entries in the corresponding data set:</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1">olympic_<span class="dv">1896</span><span class="op">$</span>country <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb47-2" title="2"><span class="st">  </span><span class="kw">head</span>(<span class="dv">20</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb47-3" title="3"><span class="st">  </span><span class="kw">unique</span>()</a></code></pre></div>
+<pre><code>## [1] &quot;Greece&quot;        &quot;Great Britain&quot; &quot;Switzerland&quot;   &quot;United States&quot;
+## [5] &quot;Germany&quot;</code></pre>
+<p>Create a factor in the appropriate order of levels:</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" title="1">olympic_<span class="dv">1896</span><span class="op">$</span>country <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb49-2" title="2"><span class="st">  </span><span class="kw">fct_inorder</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb49-3" title="3"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<pre><code>##  [1] &quot;Greece&quot;        &quot;Great Britain&quot; &quot;Switzerland&quot;   &quot;United States&quot;
+##  [5] &quot;Germany&quot;       &quot;France&quot;        &quot;Hungary&quot;       &quot;Australia&quot;    
+##  [9] &quot;Austria&quot;       &quot;Denmark&quot;       &quot;Italy&quot;         &quot;Sweden&quot;</code></pre>
+</div>
+<div id="reverse-level-order" class="section level3">
+<h3><span class="header-section-number">5.4.4</span> Reverse level order</h3>
+<p>The function <code>fct_rev()</code> reverses the existing order of the levels of a factor. First have a look at the original order:</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb51-2" title="2"><span class="st">  </span><span class="kw">fct_infreq</span>() <span class="op">%&gt;%</span><span class="st">    </span><span class="co">#insert fct_infreq() to get the data ordered</span></a>
+<a class="sourceLine" id="cb51-3" title="3"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb51-4" title="4"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(n, f)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb51-5" title="5"><span class="st">  </span><span class="kw">geom_col</span>()</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-26-1.png" width="672" />
+Now we reverse the order:</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" title="1">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb52-2" title="2"><span class="st">  </span><span class="kw">fct_infreq</span>() <span class="op">%&gt;%</span><span class="st">    </span><span class="co">#insert fct_infreq() to get the data ordered</span></a>
+<a class="sourceLine" id="cb52-3" title="3"><span class="st">  </span><span class="kw">fct_rev</span>() <span class="op">%&gt;%</span><span class="st">       </span><span class="co">#insert fct_rev() to reverse this order</span></a>
+<a class="sourceLine" id="cb52-4" title="4"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb52-5" title="5"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(n, f)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb52-6" title="6"><span class="st">  </span><span class="kw">geom_col</span>()</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+</div>
+<div id="shift-levels" class="section level3">
+<h3><span class="header-section-number">5.4.5</span> Shift levels</h3>
+<p>The argument <code>n</code> in the function <code>fct_shift()</code> allows to shift the levels to the left (right) for negative (positive) integer values of <code>n</code>, wrapping around end.
+Thus a value of <code>n = -1L</code> would shift the order of the levels to the left by one location.</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" title="1">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb53-2" title="2"><span class="st">  </span><span class="kw">fct_infreq</span>() <span class="op">%&gt;%</span><span class="st">          </span><span class="co">#insert fct_infreq() to get the data ordered</span></a>
+<a class="sourceLine" id="cb53-3" title="3"><span class="st">  </span><span class="kw">fct_shift</span>(<span class="dt">n =</span> <span class="op">-</span>1L) <span class="op">%&gt;%</span><span class="st">    </span><span class="co">#insert fct_shift() to shift levels</span></a>
+<a class="sourceLine" id="cb53-4" title="4"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb53-5" title="5"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(n, f)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb53-6" title="6"><span class="st">  </span><span class="kw">geom_col</span>()</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+</div>
+<div id="randomly-permute-levels" class="section level3">
+<h3><span class="header-section-number">5.4.6</span> Randomly permute levels</h3>
+<p>The level of a factor can also be randomly shuffeled using <code>fct_shuffle()</code>. The input argument can be either a factor or a character vector, whereas the output will be a factor. By way of example, this is demonstrated using the factor <code>countries_in_1896</code>:</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" title="1">orig_levels &lt;-<span class="st"> </span>countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">levels</span>() <span class="co"># the original levels are sorted alphabetically</span></a>
+<a class="sourceLine" id="cb54-2" title="2">orig_levels <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">print</span>()</a></code></pre></div>
+<pre><code>##  [1] &quot;Australia&quot;     &quot;Austria&quot;       &quot;Denmark&quot;       &quot;France&quot;       
+##  [5] &quot;Germany&quot;       &quot;Great Britain&quot; &quot;Greece&quot;        &quot;Hungary&quot;      
+##  [9] &quot;Italy&quot;         &quot;Sweden&quot;        &quot;Switzerland&quot;   &quot;United States&quot;</code></pre>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" title="1">shuffled_factor &lt;-<span class="st"> </span>orig_levels <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">fct_shuffle</span>()</a>
+<a class="sourceLine" id="cb56-2" title="2">shuffled_levels &lt;-<span class="st"> </span>shuffled_factor <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">levels</span>() <span class="co"># the shuffled levels are randomly sorted</span></a>
+<a class="sourceLine" id="cb56-3" title="3">shuffled_levels <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">print</span>()</a></code></pre></div>
+<pre><code>##  [1] &quot;Denmark&quot;       &quot;France&quot;        &quot;Switzerland&quot;   &quot;United States&quot;
+##  [5] &quot;Australia&quot;     &quot;Hungary&quot;       &quot;Sweden&quot;        &quot;Greece&quot;       
+##  [9] &quot;Germany&quot;       &quot;Italy&quot;         &quot;Austria&quot;       &quot;Great Britain&quot;</code></pre>
+</div>
+<div id="reordering-levels-by-other-variables" class="section level3">
+<h3><span class="header-section-number">5.4.7</span> Reordering levels by other variables</h3>
+<p>The functions presented in this section bare great similarity to the <code>fct_relevel()</code> function introduced in the beginning of this section.
+<code>fct_relevel()</code> allows for a direct manipuation of the levels by passing the new order to the <code>levels</code> keyword argument. In this regard <code>fct_reorder()</code> and <code>fct_reorder2()</code> are different, as the levels are reordered according to the result of a function applied to a vector. The example below is intended to unravel this behavior.</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" title="1"><span class="co"># </span><span class="al">TODO</span><span class="co">: Need to think of an example here. </span></a>
+<a class="sourceLine" id="cb58-2" title="2"><span class="co"># fct_reorder() for fun(x); fct_reorder2() for fun(x, y)</span></a></code></pre></div>
+</div>
+</div>
+<div id="value-of-levels" class="section level2">
+<h2><span class="header-section-number">5.5</span> Value of levels</h2>
+</div>
+<div id="add-or-drop-levels" class="section level2">
+<h2><span class="header-section-number">5.6</span> Add or drop levels</h2>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="lubridate.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="stringr.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://github.com/tillschwoerer/R-data-science-book/blob/master/forcats.Rmd",
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

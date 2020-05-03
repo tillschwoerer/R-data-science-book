@@ -12,37 +12,172 @@ Suggested data set: weather-kiel-holtenau
 ## Background
 
 ### What is Lubridate?
-Lubridate is an R-Package designed to ease working with date/time variables. These can be quite challenging in baseR and lubridate makes working with dates and times more frictionless, hence the name.
+Lubridate is an R-Package designed to ease working with date/time variables. These can be quite challenging in baseR and lubridate allows for frictionless working with dates and times, hence the name.
 
-How to install package and what are usefull other libraries?
+Lubridate ist part of the tidyverse package, but can be installed seperately as well. It probably reveals most of its usefullness in collaboration with other tidyverse packages. A useful extension, depending on your data, might be the time-series package which is not part of tidyverse.
 
-Part of tidyverse? In short - what is tidyverse
+All mentioned packages can be optained with the following commands. 
 
 package.install("lubridate")
 package.install("tidyverse")
 package.install("time-series")
 
+If the have been installed previously in your environment, they might have to be called upon by using 
+library(tidyverse) and so forth.
 
 ## Basics
 
-Some examples of real world time formats found in datasets:
+Some examples of real world date - time formats found in datasets:
+
+How people talk about dates and times often differs from the notation of the given information. Depending on the specific use of the data, the given information might be more or less granular. When people in the USA talk distance between two places, they often give an approximation of how long it will take a person to drive from A to B and round-up or down to the hour. 
+
+Flight schedules will most likely be exact to the minute, while some sensordata will probably need to be exact to the milisecond. So there will be differing granularity in date and time data. 
+
+Even if this would not be a challenge, we still would have to deal with different notations of date and time. People in Germany will write a day-date like: dd.mm.yyyy or short dd.mm.yy, while the anglo-saxon realm will use mm.dd.yyyy frequently and the most chronologically sound way would be to use yyyy.mm.dd, but this doesn't seem to stick with humans. 
+
+On top of these issues there's the fact that time itself does not make the impression of being the most exact parameter out there. Universal time might appear linear, but the way our planet revolves our galaxy has made it neccessary to adjust date and times every now and then, so our Kalender stays in tune with our defined seasons. This creates leap years, skipped seconds, daylight-savings time and last, but not least time-zones, which can mess things up even further.
 
 Three types of date/time data
 Sys.time() functions
 Time Formats
 
 ## Application - Import, Clean Data / date-time
+We will apply the lubridate package to Weather data from on stationary sensor in northern Germany, the weather station in Kiel-Holtenau to be more exact.
 
-Weather data from on stationary sensor in Kiel-Holtenau. 
-Import the data with readr - create a tibble
+Before we introduce the library, the prerequisites must be created.
+```{r}
+library(readr)          # part of the tidyverse
+library(lubridate)      # the mentioned lubrication for date-time wrangling
+library(tidyverse)      # the tidyverse with its dplyr functions for data wrangling
+```
+
+A first step is to import the data, which is given in a csv-format. We will use the tidyverse version of read_csv to accomplish this step.
+
+The data will be called df in order to make reference in code an writing more efficient further down.
+
+This is the simple approach to read a file with suffix csv.
+```{r}
+df <- read_csv("data/weather_kiel_holtenau.csv")
+head(df)
+```
+All columns are recognized as double values.
+
+We will examine the data further in a few seconds. At this point it should be mentioned that we generated the code to import the data by using the data import readr tool of RStudio. This tool allows a first look at the raw csv data before import and some tweaking. 
+
+By looking at the "MESS_DATUM" column it became apparent that this is a timestamp that was created every 10 minutes. The "normal" column type definitions of the import tool would not have sufficed to format this appropriately, which is why we chose to keep the column defined as a double until after import.
+
+The following line of Code calls a specific lubridate function (ymd) which basically recognizes the time format in the column given only very little information. In our case we only specify the order the date-time information is given, which is Year-Month-Day-Hour-Minute. The ymd_hm function only delivers the desired result however, if it is applied to a character string, which is why we chose to overwrite the dataset df with a new import procedure that makes sure that the column MESS_DATUM is given as a character after import.
+```{r}
+library(readr)
+df <- read_csv("data/weather_kiel_holtenau.csv", 
+    col_types = cols(MESS_DATUM = col_character(), 
+        NIEDERSCHLAGSINDIKATOR = col_integer(), 
+        STATIONS_ID = col_integer()))
+df$MESS_DATUM <- ymd_hm(df$MESS_DATUM)
+head(df)
+```
+As can be seen above, the MESS_DATUM is now in a POSIXct format, which is what we need for further calculations and analysis of the data set.
+
+Alternatively you could use the follwing parsing function to achieve the same result. Note that the parse_date_time function needs a timestamp in character format to work, as well.
+
+```{r}
+df <- read_csv("data/weather_kiel_holtenau.csv", 
+    col_types = cols(MESS_DATUM = col_character()))
+df$MESS_DATUM <- parse_date_time(df$MESS_DATUM, orders ="Ymd HM")
+head(df)
+```
+
+> Evt. TODO - Ergänzung bzw. Alternativen mit S3 (baseR) Funktionen
+> strftime(Sys.time(), "%Y%m%d%H%M")
+> return character
+> strptime(df$MESS_DATUM, "%Y%m%d%H%M")
+> strptime(Sys.time(), "%Y%m%d%H%M")
+> return list
+
+OK we have successfully formated the time-stamp data into a productive format. The next steps are a check and elimination procedure to eliminate missing values (NAs) from the dataset, 
+if some observations might have failed to generate data successfully.
+```{r}
+df %>% 
+  filter(is.na(MESS_DATUM)) %>%                   # Checking if there are observations with a missing MESS_DATUM
+  view()
+```
+Eliminating NAs from the MESS_DATUM Column and those observations from the data frame
+```{r}
+df <- df %>% 
+  filter(!is.na(MESS_DATUM))                      # missing MESS_DATUM observations (NAs) would/will be excluded from the data frame
+```
+
+#####################################################################################################################################################################################
+ACHTUNG: Es sieht so aus, als hätten einige Einträge in df den Wert -999, das sieht mir ebenfalls nach einer fehlerhaften Observation aus. Diese müssten noch herausgefiltert werden!
+#####################################################################################################################################################################################
+
+At this point we have managed to create a tidy data set and we can now proceed to explore the data further and possibly also calculate new variables or create meaningful aggregates of the data.
+A look at the end of the table by the "tail" function and a glimpse at the data confirm, that we are only dealing with data from one sensor (= station), therefore we should now examine the other variables.
+```{r}
+glimpse(df)
+tail(df)
+```
+The "TEMPERATUR" is given in degrees Celsius, the "RELATIVE-FEUCHTE" is a percentage Value for humidity which refers to the degree of water saturation that is prevalent in the air at a given temperature. As temperature increases, the air can absorb larger amounts of water. 
+
+The next variable is "NIEDERSCHLAGSDAUER" which is given as an integer smaller or equal to 10. Therefore it gives the time it has rained during the timestamp intervall of 10 Minutes. 
+The variable "NIEDERSCHLAGSHOEHE" is a measure of rainfall intensity. Its maximum value can be checked by the following command:
+```{r}
+max(df$NIEDERSCHLAGSHOEHE, na.rm = FALSE)
+```
+We can assume that this number gives us the amount of rainfall in milimeters, which is equivalent to liters of rainfall per squaremeter in a given time intervall. A strong rainfall in central Europe can generate around 30mm/h of rainfall, i.e. 30 liters of rainfall per squaremeter. The maximum value is therefore an indicator of a heavy downpour as a continuation for a whole hour would have yielded 6 * 7.85 = 47.1 litres per hour.
+
+The next variable is simply a binary expression of rainfall (1) or no rainfall (0) in the given intervall. This is relevant to measure as some types of rainfall do not generate enough water to messure an amount of water. The dreaded Northgerman "drizzle" comes to mind.
+
+Ágain: Since the sensor has taken a snapshot every 10 minutes, we have six observations per hour.
+
+The first variable of interest should be "TEMPERATUR". A quick visualisation delivers this picture:
+```{r}
+library(ggplot2)
+ggplot(df)+
+  geom_line(aes(MESS_DATUM, TEMPERATUR), colour = "red", size = 0.1)
+```
+This is a representation of all 52.704 observations of temperature and therefore appears quite crowded. However, a typical course of the seasons during a year can be interpreted from this plot already.
+Let'S try to get a clearer picture of the temperature during the course of the observed year. We need to form averages and aggregates to make this visualisation more to the point.
+
+So - it looks like we need more variables. Each one could accomodate another dimension of date-time data. So we could produce a data frame for hours, 24hdays, weeks, months and the full year.
+
+Luckily lubridate has functions for us that will generate these new variables:
+
+Assigning a year to every observation by creating a new column with lubridate function "year"
+```{r}
+df <- df %>% 
+  mutate(JAHR = year(df$MESS_DATUM))
+```
+Assigning a month to every observation by creating a new column with lubridate function "month"
+```{r}
+df <- df %>% 
+  mutate(MONAT = month(df$MESS_DATUM))
+```
+Assigning an Epiweeknr to every observation by creating a new column with lubridate function "epiweek"
+```{r}
+df <- df %>% 
+  mutate(EKW = epiweek(df$MESS_DATUM))
+```
+Assigning a daynumber to every observation by creating a new column "yday" (Year day)
+```{r}
+df <- df %>%
+  mutate(JTAG = yday(df$MESS_DATUM))
+```
+Assigning an hour to every observation by creating a new column "STUNDE"
+```{r}
+df <- df %>%
+  mutate(STUNDE = hour(df$MESS_DATUM))
+```
+Now we can filter the data by year, month, week, day and hour of the day. This should give us possibilities to aggregate.
+The following GROUP_BY command creates a unique grouping per hour and then calculates the average temperature for every hour, then pastes this value into each observation per hour.
+```{r}
+df %>%
+  group_by(JAHR, JTAG, STUNDE) %>%
+  mutate(DSTEMP = mean(TEMPERATUR)) %>% # führt eine neue Spalte mit den Durchschnittstemperaturen des jeweiligen Stunde ein - und verhindert Doppelungen
+  view()
+```
 
 (Idea - check, if data is openly available as well. This could lead to an excurse about how to generate a raw dataset from this weatherstation.)
-
-Examine the data - - summarise, glimpse an other exploration functions
-
-Parse the date-time Variable into a productive format
-
-The result should be a tidy data frame.
 
 Create an overview over the units of measured variables.
 

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>4 Dates and times: lubridate | R Data Science Book</title>
+  <meta name="description" content="4 Dates and times: lubridate | R Data Science Book" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="4 Dates and times: lubridate | R Data Science Book" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  <meta name="github-repo" content="tillschwoerer/R-data-science-book" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="4 Dates and times: lubridate | R Data Science Book" />
+  
+  
+  
+
+<meta name="author" content="Tools and Programming Languages for Data Scientists, FH Kiel, Summer Term 2020" />
+
+
+<meta name="date" content="2020-04-29" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="dplyr.html"/>
+<link rel="next" href="forcats.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#goals"><i class="fa fa-check"></i><b>1.1</b> Goals</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#data"><i class="fa fa-check"></i><b>1.2</b> Data</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#git-and-github"><i class="fa fa-check"></i><b>1.3</b> Git and GitHub</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="tidyr.html"><a href="tidyr.html"><i class="fa fa-check"></i><b>2</b> Tidying data: tidyr</a></li>
+<li class="chapter" data-level="3" data-path="dplyr.html"><a href="dplyr.html"><i class="fa fa-check"></i><b>3</b> Wrangling data: dplyr</a></li>
+<li class="chapter" data-level="4" data-path="lubridate.html"><a href="lubridate.html"><i class="fa fa-check"></i><b>4</b> Dates and times: lubridate</a><ul>
+<li class="chapter" data-level="4.1" data-path="lubridate.html"><a href="lubridate.html#background"><i class="fa fa-check"></i><b>4.1</b> Background</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="lubridate.html"><a href="lubridate.html#what-is-lubridate"><i class="fa fa-check"></i><b>4.1.1</b> What is Lubridate?</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="lubridate.html"><a href="lubridate.html#basics"><i class="fa fa-check"></i><b>4.2</b> Basics</a></li>
+<li class="chapter" data-level="4.3" data-path="lubridate.html"><a href="lubridate.html#application---import-clean-data-date-time"><i class="fa fa-check"></i><b>4.3</b> Application - Import, Clean Data / date-time</a></li>
+<li class="chapter" data-level="4.4" data-path="lubridate.html"><a href="lubridate.html#application---create-new-date-time-variables"><i class="fa fa-check"></i><b>4.4</b> Application - Create new date-time Variables</a></li>
+<li class="chapter" data-level="4.5" data-path="lubridate.html"><a href="lubridate.html#application---exploration---analysis"><i class="fa fa-check"></i><b>4.5</b> Application - Exploration - Analysis</a></li>
+<li class="chapter" data-level="4.6" data-path="lubridate.html"><a href="lubridate.html#application---visualisation-of-core-findings"><i class="fa fa-check"></i><b>4.6</b> Application - Visualisation of core findings</a></li>
+<li class="chapter" data-level="4.7" data-path="lubridate.html"><a href="lubridate.html#wrap-up---outlook-date-time-time-series"><i class="fa fa-check"></i><b>4.7</b> Wrap up - outlook date-time / time-series</a></li>
+<li class="chapter" data-level="4.8" data-path="lubridate.html"><a href="lubridate.html#wrap-up---whats-nextout-there"><i class="fa fa-check"></i><b>4.8</b> Wrap up - What’s next/out there?</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="forcats.html"><a href="forcats.html"><i class="fa fa-check"></i><b>5</b> Categorical data: forcats</a><ul>
+<li class="chapter" data-level="5.1" data-path="forcats.html"><a href="forcats.html#introduction"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="forcats.html"><a href="forcats.html#general-functions"><i class="fa fa-check"></i><b>5.2</b> General functions</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="forcats.html"><a href="forcats.html#create"><i class="fa fa-check"></i><b>5.2.1</b> Create</a></li>
+<li class="chapter" data-level="5.2.2" data-path="forcats.html"><a href="forcats.html#count-values-per-level"><i class="fa fa-check"></i><b>5.2.2</b> Count values per level</a></li>
+<li class="chapter" data-level="5.2.3" data-path="forcats.html"><a href="forcats.html#inspect-and-set-levels"><i class="fa fa-check"></i><b>5.2.3</b> Inspect and set levels</a></li>
+<li class="chapter" data-level="5.2.4" data-path="forcats.html"><a href="forcats.html#inspect-unique-values"><i class="fa fa-check"></i><b>5.2.4</b> Inspect unique values</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="forcats.html"><a href="forcats.html#combine-factors"><i class="fa fa-check"></i><b>5.3</b> Combine factors</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="forcats.html"><a href="forcats.html#combine-factors-with-different-levels"><i class="fa fa-check"></i><b>5.3.1</b> Combine factors with different levels</a></li>
+<li class="chapter" data-level="5.3.2" data-path="forcats.html"><a href="forcats.html#standardise-levels-of-various-factors"><i class="fa fa-check"></i><b>5.3.2</b> Standardise levels of various factors</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="forcats.html"><a href="forcats.html#order-of-levels"><i class="fa fa-check"></i><b>5.4</b> Order of levels</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="forcats.html"><a href="forcats.html#manual-reordering-of-levels"><i class="fa fa-check"></i><b>5.4.1</b> Manual reordering of levels</a></li>
+<li class="chapter" data-level="5.4.2" data-path="forcats.html"><a href="forcats.html#reordering-by-frequency"><i class="fa fa-check"></i><b>5.4.2</b> Reordering by frequency</a></li>
+<li class="chapter" data-level="5.4.3" data-path="forcats.html"><a href="forcats.html#reordering-by-appearance"><i class="fa fa-check"></i><b>5.4.3</b> Reordering by appearance</a></li>
+<li class="chapter" data-level="5.4.4" data-path="forcats.html"><a href="forcats.html#reverse-level-order"><i class="fa fa-check"></i><b>5.4.4</b> Reverse level order</a></li>
+<li class="chapter" data-level="5.4.5" data-path="forcats.html"><a href="forcats.html#shift-levels"><i class="fa fa-check"></i><b>5.4.5</b> Shift levels</a></li>
+<li class="chapter" data-level="5.4.6" data-path="forcats.html"><a href="forcats.html#randomly-permute-levels"><i class="fa fa-check"></i><b>5.4.6</b> Randomly permute levels</a></li>
+<li class="chapter" data-level="5.4.7" data-path="forcats.html"><a href="forcats.html#reordering-levels-by-other-variables"><i class="fa fa-check"></i><b>5.4.7</b> Reordering levels by other variables</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="forcats.html"><a href="forcats.html#value-of-levels"><i class="fa fa-check"></i><b>5.5</b> Value of levels</a></li>
+<li class="chapter" data-level="5.6" data-path="forcats.html"><a href="forcats.html#add-or-drop-levels"><i class="fa fa-check"></i><b>5.6</b> Add or drop levels</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="stringr.html"><a href="stringr.html"><i class="fa fa-check"></i><b>6</b> Character data: stringr</a></li>
+<li class="chapter" data-level="7" data-path="data-table.html"><a href="data-table.html"><i class="fa fa-check"></i><b>7</b> High performance computing: data.table</a><ul>
+<li class="chapter" data-level="7.0.1" data-path="data-table.html"><a href="data-table.html#data-exploration"><i class="fa fa-check"></i><b>7.0.1</b> Data exploration</a></li>
+<li class="chapter" data-level="7.1" data-path="data-table.html"><a href="data-table.html#subsetting-rows"><i class="fa fa-check"></i><b>7.1</b> Subsetting rows</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Data Science Book</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="lubridate" class="section level1">
+<h1><span class="header-section-number">4</span> Dates and times: lubridate</h1>
+<p>Resources:</p>
+<ul>
+<li><a href="https://lubridate.tidyverse.org/">Lubridate homepage</a></li>
+<li><a href="https://rawgit.com/rstudio/cheatsheets/master/lubridate.pdf">Cheatsheet</a></li>
+<li><a href="https://r4ds.had.co.nz/dates-and-times.html">Book Chapter in R4DS</a></li>
+<li><a href="https://cran.r-project.org/web/packages/lubridate/vignettes/lubridate.html">Vignette</a></li>
+</ul>
+<p>Suggested data set: weather-kiel-holtenau</p>
+<div id="background" class="section level2">
+<h2><span class="header-section-number">4.1</span> Background</h2>
+<div id="what-is-lubridate" class="section level3">
+<h3><span class="header-section-number">4.1.1</span> What is Lubridate?</h3>
+<p>Lubridate is an R-Package designed to ease working with date/time variables. These can be quite challenging in baseR and lubridate makes working with dates and times more frictionless, hence the name.</p>
+<p>Lubridate ist part of the tidyverse package, but can be installed seperately as well. It probably reveals most of its usefullness in collaboration with other tidyverse packages. A useful extension depending on your data might be the time-series package, which is not part of tidyverse.</p>
+<p>All mentioned packages can be optained with the following commands.</p>
+<p>package.install(“lubridate”)
+package.install(“tidyverse”)
+package.install(“time-series”)</p>
+<p>If the have been installed previously in your environment, they might have to be called upon by using
+library(tidyverse) and so forth.</p>
+</div>
+</div>
+<div id="basics" class="section level2">
+<h2><span class="header-section-number">4.2</span> Basics</h2>
+<p>Some examples of real world date - time formats found in datasets:</p>
+<p>How people talk about dates and times often differs from the notation of the given information. Depending on the specific use of the data, the given information might be more or less granular. When people in the USA talk distance between two places, they often give an approximation of how long it will take a person to drive from A to B and round-up or down to the hour.</p>
+<p>Flight schedules will most likely be exact to the minute, while some sensordata will probably need to be exact to the milisecond. So there will be differing granularity in date and time data.</p>
+<p>Even if this would not be a challenge, we still would have to deal with different notations of date and time. People in Germany will write a day-date like: dd.mm.yyyy or short dd.mm.yy, while the anglo-saxon realm will use mm.dd.yyyy frequently and the most chronologically sound way would be to use yyyy.mm.dd, but this doesn’t seem to stick with humans.</p>
+<p>On top of these issues there’s the fact that time itself does not make the impression of being the most exact parameter out there. Universal time might appear linear, but the way our planet revolves our galaxy has made it neccessary to adjust date and times every now and then, so our Kalender stays in tune with our defined seasons. This creates leap years, skipped seconds, daylight-savings time and last, but not least time-zones, which can mess things up even further.</p>
+<p>Three types of date/time data
+Sys.time() functions
+Time Formats</p>
+</div>
+<div id="application---import-clean-data-date-time" class="section level2">
+<h2><span class="header-section-number">4.3</span> Application - Import, Clean Data / date-time</h2>
+<p>We will apply the lubridate package to Weather data from on stationary sensor in northern Germany, the weather station in Kiel-Holtenau to be more exact.</p>
+<p>Before we introduce the library, the prerequisites must be created.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="co"># zum Lesen von Dateien</span></a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="kw">library</span>(readr)</a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="kw">library</span>(lubridate)</a></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     date</code></pre>
+<p>A first step is to import the data, which is given in a csv-format. We will use the tidyverse version of read_csv to accomplish this step.</p>
+<p>The data will be called df in order to make reference in code an writing more efficient further down.</p>
+<p>This is the simple approach to read a file with suffix csv.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">df &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/weather_kiel_holtenau.csv&quot;</span>)</a></code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   STATIONS_ID = col_double(),
+##   MESS_DATUM = col_double(),
+##   TEMPERATUR = col_double(),
+##   RELATIVE_FEUCHTE = col_double(),
+##   NIEDERSCHLAGSDAUER = col_double(),
+##   NIEDERSCHLAGSHOEHE = col_double(),
+##   NIEDERSCHLAGSINDIKATOR = col_double()
+## )</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">head</span>(df)</a></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["STATIONS_ID"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["MESS_DATUM"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["TEMPERATUR"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["RELATIVE_FEUCHTE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSDAUER"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSHOEHE"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSINDIKATOR"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"2564","2":"201904140000","3":"3.6","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"201904140010","3":"3.6","4":"75.6","5":"6","6":"0","7":"1"},{"1":"2564","2":"201904140020","3":"3.6","4":"76.5","5":"0","6":"0","7":"0"},{"1":"2564","2":"201904140030","3":"3.5","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"201904140040","3":"3.6","4":"75.3","5":"0","6":"0","7":"0"},{"1":"2564","2":"201904140050","3":"3.7","4":"75.1","5":"2","6":"0","7":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>All columns are recognized as double values.</p>
+<p>We will examine the data further in a few seconds. At this point it should be mentioned that we generated the code to import the data by using the data import readr tool of RStudio. This tool allows a first look at the raw csv data before import and some tweaking.</p>
+<p>By looking at the “MESS_DATUM” column it became apparent that this is a timestamp that was created every 10 minutes. The “normal” column type definitions of the import tool would not have sufficed to format this appropriately, which is why we chose to keep the column defined as a double until after import.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">df<span class="op">$</span>MESS_DATUM &lt;-<span class="st"> </span><span class="kw">ymd_hm</span>(df<span class="op">$</span>MESS_DATUM)</a>
+<a class="sourceLine" id="cb14-2" title="2"><span class="kw">head</span>(df)</a></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["STATIONS_ID"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["MESS_DATUM"],"name":[2],"type":["S3: POSIXct"],"align":["right"]},{"label":["TEMPERATUR"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["RELATIVE_FEUCHTE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSDAUER"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSHOEHE"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSINDIKATOR"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"2564","2":"2019-04-14 00:00:00","3":"3.6","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:10:00","3":"3.6","4":"75.6","5":"6","6":"0","7":"1"},{"1":"2564","2":"2019-04-14 00:20:00","3":"3.6","4":"76.5","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:30:00","3":"3.5","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:40:00","3":"3.6","4":"75.3","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:50:00","3":"3.7","4":"75.1","5":"2","6":"0","7":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>When you importing the column “MESS_DATUM” as character, you can use the following function:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">df_a2 &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/weather_kiel_holtenau.csv&quot;</span>, </a>
+<a class="sourceLine" id="cb15-2" title="2">    <span class="dt">col_types =</span> <span class="kw">cols</span>(<span class="dt">MESS_DATUM =</span> <span class="kw">col_character</span>()))</a>
+<a class="sourceLine" id="cb15-3" title="3"></a>
+<a class="sourceLine" id="cb15-4" title="4">df_a2<span class="op">$</span>MESS_DATUM &lt;-<span class="st"> </span><span class="kw">parse_date_time</span>(df_a2<span class="op">$</span>MESS_DATUM, <span class="dt">orders =</span><span class="st">&quot;Ymd HM&quot;</span>)</a>
+<a class="sourceLine" id="cb15-5" title="5"><span class="kw">head</span>(df_a2)</a></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["STATIONS_ID"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["MESS_DATUM"],"name":[2],"type":["S3: POSIXct"],"align":["right"]},{"label":["TEMPERATUR"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["RELATIVE_FEUCHTE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSDAUER"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSHOEHE"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSINDIKATOR"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"2564","2":"2019-04-14 00:00:00","3":"3.6","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:10:00","3":"3.6","4":"75.6","5":"6","6":"0","7":"1"},{"1":"2564","2":"2019-04-14 00:20:00","3":"3.6","4":"76.5","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:30:00","3":"3.5","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:40:00","3":"3.6","4":"75.3","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:50:00","3":"3.7","4":"75.1","5":"2","6":"0","7":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>If you no longer want to process or analyze the data, you can also display a date-time object in a specific format.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1">df<span class="op">$</span>MESS_DATUM &lt;-<span class="st"> </span><span class="kw">format</span>(df<span class="op">$</span>MESS_DATUM, <span class="st">&quot;%d.%m.%Y-%H:%M&quot;</span>)</a>
+<a class="sourceLine" id="cb16-2" title="2"><span class="co">#TODO</span></a>
+<a class="sourceLine" id="cb16-3" title="3"><span class="co"># statt format( df$MESS_DATUM, &quot;%Y%m%d%H%M&quot;) geht auch</span></a>
+<a class="sourceLine" id="cb16-4" title="4"><span class="co"># strftime(Sys.time(), &quot;%Y%m%d%H%M&quot;)</span></a>
+<a class="sourceLine" id="cb16-5" title="5"><span class="co"># return character</span></a>
+<a class="sourceLine" id="cb16-6" title="6"><span class="co"># der nächste Ansatz müsste wieder von einer list zu einem character-array gewandelt werden, sonst Anzeigen von NA</span></a>
+<a class="sourceLine" id="cb16-7" title="7"><span class="co">#  strptime(df$MESS_DATUM, &quot;%Y%m%d%H%M&quot;)</span></a>
+<a class="sourceLine" id="cb16-8" title="8"><span class="co"># strptime(Sys.time(), &quot;%Y%m%d%H%M&quot;)</span></a>
+<a class="sourceLine" id="cb16-9" title="9"><span class="co"># return list</span></a>
+<a class="sourceLine" id="cb16-10" title="10"></a>
+<a class="sourceLine" id="cb16-11" title="11"><span class="kw">head</span>(df)</a></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["STATIONS_ID"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["MESS_DATUM"],"name":[2],"type":["chr"],"align":["left"]},{"label":["TEMPERATUR"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["RELATIVE_FEUCHTE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSDAUER"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSHOEHE"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSINDIKATOR"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"2564","2":"14.04.2019-00:00","3":"3.6","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"14.04.2019-00:10","3":"3.6","4":"75.6","5":"6","6":"0","7":"1"},{"1":"2564","2":"14.04.2019-00:20","3":"3.6","4":"76.5","5":"0","6":"0","7":"0"},{"1":"2564","2":"14.04.2019-00:30","3":"3.5","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"14.04.2019-00:40","3":"3.6","4":"75.3","5":"0","6":"0","7":"0"},{"1":"2564","2":"14.04.2019-00:50","3":"3.7","4":"75.1","5":"2","6":"0","7":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>This approach is ok, but not yet ideal for further processing.</p>
+<p>The second approach is a little better.
+You can already specify data types for each column when reading in.
+For this Step you can use the RStudio “Import Dataset”-Wizard.</p>
+<p>Is DF immutable?</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1">df_a3 &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/weather_kiel_holtenau.csv&quot;</span>, </a>
+<a class="sourceLine" id="cb17-2" title="2">    <span class="dt">col_types =</span> <span class="kw">cols</span>(<span class="dt">MESS_DATUM =</span> <span class="kw">col_datetime</span>(<span class="dt">format =</span> <span class="st">&quot;%Y%m%d%H%M&quot;</span>), </a>
+<a class="sourceLine" id="cb17-3" title="3">        <span class="dt">NIEDERSCHLAGSDAUER =</span> <span class="kw">col_integer</span>(), </a>
+<a class="sourceLine" id="cb17-4" title="4">        <span class="dt">NIEDERSCHLAGSINDIKATOR =</span> <span class="kw">col_integer</span>(), </a>
+<a class="sourceLine" id="cb17-5" title="5">        <span class="dt">STATIONS_ID =</span> <span class="kw">col_integer</span>()))</a>
+<a class="sourceLine" id="cb17-6" title="6"><span class="co">#View(weather_kiel_holtenau)</span></a>
+<a class="sourceLine" id="cb17-7" title="7"><span class="kw">head</span>(df_a3)</a></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["STATIONS_ID"],"name":[1],"type":["int"],"align":["right"]},{"label":["MESS_DATUM"],"name":[2],"type":["S3: POSIXct"],"align":["right"]},{"label":["TEMPERATUR"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["RELATIVE_FEUCHTE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSDAUER"],"name":[5],"type":["int"],"align":["right"]},{"label":["NIEDERSCHLAGSHOEHE"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["NIEDERSCHLAGSINDIKATOR"],"name":[7],"type":["int"],"align":["right"]}],"data":[{"1":"2564","2":"2019-04-14 00:00:00","3":"3.6","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:10:00","3":"3.6","4":"75.6","5":"6","6":"0","7":"1"},{"1":"2564","2":"2019-04-14 00:20:00","3":"3.6","4":"76.5","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:30:00","3":"3.5","4":"75.6","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:40:00","3":"3.6","4":"75.3","5":"0","6":"0","7":"0"},{"1":"2564","2":"2019-04-14 00:50:00","3":"3.7","4":"75.1","5":"2","6":"0","7":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>(Idea - check, if data is openly available as well. This could lead to an excurse about how to generate a raw dataset from this weatherstation.)</p>
+<p>Examine the data - - summarise, glimpse an other exploration functions</p>
+<p>Parse the date-time Variable into a productive format</p>
+<p>The result should be a tidy data frame.</p>
+<p>Create an overview over the units of measured variables.</p>
+<p>possible: Formats and representation of the data. European vs. US number formats etc.</p>
+<p>possible: check time-series package, if this would help us in any way to make data even more accessible?</p>
+</div>
+<div id="application---create-new-date-time-variables" class="section level2">
+<h2><span class="header-section-number">4.4</span> Application - Create new date-time Variables</h2>
+<p>week of year (mutate)
+separate daytime vs. nighttime
+separate seasons (spring, summer, fall, winter)</p>
+</div>
+<div id="application---exploration---analysis" class="section level2">
+<h2><span class="header-section-number">4.5</span> Application - Exploration - Analysis</h2>
+<p>Calculate Average Temperatures (d/m/season/y)
+Calculate Averages for humdity, rainfall etc.
+Plus many more insights, that are not apparent at this draft stage.</p>
+</div>
+<div id="application---visualisation-of-core-findings" class="section level2">
+<h2><span class="header-section-number">4.6</span> Application - Visualisation of core findings</h2>
+<ul>
+<li>How has the climate changed during the observed intervall?</li>
+<li>How can relevant intervalls be compared?</li>
+<li>can we find historic KPIs to compare our findings (eg. average temperature in January in Kiel 1900)</li>
+</ul>
+<p>What Visualisations make sense for our kind of data/insights? Research and try&amp;error</p>
+</div>
+<div id="wrap-up---outlook-date-time-time-series" class="section level2">
+<h2><span class="header-section-number">4.7</span> Wrap up - outlook date-time / time-series</h2>
+<p>what potential problems have not been adressed?</p>
+</div>
+<div id="wrap-up---whats-nextout-there" class="section level2">
+<h2><span class="header-section-number">4.8</span> Wrap up - What’s next/out there?</h2>
+<p>Insights from data / data vis</p>
+<p>What potential problems have not been adressed? (Time series package? etc?)</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="dplyr.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="forcats.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://github.com/tillschwoerer/R-data-science-book/blob/master/lubridate.Rmd",
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

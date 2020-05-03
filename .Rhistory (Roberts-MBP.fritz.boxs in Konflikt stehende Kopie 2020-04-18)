@@ -1,0 +1,7 @@
+install.packages(bookdown)
+install.packages("bookdown")
+install.packages("bookdown")
+install.packages("bookdown")
+install.packages("bookdown")
+install.packages("bookdown")
+library(bookdown)
