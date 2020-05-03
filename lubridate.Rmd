@@ -9,9 +9,7 @@ Resources:
 
 Suggested data set: weather-kiel-holtenau
 
-## Background
-
-### What is Lubridate?
+## What is Lubridate?
 Lubridate is an R-Package designed to ease working with date/time variables. These can be quite challenging in baseR and lubridate allows for frictionless working with dates and times, hence the name.
 
 Lubridate ist part of the tidyverse package, but can be installed seperately as well. It probably reveals most of its usefullness in collaboration with other tidyverse packages. A useful extension, depending on your data, might be the time-series package which is not part of tidyverse.
@@ -67,14 +65,24 @@ We will examine the data further in a few seconds. At this point it should be me
 By looking at the "MESS_DATUM" column it became apparent that this is a timestamp that was created every 10 minutes. The "normal" column type definitions of the import tool would not have sufficed to format this appropriately, which is why we chose to keep the column defined as a double until after import.
 
 The following line of Code calls a specific lubridate function (ymd) which basically recognizes the time format in the column given only very little information. In our case we only specify the order the date-time information is given, which is Year-Month-Day-Hour-Minute. The ymd_hm function only delivers the desired result however, if it is applied to a character string, which is why we chose to overwrite the dataset df with a new import procedure that makes sure that the column MESS_DATUM is given as a character after import.
+
 ```{r}
-library(readr)
 df <- read_csv("data/weather_kiel_holtenau.csv", 
+                                  col_types = cols(MESS_DATUM = col_datetime(format = "%Y%m%d%H%M"), 
+                                                   NIEDERSCHLAGSDAUER = col_integer(), 
+                                                   NIEDERSCHLAGSINDIKATOR = col_integer(), 
+                                                   STATIONS_ID = col_integer()))
+head(df)
+```
+
+
+```{r}
+df_a3 <- read_csv("data/weather_kiel_holtenau.csv", 
     col_types = cols(MESS_DATUM = col_character(), 
         NIEDERSCHLAGSINDIKATOR = col_integer(), 
         STATIONS_ID = col_integer()))
-df$MESS_DATUM <- ymd_hm(df$MESS_DATUM)
-head(df)
+df_a3$MESS_DATUM <- ymd_hm(df_a3$MESS_DATUM)
+head(df_a3)
 ```
 As can be seen above, the MESS_DATUM is now in a POSIXct format, which is what we need for further calculations and analysis of the data set.
 
@@ -171,9 +179,34 @@ df <- df %>%
 Now we can filter the data by year, month, week, day and hour of the day. This should give us possibilities to aggregate.
 The following GROUP_BY command creates a unique grouping per hour and then calculates the average temperature for every hour, then pastes this value into each observation per hour.
 ```{r}
+tag_int <- interval(ymd("2020-03-01"), ymd("2020-03-02"))
+df_avg1 <- df_a3 %>%
+  filter(MESS_DATUM >= int_start(tag_int) & MESS_DATUM <= int_end(tag_int))
+
+df_group <- df_avg1 %>% 
+  group_by(STATIONS_ID , hour(MESS_DATUM) , day(MESS_DATUM) ) %>% 
+  rename( "STUNDE" = 'hour(MESS_DATUM)', "TAG" = 'day(MESS_DATUM)' ) 
+
+df_avg1 <- df_group %>% 
+  summarise(avg = mean(TEMPERATUR)) %>% 
+  arrange( STATIONS_ID , TAG , STUNDE) %>%
+  view()  
+```
+
+
+```{r}
 df %>%
   group_by(JAHR, JTAG, STUNDE) %>%
   mutate(DSTEMP = mean(TEMPERATUR)) %>% # führt eine neue Spalte mit den Durchschnittstemperaturen des jeweiligen Stunde ein - und verhindert Doppelungen
+  view()
+```
+
+TODO Mit If wegen Indikator
+
+```{r}
+df_sum1 <- df_group %>% 
+  summarise(sum(NIEDERSCHLAGSDAUER)) %>% 
+  arrange( STATIONS_ID , TAG, STUNDE) %>%
   view()
 ```
 
