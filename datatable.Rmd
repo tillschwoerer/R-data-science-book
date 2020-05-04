@@ -236,9 +236,7 @@ spotify[, duration_ms := NULL]
 
 ## Runtime comparision
 
-Let us now compare the runtime of some expression made in `data.table` and `tidyverse`.
-As example we want to calculate the average height of the athletes per country.
-
+Let us now compare the runtime of some expression made in `data.table` and `tidyverse`. Performance differs depending on the type of operation, and will likely also depend on the size of the data set. Here we test separately sorting, filtering, and grouping/aggregating for our data set of about 270.000 observations. 
 
 
 ```{r eval=FALSE}
@@ -246,27 +244,32 @@ install.packages("microbenchmark")
 ```
 
 
-```{r}
-library("microbenchmark")
-olympics_height <- olympics[!is.na(height)]
-timecomp <- microbenchmark(
-country_tall <- olympics_height %>% 
-                group_by(country) %>%
-                summarise( avg_height = mean(height)) %>%
-                arrange(-avg_height),
+```{r paged.print = FALSE}
+library(microbenchmark)              # package for performance comparisons
+olympics_tbl <- as_tibble(olympics)  # create a tibble to compare performance
 
+# Sorting
+microbenchmark(
+  olympics_tbl %>% arrange(age),     # dplyr
+  olympics[order(age)],              # data.table
+  times = 5                          # run 5 time to get more robust measurements
+) 
 
-country_tall_dt <- olympics_height[, .(avg_height =  mean(height)) , by=country][order(-avg_height)]
-
-
+# Filtering
+microbenchmark(
+  olympics_tbl %>% filter(height > 160),   # dplyr
+  olympics[height > 160],                  # data.table
+  times = 5
 )
 
-timecomp %>% group_by(expr) %>% summarise(mean(time))
 
-
-
+# Grouping
+microbenchmark(
+  olympics_tbl %>% group_by(athlete) %>% summarise(mean(height, na.rm=T)),  # dplyr
+  olympics[, .(mean(height, na.rm=T)), keyby=athlete],                      # data.table
+  times = 5
+) 
 ```
-
 
 
 
