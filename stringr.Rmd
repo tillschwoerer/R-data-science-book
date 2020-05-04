@@ -80,6 +80,8 @@ Vergleich von stringR mit base R. Inwiefern ergänzt stringR base R???
 
 StringR is a package, which deals with measuring strings, search in strings and also altering strings. StringR is thus mostly involved with data preprocessing, it can be also used to determine the frequency of words for example, which can be used in text mining.
 
+////[!!!] Hier sollte man vll. besonders interessante Methoden kurz vorstellen wie str_detect, da man diese nicht nur zum Anpassen von Strings nutzen kann, sondern auch in den meisten Daten, die Strings enthalten.
+
 ### Types of data, which could be used with stringR
 
 The use of stringR is dependent on which kind of data is available. If the data is a full text, that is e.g. the novel The Time Machine by H.G. Wells, then in text mining, you would tokenize that text (Silge Robinson 2017) and every word is put in another row, as you can see here:
