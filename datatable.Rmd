@@ -49,7 +49,7 @@ So what are the main differences between `data.table` and `tidyverse`? Why or wh
 - **Mutability:** data.tables are mutable, i.e. they can be changed in place. If this is a desired feature, then we might opt for data.tables.
 - **Quoted and unquoted names:** in data.tables we usually have the option to use either quoted column names (which makes writing functions easier) or unquoted column names (which is convenient for exploration). In dplyr the default is unquoted column names and it is a bit trickier to use quoted column names.
 
-Before we go into the details, let's start with two motivating examples of differences between data.table and tidyverse syntax. First, we want to know the 5 sports with the highest average weight of players in the 2017 summer olympic games.
+Before we go into the details, let's start with two motivating examples of differences between data.table and tidyverse syntax. First, we want to know the 5 sports with the highest average weight of players in the 2016 summer olympic games.
 ```{r}
 # data.table syntax is short
 olympics[game=="2016 Summer", .(weight = mean(weight, na.rm=T)), sport][order(-weight)][1:5]
@@ -89,10 +89,19 @@ class(olympics)   # We see that a data.table inherits properties of data.frames
 ### Subsetting rows
 We can condition on the rows one time, which gives us all swimmers.
 
+again, for repetition the code tidyverse syntax
+
+```{r eval=FALSE}
+swimmers <- olympics %>% filter(sport == "Swimming")
+```
+and in `data.table` syntax
 ```{r}
 class(olympics)
 swimmers <- olympics[sport == "Swimming"]
 ```
+
+
+
 
 and two or more times with the '&' operator ('|' operator for the logical or),for example all gold medal winners in swimming.
 
@@ -102,6 +111,11 @@ swimmers_gold <- olympics[sport == "Swimming" & medal == "Gold"]
 
 The colums can be treated like variables so the expression 'olympics$sport' is not necessary here but would work too. In additon we can select for the row numbers:
 
+tidyverse:
+```{r eval=FALSE}
+var <- swimmers %>% slice(1:5)
+```
+data.table
 ```{r}
 var <- swimmers[1:5]
 ```
@@ -111,11 +125,11 @@ This is especially useful after ordering the data:
 ```{r}
 height <- swimmers[order(height)]
 ```
-or in decreasing order
+or in decreasing order( here we pick the first element, so the tallest swimmer)
 ```{r}
-height <- swimmers[order(-height)]
+height <- swimmers[order(-height)][1:1]
 ```
-The order function, called on data.table objects calls the forder() function which is optimised on such objects. Counting rows is possible with different aproaches:
+The order function, called on data.table objects calls the internal `forder()` function which is optimised on such objects. Counting rows is possible with different aproaches:
 
 ```{r}
 usmedals <- olympics[sport == "Swimming" & !is.na(medal), length(medal)]
@@ -138,6 +152,14 @@ Or we can write the quoted column names inside the `c()` function.
 ```{r}
 swimmers[,  c("athlete", "medal")][1:5] #
 ```
+
+The tidyverse syntax for comparison was
+
+```{r eval=FALSE}
+swimmers %>% select("athlete", "medal")
+```
+
+
 
 This syntax also allows us to define the column in a separate step.
 ```{r}
@@ -210,6 +232,63 @@ Deleting an column by reference
 ```{r}
 spotify[, duration_ms := NULL]
 ```
+
+
+## Runtime comparision
+
+Let us now compare the runtime of some expression made in `data.table` and `tidyverse`. Performance differs depending on the type of operation, and will likely also depend on the size of the data set. Here we test separately sorting, filtering, and grouping/aggregating for our data set of about 270.000 observations. 
+
+
+```{r eval=FALSE}
+install.packages("microbenchmark")
+```
+
+
+```{r paged.print = FALSE}
+library(microbenchmark)              # package for performance comparisons
+olympics_tbl <- as_tibble(olympics)  # create a tibble to compare performance
+
+# Sorting
+microbenchmark(
+  olympics_tbl %>% arrange(age),     # dplyr
+  olympics[order(age)],              # data.table
+  times = 5                          # run 5 time to get more robust measurements
+) 
+
+# Filtering
+microbenchmark(
+  olympics_tbl %>% filter(height > 160),   # dplyr
+  olympics[height > 160],                  # data.table
+  times = 5
+)
+
+
+# Grouping
+microbenchmark(
+  olympics_tbl %>% group_by(athlete) %>% summarise(mean(height, na.rm=T)),  # dplyr
+  olympics[, .(mean(height, na.rm=T)), keyby=athlete],                      # data.table
+  times = 5
+) 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Further resources
 Here are links to further resources on the package `data.table`:
