@@ -18,6 +18,8 @@ All mentioned packages can be optained with the following commands.
 
 package.install("lubridate")
 package.install("tidyverse")
+
+TODO @Robert in use?
 package.install("time-series")
 
 If the have been installed previously in your environment, they might have to be called upon by using 
@@ -39,7 +41,7 @@ Three types of date/time data
 Sys.time() functions
 Time Formats
 
-## Application - Import, Clean Data / date-time
+## Application - Import, Clean date-time
 We will apply the lubridate package to Weather data from on stationary sensor in northern Germany, the weather station in Kiel-Holtenau to be more exact.
 
 Before we introduce the library, the prerequisites must be created.
@@ -51,12 +53,12 @@ library(ggplot2)        # data visualisation package (is actually part of tidyve
 ```
 A first step is to import the data, which is given in a csv-format. We will use the tidyverse version of read_csv to accomplish this step.
 
-The data will be called df in order to make reference in code an writing more efficient further down.
+The data will be called df (data.frame) in order to make reference in code an writing more efficient further down.
 
 This is the simple approach to read a file with suffix csv.
 ```{r}
 df <- read_csv("data/weather_kiel_holtenau.csv")
-head(df)
+head(df,5)
 ```
 All columns are recognized as double values.
 
@@ -66,33 +68,37 @@ Using the code generator of the data import tool it is possible to format the va
 
 ```{r}
 df <- read_csv("data/weather_kiel_holtenau.csv", 
-                                  col_types = cols(MESS_DATUM = col_datetime(format = "%Y%m%d%H%M"), 
+          col_types = cols(MESS_DATUM = col_datetime(format = "%Y%m%d%H%M"), 
                                                    NIEDERSCHLAGSDAUER = col_integer(), 
                                                    NIEDERSCHLAGSINDIKATOR = col_integer(), 
                                                    STATIONS_ID = col_integer()))
-head(df)
+head(df,5)
 ```
 We will examine the data further in a few seconds. At this point it should be mentioned againg that we generated the code to import the data by using the data import readr tool of RStudio. This tool allows a first look at the raw csv data before import and some tweaking of the variables and their classes. We left the locale portion of the import tool untouched as of now. 
 
 The following lines of Code import the same data in the MESS_DATUM column as a string of characters again and then calls a specific lubridate function (ymd) which basically recognizes the time format in the column given only very little information. In our case we only specify the order the date-time information is given, which is Year-Month-Day-Hour-Minute. The ymd_hm function only delivers the desired result however, if it is applied to a character string, which is why we chose to overwrite the dataset df with a new import procedure that makes sure that the column MESS_DATUM is given as a character after import.
 ```{r}
-df2 <- read_csv("data/weather_kiel_holtenau.csv", 
-    col_types = cols(MESS_DATUM = col_character(), 
-        NIEDERSCHLAGSINDIKATOR = col_integer(), 
-        STATIONS_ID = col_integer()))
-df2$MESS_DATUM <- ymd_hm(df2$MESS_DATUM)
-head(df2)
+df1 <- read_csv("data/weather_kiel_holtenau.csv", 
+          col_types = cols(
+            MESS_DATUM = col_character(), 
+            NIEDERSCHLAGSINDIKATOR = col_integer(), 
+            STATIONS_ID = col_integer()))
+df1$MESS_DATUM <- ymd_hm(df1$MESS_DATUM)
+head(df1,5)
 ```
 As can be seen above, the MESS_DATUM is now in a POSIXct format again, which is what will be needed for further calculations and analysis of the data set.
 
 Alternatively you could use the follwing parsing function to achieve the same result. Note that the parse_date_time function needs a timestamp to be in character format to work, as well.
 ```{r}
-df3 <- read_csv("data/weather_kiel_holtenau.csv", 
+df2 <- read_csv("data/weather_kiel_holtenau.csv", 
     col_types = cols(MESS_DATUM = col_character()))
-df3$MESS_DATUM <- parse_date_time(df3$MESS_DATUM, orders ="Ymd HM")
-head(df3)
+df2$MESS_DATUM <- parse_date_time(df2$MESS_DATUM, orders ="Ymd HM")
+head(df2,5)
 ```
-OK we have successfully formated the time-stamp data into a productive date-time format. The next steps are a check and elimination procedure to eliminate missing values (NAs) from the dataset, 
+OK we have successfully formated the time-stamp data into a productive date-time format. 
+
+## Application - Check and modify data
+The next steps are a check and elimination procedure to eliminate missing values (NAs) from the dataset, 
 if some observations might have failed to generate data successfully.
 ```{r}
 df %>% 
@@ -115,17 +121,57 @@ At this point we have managed to create a tidy data set and we can now proceed t
 A look at the end of the table by the "tail" function and a glimpse at the data confirm, that we are only dealing with data from one sensor (= station), therefore we should now examine the other variables.
 ```{r}
 range(df$STATIONS_ID)                             # This confirms: We are only dealing with data from one weather sensor in the whole data set.
-range(df$TEMPERATUR)                              # We have a range of temperatues between -2.5 and +32.1 degrees celius.
+range(df$TEMPERATUR)                              # We have a range of temperatues between -2.5 and +32.1 degrees  celius and contains no NULL-Value or NA
 range(df$RELATIVE_FEUCHTE)                        # Delivers an unexpected range, where the minimum is -999 and the maximum is +100. Both values are either not possible (-999) or only of theoretic value (100)
 range(df$NIEDERSCHLAGSDAUER)                      # This delivers a minimum of -999 and an expected maximum of 10 (minutes in a 10 minute interval).
 range(df$NIEDERSCHLAGSHOEHE)                      # Again the range shows a minimum at -999 and a maximum of 7.85 which has to be interpreted as mm which equals litres per square meter (6 x 7.85 = 47.1/h = torrential)
 range(df$NIEDERSCHLAGSINDIKATOR)                  # A look at the data seems to give either a 1 or a 0 for this variable, i.e. it rained or it didn't. -999 must be interpreted as a failed observation
 ```
-We have failed observations in a number of variables which have to be erased from the data frame in order to get tidy data, this can be accomplished with the following code snippet:
+We found observations in a number of variables that would need to be deleted from the data frame to get decent data.
+Based on our knowledge, we have decided that the following columns are only considered if the NIEDERSCHLAGSINDIKATOR is set to 1.  This column is like a switch for the columns.
+The following columns depend on the indicator value:
+- NIEDERSCHLAGSDAUER
+- NIEDERSCHLAGSHOEHE
+
+This can be accomplished with the following code snippet:
 ```{r}
-# TODO:intelligent approach @MARCUS add Tally, ifelse routine to eliminate -999 or replace by 0
+values_of_ind <- df %>% 
+  group_by(NIEDERSCHLAGSINDIKATOR) %>%
+  tally()
+head(values_of_ind)
 ```
-We now have clean and tidy data and begin with interpretation and exploration.
+Now we modified the NIEDERSCHLAGSINDIKATOR for upcoming analyzes.
+```{r}
+df$NIEDERSCHLAGSINDIKATOR <- ifelse(df$NIEDERSCHLAGSINDIKATOR == -999, 0, df$NIEDERSCHLAGSINDIKATOR)
+value_of_ind_n <- df %>% 
+  group_by(NIEDERSCHLAGSINDIKATOR) %>%
+  tally()
+head(value_of_ind_n)
+```
+
+
+The column RELATIVE_FEUCHTE must also be adjusted.
+The negative values are set to 0.
+```{r}
+values_of_rel <- df %>% 
+  group_by(RELATIVE_FEUCHTE) %>%
+  filter(RELATIVE_FEUCHTE < 0) %>%
+  tally()
+head(values_of_rel)
+```
+
+```{r}
+df$RELATIVE_FEUCHTE <- ifelse(df$RELATIVE_FEUCHTE == -999, 0, df$RELATIVE_FEUCHTE)
+values_of_rel_n <- df %>% 
+  group_by(RELATIVE_FEUCHTE) %>%
+  tally()
+view(values_of_rel_n)
+```
+
+
+
+## Application - Before Exploration
+We have clean and tidy data and begin with interpretation and exploration.
 
 The "TEMPERATUR" is given in degrees Celsius, the "RELATIVE-FEUCHTE" is a percentage Value for humidity which refers to the degree of water saturation that is prevalent in the air at a given temperature. As temperature increases, the air can absorb larger amounts of water, hence the relativity of humidity.
 
@@ -140,9 +186,11 @@ The next variable is simply a binary expression of rainfall (1) or no rainfall (
 
 Ágain: Since the sensor has taken a snapshot every 10 minutes, we have six observations per hour.
 
+## Application - Exploration - Analysis
+Calculate Average Temperatures (d/m/season/y) Calculate Averages for humdity, rainfall etc. Plus many more insights, that are not apparent at this draft stage.
+
 The first variable of interest should be "TEMPERATUR". A quick visualisation delivers this picture:
 ```{r}
-library(ggplot2)
 ggplot(df)+
   geom_point(aes(MESS_DATUM, TEMPERATUR), colour = "red", size = 0.1)
 ```
@@ -260,23 +308,108 @@ ggplot(df_av_temp_MONAT)+
 Which is the kind of temperature curve we would expect to see in a north German location like Kiel with a clear pattern of 3 months of summer with high average temperatures.
 It is interesting to note that April 2020 is apparently much warmer on average than 2019. The dimension indicates a difference of about 2 degrees celsius.
 
+### Intervals
+To check the results, it is advisable to consider small periods of time that the human eye can quickly see.
+
+Only when the expected results have been achieved for a short period do we consider the next largest period, e.g. Week, month, quarter and year.
+
 ACHTUNG: Hier könnte jetzt die Betrachtung von Intervallen als Anwendung auf die Jahreszeiten folgen. 
 @MARCUS - Dein folgender Code würde zumindest schnell eine durchschnittsstemperatur für die jeweilige Jahreszeit liefern. Es müsste dann halt noch in einer Tabelle zusammengeführt werden.
 
-```{r eval=FALSE}
-df_avg1 <- df_group %>% 
-  summarise(avg = mean(TEMPERATUR)) %>% 
-  arrange( STATIONS_ID , TAG , STUNDE)
-
+```{r}
 tag_int <- interval(ymd("2020-03-01"), ymd("2020-03-02"))
-df_avg1 <- df_a3 %>%
-  filter(MESS_DATUM >= int_start(tag_int) & MESS_DATUM <= int_end(tag_int))
-
-df_group <- df_avg1 %>% 
-  group_by(STATIONS_ID , hour(MESS_DATUM) , day(MESS_DATUM) ) %>% 
-  rename( "STUNDE" = 'hour(MESS_DATUM)', "TAG" = 'day(MESS_DATUM)' ) 
 
 ```
+
+### Group 
+The following GROUP_BY command creates a unique grouping per hour and then calculates the average temperature for every hour, then pastes this value into each observation per hour.
+```{r}
+df_sel <- df %>%
+  filter(MESS_DATUM >= int_start(tag_int) & MESS_DATUM <= int_end(tag_int))
+df_group <- df_sel %>% 
+  group_by(STATIONS_ID , hour(MESS_DATUM) , day(MESS_DATUM) ) 
+head(df_group, 10)
+
+```
+
+The columns can be renamed after a Group-By with rename function.
+```{r}
+df_group <- df_sel %>% 
+  group_by(STATIONS_ID , hour(MESS_DATUM) , day(MESS_DATUM) ) %>% 
+  rename( "STUNDE" = 'hour(MESS_DATUM)', "TAG" = 'day(MESS_DATUM)' ) 
+head(df_group, 10)
+
+```
+
+The columns can also be renamed directly in Group-By.
+
+```{r}
+df_group <- df_sel %>% 
+  group_by(STATIONS_ID , STUNDE = hour(MESS_DATUM) , TAG = day(MESS_DATUM) ) 
+head(df_group, 5)
+
+```
+
+Now we can filter the data by year, month, week, day and hour of the day. This should give us possibilities to aggregate.
+
+### periods and duration
+The seasons align with the records.
+
+```{r}
+season_19_spring <- ymd_hm("2019-03-20 22:58", tz="CET")
+print(season_19_spring)
+season_19_summer <- ymd_hm("2019-06-21 17:54", tz="CET")
+print(season_19_summer)
+season_19_autumn <- ymd_hm("2019-09-23 09:50", tz="CET")
+print(season_19_autumn)
+season_19_winter <- ymd_hm("2019-12-22 05:19", tz="CET")
+print(season_19_winter)
+season_20_spring <- ymd_hm("2020-03-20 04:49", tz="CET")
+print(season_20_spring)
+# Target Duration => works fine!
+season_20_spring_dur <- season_20_spring + ddays(92) + dhours(17) + dminutes(54)
+print(season_20_spring_dur)
+# Target Periode
+season_20_spring_p <- season_20_spring + days(92) + hours(17) + minutes(54)
+print(season_20_spring_p)
+```
+The expected date begin for summer 2020, (Sonnenwende Juni) 20. Juni 2020 23:43 MEZ, comes from the duration(season_20_spring_dur) and not the period (season_20_spring_p).
+The periods has a difference of one hour to a duration.
+
+### Average temperature for a day
+In principle, no indicator has to be used to determine the average temperature, since the value is completely in the data frame.
+```{r}
+df_avg1 <- df_group %>% 
+  summarise(avg = mean(TEMPERATUR)) %>% 
+  arrange( STATIONS_ID , TAG , STUNDE) %>%
+  view()  
+```
+
+### Sum with condition
+The situation is different with the duration of precipitation. 
+The indicator must be used here to determine the duration.
+
+without indicator
+```{r}
+df_sum1 <- df_group %>% 
+  summarise(sum(NIEDERSCHLAGSDAUER)) %>% 
+  arrange( STATIONS_ID , TAG, STUNDE) %>%
+  view()
+```
+
+with indicator and renamed column
+```{r}
+df_sum2 <- df_group %>% 
+  summarise(MENGE = sum(NIEDERSCHLAGSDAUER[NIEDERSCHLAGSINDIKATOR==1])) %>% 
+  arrange( STATIONS_ID , TAG, STUNDE) %>%
+  view()
+```
+
+(Idea - check, if data is openly available as well. This could lead to an excurse about how to generate a raw dataset from this weatherstation.)
+
+
+
+### Chapter XXx
 What we can say at this point is that the temperatures in the City of Kiel have a clear seasonal pattern, but remain highly volatile intra-day and inter-day.
 Weather however is not just defined as temperature, but humidity and precipitation play an integral role of our sensation and definition of weather as well.
 
