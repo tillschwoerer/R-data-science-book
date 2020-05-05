@@ -128,9 +128,8 @@ range(df$NIEDERSCHLAGSHOEHE)                      # Again the range shows a mini
 range(df$NIEDERSCHLAGSINDIKATOR)                  # A look at the data seems to give either a 1 or a 0 for this variable, i.e. it rained or it didn't. -999 must be interpreted as a failed observation
 ```
 We found observations in a number of variables that would need to be deleted from the data frame to get decent data.
-Based on our knowledge, we have decided that the following columns are only considered if the NIEDERSCHLAGSINDIKATOR is set to 1.  This column is like a switch for the columns 
+Based on our knowledge, we have decided that the following columns are only considered if the NIEDERSCHLAGSINDIKATOR is set to 1.  This column is like a switch for the columns.
 The following columns depend on the indicator value:
-- RELATIVE_FEUCHTE
 - NIEDERSCHLAGSDAUER
 - NIEDERSCHLAGSHOEHE
 
@@ -144,11 +143,32 @@ head(values_of_ind)
 Now we modified the NIEDERSCHLAGSINDIKATOR for upcoming analyzes.
 ```{r}
 df$NIEDERSCHLAGSINDIKATOR <- ifelse(df$NIEDERSCHLAGSINDIKATOR == -999, 0, df$NIEDERSCHLAGSINDIKATOR)
-auswertung <- df %>% 
+value_of_ind_n <- df %>% 
   group_by(NIEDERSCHLAGSINDIKATOR) %>%
   tally()
-head(auswertung)
+head(value_of_ind_n)
 ```
+
+
+The column RELATIVE_FEUCHTE must also be adjusted.
+The negative values are set to 0.
+```{r}
+values_of_rel <- df %>% 
+  group_by(RELATIVE_FEUCHTE) %>%
+  filter(RELATIVE_FEUCHTE < 0) %>%
+  tally()
+head(values_of_rel)
+```
+
+```{r}
+df$RELATIVE_FEUCHTE <- ifelse(df$RELATIVE_FEUCHTE == -999, 0, df$RELATIVE_FEUCHTE)
+values_of_rel_n <- df %>% 
+  group_by(RELATIVE_FEUCHTE) %>%
+  tally()
+view(values_of_rel_n)
+```
+
+
 
 ## Application - Before Exploration
 We have clean and tidy data and begin with interpretation and exploration.
@@ -227,7 +247,7 @@ df_group_Stunde <- df %>%
 
 df_av_temp_Stunde  <- df_group_Stunde %>%
   summarise(AVGTEMPH = mean(TEMPERATUR)) %>%
-  arrange(STATIONS_ID, JAHR, MONAT, EKW, JTAG, STUNDE)%>%
+  arrange(STATIONS_ID, JAHR, MONAT, EKW, JTAG, STUNDE)
 ```
 This newly created table has reduced the number of observations by the factor 6 to 8,784 and reveals the average temperature per hour.
 Let's plot the data again as hourly temperature averages per day:
@@ -297,24 +317,64 @@ ACHTUNG: Hier könnte jetzt die Betrachtung von Intervallen als Anwendung auf di
 @MARCUS - Dein folgender Code würde zumindest schnell eine durchschnittsstemperatur für die jeweilige Jahreszeit liefern. Es müsste dann halt noch in einer Tabelle zusammengeführt werden.
 
 ```{r}
-day_int <- interval(ymd("2020-03-01"), ymd("2020-03-02"))
-df_avg1 <- df %>%
-  filter(MESS_DATUM >= int_start(day_int) & MESS_DATUM <= int_end(day_int))
+tag_int <- interval(ymd("2020-03-01"), ymd("2020-03-02"))
 
-df_group <- df_avg1 %>% 
+```
+
+### Group 
+The following GROUP_BY command creates a unique grouping per hour and then calculates the average temperature for every hour, then pastes this value into each observation per hour.
+```{r}
+df_sel <- df %>%
+  filter(MESS_DATUM >= int_start(tag_int) & MESS_DATUM <= int_end(tag_int))
+df_group <- df_sel %>% 
+  group_by(STATIONS_ID , hour(MESS_DATUM) , day(MESS_DATUM) ) 
+head(df_group, 10)
+
+```
+
+The columns can be renamed after a Group-By with rename function.
+```{r}
+df_group <- df_sel %>% 
   group_by(STATIONS_ID , hour(MESS_DATUM) , day(MESS_DATUM) ) %>% 
   rename( "STUNDE" = 'hour(MESS_DATUM)', "TAG" = 'day(MESS_DATUM)' ) 
+head(df_group, 10)
 
-head(df_group, 5)
 ```
+
 The columns can also be renamed directly in Group-By.
 
 ```{r}
-df_group_2 <- df_avg1 %>% 
+df_group <- df_sel %>% 
   group_by(STATIONS_ID , STUNDE = hour(MESS_DATUM) , TAG = day(MESS_DATUM) ) 
+head(df_group, 5)
 
-head(df_group_2, 5)
 ```
+
+Now we can filter the data by year, month, week, day and hour of the day. This should give us possibilities to aggregate.
+
+### periods and duration
+The seasons align with the records.
+
+```{r}
+season_19_spring <- ymd_hm("2019-03-20 22:58", tz="CET")
+print(season_19_spring)
+season_19_summer <- ymd_hm("2019-06-21 17:54", tz="CET")
+print(season_19_summer)
+season_19_autumn <- ymd_hm("2019-09-23 09:50", tz="CET")
+print(season_19_autumn)
+season_19_winter <- ymd_hm("2019-12-22 05:19", tz="CET")
+print(season_19_winter)
+season_20_spring <- ymd_hm("2020-03-20 04:49", tz="CET")
+print(season_20_spring)
+# Target Duration => works fine!
+season_20_spring_dur <- season_20_spring + ddays(92) + dhours(17) + dminutes(54)
+print(season_20_spring_dur)
+# Target Periode
+season_20_spring_p <- season_20_spring + days(92) + hours(17) + minutes(54)
+print(season_20_spring_p)
+```
+The expected date begin for summer 2020, (Sonnenwende Juni) 20. Juni 2020 23:43 MEZ, comes from the duration(season_20_spring_dur) and not the period (season_20_spring_p).
+The periods has a difference of one hour to a duration.
 
 ### Average temperature for a day
 In principle, no indicator has to be used to determine the average temperature, since the value is completely in the data frame.
@@ -323,28 +383,6 @@ df_avg1 <- df_group %>%
   summarise(avg = mean(TEMPERATUR)) %>% 
   arrange( STATIONS_ID , TAG , STUNDE) %>%
   view()  
-```
-
-
-Now we can filter the data by year, month, week, day and hour of the day. This should give us possibilities to aggregate.
-The following GROUP_BY command creates a unique grouping per hour and then calculates the average temperature for every hour, then pastes this value into each observation per hour.
-
-Durchschnittstemperatur
-TODO Funktion?
-```{r}
-df_avg1 <- df_group %>% 
-  summarise(avg = mean(TEMPERATUR)) %>% 
-  arrange( STATIONS_ID , TAG , STUNDE) %>%
-  view()  
-```
-
-Bei Temperatur muss kein Indikator benutzt werden.
-TODO Abgleich zw. beiden Ansätzen für eien Tag?
-```{r}
-df %>%
-  group_by(JAHR, JTAG, STUNDE) %>%
-  mutate(DSTEMP = mean(TEMPERATUR)) %>% # führt eine neue Spalte mit den Durchschnittstemperaturen des jeweiligen Stunde ein - und verhindert Doppelungen
-  view()
 ```
 
 ### Sum with condition
