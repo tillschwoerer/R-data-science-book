@@ -199,7 +199,7 @@ df_group_Stunde <- df %>%
 
 df_av_temp_Stunde  <- df_group_Stunde %>%
   summarise(AVGTEMPH = mean(TEMPERATUR)) %>%
-  arrange(STATIONS_ID, JAHR, MONAT, EKW, JTAG, STUNDE)%>%
+  arrange(STATIONS_ID, JAHR, MONAT, EKW, JTAG, STUNDE)
 ```
 This newly created table has reduced the number of observations by the factor 6 to 8,784 and reveals the average temperature per hour.
 Let's plot the data again as hourly temperature averages per day:
@@ -263,7 +263,11 @@ It is interesting to note that April 2020 is apparently much warmer on average t
 ACHTUNG: Hier könnte jetzt die Betrachtung von Intervallen als Anwendung auf die Jahreszeiten folgen. 
 @MARCUS - Dein folgender Code würde zumindest schnell eine durchschnittsstemperatur für die jeweilige Jahreszeit liefern. Es müsste dann halt noch in einer Tabelle zusammengeführt werden.
 
-```{r}
+```{r eval=FALSE}
+df_avg1 <- df_group %>% 
+  summarise(avg = mean(TEMPERATUR)) %>% 
+  arrange( STATIONS_ID , TAG , STUNDE)
+
 tag_int <- interval(ymd("2020-03-01"), ymd("2020-03-02"))
 df_avg1 <- df_a3 %>%
   filter(MESS_DATUM >= int_start(tag_int) & MESS_DATUM <= int_end(tag_int))
@@ -272,10 +276,6 @@ df_group <- df_avg1 %>%
   group_by(STATIONS_ID , hour(MESS_DATUM) , day(MESS_DATUM) ) %>% 
   rename( "STUNDE" = 'hour(MESS_DATUM)', "TAG" = 'day(MESS_DATUM)' ) 
 
-df_avg1 <- df_group %>% 
-  summarise(avg = mean(TEMPERATUR)) %>% 
-  arrange( STATIONS_ID , TAG , STUNDE) %>%
-  view()  
 ```
 What we can say at this point is that the temperatures in the City of Kiel have a clear seasonal pattern, but remain highly volatile intra-day and inter-day.
 Weather however is not just defined as temperature, but humidity and precipitation play an integral role of our sensation and definition of weather as well.

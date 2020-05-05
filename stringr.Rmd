@@ -40,7 +40,7 @@ tm_text <- gutenberg_download(35)
 
 #Loading and formatting of the data set
 
-recipes <- read_csv("GitHub/R-data-science-book/data/recipes.csv")
+recipes <- read_csv("data/recipes.csv")
 
 str(recipes)
 
