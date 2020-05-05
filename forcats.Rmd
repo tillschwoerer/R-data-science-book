@@ -9,7 +9,8 @@ Resources:
 - [Chapter in R4DS](https://r4ds.had.co.nz/factors.html)
 - [Vignette](https://forcats.tidyverse.org/articles/forcats.html)
 
-In this chapter we use the demo data set "diamonds" from the ggplot2-package ([more information](https://ggplot2.tidyverse.org/reference/diamonds.html)) as well as a dataset "olympic-games" which shows the medal success of olympic athletes from 1896 to 2016. For the latter we focus on the summer games 1896 and the winter games 1924 for practical reasons. Before you start reading, you should have read the chapter ***Wrangling Data: dplyr*** or  be familiar with this field. 
+In this chapter we use the demo data set `diamonds` from the ggplot2-package ([more information](https://ggplot2.tidyverse.org/reference/diamonds.html)) as well as a dataset `olympic-games` which shows the medal success of olympic athletes from 1896 to 2016. For the latter we focus on the summer games 1896 and the winter games 1924 for practical reasons.  
+Before you start reading, you should have read the chapter ***Wrangling Data: dplyr*** or  be familiar with this field. 
 
 ```{r message=FALSE, warning=FALSE, paged.print=TRUE}
 library(tidyverse)                                     # the package tidyverse contains all libraries necessary for this chapter
@@ -23,8 +24,8 @@ head(olympic, 2)                                       # Have a short look at th
 ### Create
 Basically two things are needed to create a factor:
 
-1. a vector which contains the values to be analyzed
-2. another vector which divides the values into levels
+1. a vector which contains the **values** to be analyzed
+2. another vector which divides the values into **levels**
 
 As an example we will use the column `clarity` of the diamonds dataset.
 It is a categorical evaluation of the clarity of a diamond and a subset of the grades according to the Gemological Institute of America (GIA) grading system. The grades according to GIA read as follows:
@@ -49,7 +50,7 @@ If you are interested in the distribution of the diamonds in this category, you 
 diamonds %>%
   group_by(clarity) %>%
   count() %>%              # count the number of observations per clarity grade
-  ggplot(aes(clarity, n)) +
+  ggplot(aes(x = n, y = clarity)) +
   geom_col()
 ```
 
@@ -59,12 +60,12 @@ A sorting of the x-axis, which follows the order of the grades as shown in the t
 levels_clarity <- c("I1", "SI2", "SI1", "VS2", "VS1", "VVS2", "VVS1", "IF")
 ```
 
-In the next step we lay this newly created levels vector on the column `clarity` of our data set to create a factor. `factor()` is a base-R function.
+In the next step we lay this newly created levels vector on the column `clarity` of our data set to create a factor. The function `factor()` is a base-R function.
 
 ```{r}
 factor_clarity <- factor(x = diamonds$clarity, levels = levels_clarity)
 ```
-`factor_clarity` consists solely of the `clarity` column of the original `diamonds` data set.
+The factor `factor_clarity` consists solely of the `clarity` column of the original `diamonds` data set.
 
 Another possibility to create a factor is to convert a vector using `as_factor()`. Here the levels are created automatically. Their order however depends on the appearance of the corresponding value in the source vector.
 
@@ -75,62 +76,68 @@ as_factor(diamonds$clarity) %>%
 
 
 ### Count values per level
-Now we repeat the analysis of the distribution within our dataset using the created factor. The function `fct_count()` returns the frequency of a categorical value within a factor. The order of the levels remains unchanged.
-
+Now we repeat the analysis of the distribution within our dataset using the created factor with the levels in correct order. The function `fct_count()` returns the frequency of a categorical value within a factor. The order of the levels remains unchanged.
 ```{r}
 fct_count(factor_clarity) %>%
-  ggplot(aes(clarity, n)) +          #the definition of aes. mapping in this line is only used to label the axes
-  geom_col(aes(f, n))
+  ggplot(aes(x = n, y = clarity)) +          #the definition of aes. mapping in this line is only used to label the axes
+  geom_col(aes(x = n, y = f))
 ```
 
-It becomes obvious that the distribution can now be displayed in the desired order (by valence). Functions of the package forcats always start with the prefix `fct_`. 
+It becomes obvious that the distribution can now be displayed in the desired order (by order of levels).  Functions of the package forcats always start with the prefix `fct_`. 
 
 ### <a name="Inspect-and-set-levels"></a>Inspect and set levels
-With the function `levels()` the levels of a factor can be both read and defined. **But be aware:** this can only be used to change the names, not the order of the levels. The base-R function `unclass()` gives information about the internal memory structure of a factor.
+With the function `levels()` the levels of a factor can be both read and renamed. **But be aware:** this can only be used to change the names, not the order of the levels. The base-R function `unclass()` gives information about the internal memory structure of a factor.
 
 ```{r}
-factor_clarity %>% levels()                   #shows the original levels of our factor
-factor_clarity[1:25] %>% unclass()            #shows the internal structure
-#remain the semantic order but replace the technical jargon with something understandable
+factor_clarity %>% 
+  levels()                   #shows the original levels of our factor
+factor_clarity[1:25] %>% 
+  unclass()            #shows the internal structure
+#keep the order on levels but replace the technical GIA jargon with something understandable
 levels_clarity_c <- c("c8", "c7", "c6", "c5", "c4", "c3", "c2", "c1")
-levels(factor_clarity) <- levels_clarity_c   
-factor_clarity %>% head(25)
+levels(factor_clarity) <- levels_clarity_c
+
+factor_clarity %>% 
+  head(25)
 ```
 
 ### Inspect unique values 
 The function `fct_unique()` can be used to output unique values of a factor. In contrast to the base-R function `unique()` the values are returned in the order of the levels and not in the order of their appearance.
 
 ```{r}
-factor_clarity %>% fct_unique()
-factor_clarity %>% unique()
+factor_clarity %>% 
+  fct_unique()
+factor_clarity %>% 
+  unique()
 ```
 
 ## Combine factors
 ### Combine factors with different levels
-With the function `fct_c()` factors with different levels can be combined to one factor covering all levels. First we create two factors. The first one shows the amount of contested disciplines by several countries during the olympic sommer games 1896. The second one shows the amount of contested disciplines by countries during the olympic winter games 1924.
-Note, that the default option for the `levels` argument in `factor()` is a sorted set of the given values. As R sorts characters lexicographically. the corresponding levels are the countries sorted alphabetically from A to Z.
+With the function `fct_c()` factors with different levels can be combined to one factor covering all levels. First we create two factors. The first one shows the amount of contested disciplines by several countries during the Summer Olympic Games 1896. The second one shows the amount of contested disciplines by countries during the Winter Olympic Games 1924.
 ```{r}
-olympic_1896 <- olympic %>% filter(game == "1896 Summer")
+olympic_1896 <- olympic %>% 
+  filter(game == "1896 Summer")
 # Using default option for `levels` argument in factor()
 countries_in_1896 <- factor(olympic_1896$country)
 
-olympic_1924 <- olympic %>% filter(game == "1924 Winter")
+olympic_1924 <- olympic %>% 
+  filter(game == "1924 Winter")
 # The default option for the `levels` argument in factor
 countries_in_1924 <- factor(olympic_1924$country)
 ```
-
-The factors differ both in their stored categorical data and in their set levels. A plot makes this clear:
+Note that the default option for the `levels` argument in `factor()` is a sorted set of the given values. As R sorts characters lexicographically, the corresponding levels are the countries sorted alphabetically *from A to Z*.
+The factors differ both in their stored values and in their levels. A plot makes this clear:
 
 ```{r}
 countries_in_1896 %>%
   fct_count() %>%
-  ggplot(aes(`amount of disciplines`, country))+
-  geom_col(aes(n, f))
+  ggplot(aes(x = `amount of disciplines`, y = country))+
+  geom_col(aes(x = n, y = f))
 
 countries_in_1924 %>%
   fct_count() %>%
-  ggplot(aes(`amount of disciplines`, country))+
-  geom_col(aes(n, f))
+  ggplot(aes(x = `amount of disciplines`, y = country))+
+  geom_col(aes(x = n, y = f))
 ```
 
 Now we combine the factors with `fct_c()` and plot it:
@@ -138,53 +145,50 @@ Now we combine the factors with `fct_c()` and plot it:
 ```{r}
 fct_c(countries_in_1896, countries_in_1924) %>%
   fct_count() %>%
-  ggplot(aes(`amount of disciplines`, country))+
-  geom_col(aes(n,f))
+  ggplot(aes(x = `amount of disciplines`, y = country))+
+  geom_col(aes(x = n, y = f))
 ```
 
-Both the underlying categorical data and the defined levels were combined in one factor.
+Both the underlying values and the levels were combined into one factor.
 
 ### Standardise levels of various factors
-With the function `fct_unify()` the levels of different factors can be standardised. Please note, both input and output are in list form.
+With the function `fct_unify()` the levels of different factors can be standardised. The resulting output factors will retain their values, but all will have the same levels. Please note, both input and output are in list form.
 ```{r}
 factor_list <- fct_unify(list(countries_in_1896, countries_in_1924))
 
 # plotting the first factor
 factor_list[[1]] %>%
   fct_count() %>%
-  ggplot() + 
-  geom_col(aes(n, f))
+  ggplot(aes(x = `amount of disciplines`, y = country)) + 
+  geom_col(aes(x = n, y = f))
 
 # plotting the second factor
 factor_list[[2]] %>%
   fct_count() %>%
-  ggplot() + 
-  geom_col(aes(n, f))
+  ggplot(aes(x = `amount of disciplines`, y = country)) + 
+  geom_col(aes(x = n, y = f))
 ```
 
-In this case, the underlying categorical data was left unchanged for both factors, but the levels were standardised. This is especially useful when comparing the categorical data of two different factors. 
+In this case, the underlying values were left unchanged for both factors, but the levels were standardised. This is especially useful when comparing the values of two different factors. 
 
 ## Order of levels
 ### <a name="manual-reordering"></a>Manual reordering of levels
-With the function `fct_relevel()` the levels of a factor can be reordered. In contrast to the function `levels()`, which only allows the renaming of factor levels, `fct_relevel()` also adjusts the order of the levels themselves, that is the way they are stored internally. An example should clarify this.
+With the function `fct_relevel()` the levels of a factor can be manually reordered. In contrast to the function `levels()`, which only allows the renaming of factor levels, `fct_relevel()` also adjusts the order of the levels themselves, that is the way they are stored internally. An example should clarify this.
 
 ```{r}
 # have a look at the original levels
 factor_clarity %>% 
   fct_count()
-# The wrong approach (this is semantical wrong):
-levels(factor_clarity) <- c("c1","c3","c5","c7","c2","c4","c6","c8")
-factor_clarity %>% 
-  fct_count()
-#tidy up
-levels(factor_clarity) <- levels_clarity_c
-# The right approach:
+
+# reorder levels according to new_oder:
+new_order <- c("c1","c3","c5","c7","c2","c4","c6","c8")
+
 factor_clarity %>%
-  fct_relevel(c("c1","c3","c5","c7","c2","c4","c6","c8")) %>%
+  fct_relevel(new_order) %>% 
   fct_count()
 ```
 
-As you can see, only the function `fct_relevel()` allows a correct relevel.
+Keep in mind, only the function `fct_relevel()` allows a correct manual releveling, while `levels()` only allows to change the levels' names.
 
 ### Reordering by frequency
 Especially for plots it is often useful to orient the order of the levels on the frequency of the corresponding values. The function `fct_infreq()` allows exactly this. Plotting the unsorted factor leads to a difficult readability.
@@ -192,36 +196,37 @@ Especially for plots it is often useful to orient the order of the levels on the
 ```{r}
 countries_in_1896 %>%
   fct_count() %>%
-  ggplot(aes(n, f)) +
-  geom_col()
+  ggplot(aes(x = `amount of disciplines`, y = country)) + 
+  geom_col(aes(x = n, y = f))
 ```
 
 The better approach is to sort the data before plotting.
 
 ```{r}
+#insert fct_infreq() to get the data ordered
 countries_in_1896 %>%
-  fct_infreq() %>%    #insert fct_infreq() to get the data ordered
+  fct_infreq() %>%    
   fct_count() %>%
-  ggplot(aes(n, f)) +
-  geom_col()
+  ggplot(aes(x = `amount of disciplines`, y = country)) + 
+  geom_col(aes(x = n, y = f))
 ```
 
 ### Reordering by appearance 
-The package `forcats` offers with the function `fct_inorder()` the possibility to orientate the order of the levels of a factor to the occurence of the corresponding categorical data in the data set. To make this clear, we take a look at the unique values with the first 20 entries in the corresponding data set:
+The package forcats offers with the function `fct_inorder()` the possibility to orientate the order of the levels of a factor to the occurence of the corresponding values in the data set. To make this clear, we take a look at the first 15 entries in the corresponding data set:
 
 ```{r}
 olympic_1896$country %>%
-  head(20) %>%
-  unique()
+  head(15)
 ```
 
-Create a factor in the appropriate order of levels:
+Create a factor with levels in the order of the appearance shown above:
 
 ```{r}
 olympic_1896$country %>%
   fct_inorder() %>%
   levels()
 ```
+In this example the same result can be obtained using the function `as_factor()`. However the function `fct_inorder()` can also be applied to already existing factors.
 
 ### Reverse level order
 The function `fct_rev()` reverses the existing order of the levels of a factor. First have a look at the original order:
@@ -229,9 +234,10 @@ The function `fct_rev()` reverses the existing order of the levels of a factor. 
 countries_in_1896 %>%
   fct_infreq() %>%    #insert fct_infreq() to get the data ordered
   fct_count() %>%
-  ggplot(aes(n, f)) +
-  geom_col()
+  ggplot(aes(x = `amount of disciplines`, y = country)) + 
+  geom_col(aes(x = n, y = f))
 ```
+
 Now we reverse the order:
 
 ```{r}
@@ -239,8 +245,8 @@ countries_in_1896 %>%
   fct_infreq() %>%    #insert fct_infreq() to get the data ordered
   fct_rev() %>%       #insert fct_rev() to reverse this order
   fct_count() %>%
-  ggplot(aes(n, f)) +
-  geom_col()
+  ggplot(aes(x = `amount of disciplines`, y = country)) + 
+  geom_col(aes(x = n, y = f))
 ```
 
 ### Shift levels
@@ -252,8 +258,8 @@ countries_in_1896 %>%
   fct_infreq() %>%          #insert fct_infreq() to get the data ordered
   fct_shift(n = -1L) %>%    #insert fct_shift() to shift levels
   fct_count() %>%
-  ggplot(aes(n, f)) +
-  geom_col()
+  ggplot(aes(x = `amount of disciplines`, y = country)) + 
+  geom_col(aes(x = n, y = f))
 ```
 
 ### Randomly permute levels
