@@ -502,13 +502,4 @@ This plot shows the dryer monts during the summer as having a lot more hours wit
 ## Wrap up - outlook date-time / time-series
 As we have seen earlier, plain vanilla regression is mostly useless for date-time data = timeseries data. If we would want to make another approach at getting more meaning out of the data we would have to use time-series classes of R.
 
-A quick dip into time series might drive this point home. Let's pull a selection of variables from the data frame (df):
-```{r selecting variables for time-series operation, echo=FALSE}
-dfts <- df %>%
-select(TEMPERATUR)
-myts <- dfts %>% 
-  ts(start=c(2019-04-14), end=c(2020-04-13) frequency = 144)
-```
-
-
 What potential problems have not been adressed? (Time series package? etc?)
