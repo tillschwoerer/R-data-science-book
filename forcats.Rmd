@@ -94,7 +94,7 @@ fct_count(factor_clarity) %>%
 
 It becomes obvious that the distribution can now be displayed in the desired order (by order of levels).  Functions of the package forcats always start with the prefix `fct_`. 
 
-### <a name="Inspect-and-set-levels"></a>Inspect and set levels
+### Inspect and set levels {#Inspect-and-set-levels}
 With the function `levels()` the levels of a factor can be both read and renamed. **But be aware:** this can only be used to change the names, not the order of the levels. The base-R function `unclass()` gives information about the internal memory structure of a factor.
 
 ```{r}
@@ -188,7 +188,7 @@ factor_list[[2]] %>%
 In this case, the underlying values were left unchanged for both factors, but the levels were standardised. This is especially useful when comparing the values of two different factors. 
 
 ## Order of levels
-### <a name="manual-reordering"></a>Manual reordering of levels
+### Manual reordering of levels {#manual-reordering}
 With the function `fct_relevel()` the levels of a factor can be manually reordered. In contrast to the function `levels()`, which only allows the renaming of factor levels, `fct_relevel()` also adjusts the order of the levels themselves, that is the way they are stored internally. An example should clarify this.
 
 ```{r}
