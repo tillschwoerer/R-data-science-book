@@ -171,7 +171,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.2" data-path="forcats.html"><a href="forcats.html#general-functions"><i class="fa fa-check"></i><b>5.2</b> General functions</a><ul>
 <li class="chapter" data-level="5.2.1" data-path="forcats.html"><a href="forcats.html#create"><i class="fa fa-check"></i><b>5.2.1</b> Create</a></li>
 <li class="chapter" data-level="5.2.2" data-path="forcats.html"><a href="forcats.html#count-values-per-level"><i class="fa fa-check"></i><b>5.2.2</b> Count values per level</a></li>
-<li class="chapter" data-level="5.2.3" data-path="forcats.html"><a href="forcats.html#inspect-and-set-levels"><i class="fa fa-check"></i><b>5.2.3</b> <a name="Inspect-and-set-levels"></a>Inspect and set levels</a></li>
+<li class="chapter" data-level="5.2.3" data-path="forcats.html"><a href="forcats.html#Inspect-and-set-levels"><i class="fa fa-check"></i><b>5.2.3</b> Inspect and set levels</a></li>
 <li class="chapter" data-level="5.2.4" data-path="forcats.html"><a href="forcats.html#inspect-unique-values"><i class="fa fa-check"></i><b>5.2.4</b> Inspect unique values</a></li>
 </ul></li>
 <li class="chapter" data-level="5.3" data-path="forcats.html"><a href="forcats.html#combine-factors"><i class="fa fa-check"></i><b>5.3</b> Combine factors</a><ul>
@@ -179,7 +179,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.3.2" data-path="forcats.html"><a href="forcats.html#standardise-levels-of-various-factors"><i class="fa fa-check"></i><b>5.3.2</b> Standardise levels of various factors</a></li>
 </ul></li>
 <li class="chapter" data-level="5.4" data-path="forcats.html"><a href="forcats.html#order-of-levels"><i class="fa fa-check"></i><b>5.4</b> Order of levels</a><ul>
-<li class="chapter" data-level="5.4.1" data-path="forcats.html"><a href="forcats.html#manual-reordering-of-levels"><i class="fa fa-check"></i><b>5.4.1</b> <a name="manual-reordering"></a>Manual reordering of levels</a></li>
+<li class="chapter" data-level="5.4.1" data-path="forcats.html"><a href="forcats.html#manual-reordering"><i class="fa fa-check"></i><b>5.4.1</b> Manual reordering of levels</a></li>
 <li class="chapter" data-level="5.4.2" data-path="forcats.html"><a href="forcats.html#reordering-by-frequency"><i class="fa fa-check"></i><b>5.4.2</b> Reordering by frequency</a></li>
 <li class="chapter" data-level="5.4.3" data-path="forcats.html"><a href="forcats.html#reordering-by-appearance"><i class="fa fa-check"></i><b>5.4.3</b> Reordering by appearance</a></li>
 <li class="chapter" data-level="5.4.4" data-path="forcats.html"><a href="forcats.html#reverse-level-order"><i class="fa fa-check"></i><b>5.4.4</b> Reverse level order</a></li>
@@ -365,8 +365,8 @@ It is a categorical evaluation of the clarity of a diamond and a subset of the g
 <p><img src="forcats_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>It becomes obvious that the distribution can now be displayed in the desired order (by order of levels). Functions of the package forcats always start with the prefix <code>fct_</code>.</p>
 </div>
-<div id="inspect-and-set-levels" class="section level3">
-<h3><span class="header-section-number">5.2.3</span> <a name="Inspect-and-set-levels"></a>Inspect and set levels</h3>
+<div id="Inspect-and-set-levels" class="section level3">
+<h3><span class="header-section-number">5.2.3</span> Inspect and set levels</h3>
 <p>With the function <code>levels()</code> the levels of a factor can be both read and renamed. <strong>But be aware:</strong> this can only be used to change the names, not the order of the levels. The base-R function <code>unclass()</code> gives information about the internal memory structure of a factor.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="co"># Shows the original levels of our factor.</span></a>
 <a class="sourceLine" id="cb11-2" title="2">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -459,8 +459,8 @@ The factors differ both in their stored values and in their levels. A plot makes
 </div>
 <div id="order-of-levels" class="section level2">
 <h2><span class="header-section-number">5.4</span> Order of levels</h2>
-<div id="manual-reordering-of-levels" class="section level3">
-<h3><span class="header-section-number">5.4.1</span> <a name="manual-reordering"></a>Manual reordering of levels</h3>
+<div id="manual-reordering" class="section level3">
+<h3><span class="header-section-number">5.4.1</span> Manual reordering of levels</h3>
 <p>With the function <code>fct_relevel()</code> the levels of a factor can be manually reordered. In contrast to the function <code>levels()</code>, which only allows the renaming of factor levels, <code>fct_relevel()</code> also adjusts the order of the levels themselves, that is the way they are stored internally. An example should clarify this.</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1"><span class="co"># Have a look at the original levels.</span></a>
 <a class="sourceLine" id="cb27-2" title="2">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -578,9 +578,9 @@ Thus a value of <code>n = 1L</code> (<code>n = -1L</code>) would shift the order
 <a class="sourceLine" id="cb42-2" title="2">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb42-3" title="3"><span class="st">  </span><span class="kw">fct_shuffle</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb42-4" title="4"><span class="st">  </span><span class="kw">levels</span>()  </a></code></pre></div>
-<pre><code>##  [1] &quot;Great Britain&quot; &quot;United States&quot; &quot;Austria&quot;       &quot;Germany&quot;      
-##  [5] &quot;Denmark&quot;       &quot;Greece&quot;        &quot;Australia&quot;     &quot;Hungary&quot;      
-##  [9] &quot;Sweden&quot;        &quot;France&quot;        &quot;Italy&quot;         &quot;Switzerland&quot;</code></pre>
+<pre><code>##  [1] &quot;Switzerland&quot;   &quot;France&quot;        &quot;Greece&quot;        &quot;Australia&quot;    
+##  [5] &quot;Germany&quot;       &quot;Austria&quot;       &quot;Denmark&quot;       &quot;Hungary&quot;      
+##  [9] &quot;Great Britain&quot; &quot;Sweden&quot;        &quot;United States&quot; &quot;Italy&quot;</code></pre>
 </div>
 <div id="reordering-levels-by-other-variables" class="section level3">
 <h3><span class="header-section-number">5.4.7</span> Reordering levels by other variables</h3>
@@ -638,7 +638,7 @@ The <code>diamonds$clarity</code> column is an ideal example for the use of <cod
 ## [3] &quot;Slightly Included 1&quot;           &quot;Very Slightly Included 2&quot;     
 ## [5] &quot;Very Slightly Included 1&quot;      &quot;Very Very Slightly Included 2&quot;
 ## [7] &quot;Very Very Slightly Included 1&quot; &quot;Internally Flawless (best)&quot;</code></pre>
-<p>Note, that this approach is in fact similar to the steps described in <a href="#Inspect-and-set-levels">5.2.3 Inspect and set levels</a>.</p>
+<p>Note, that this approach is in fact similar to the steps described in <a href="forcats.html#Inspect-and-set-levels">5.2.3 Inspect and set levels</a>.</p>
 <p><a name="recode-2"></a>One could also combine multiple levels into one using <code>fct_recode()</code> as shown in the example below, where the numerical distinction within the GIA categories is dropped, that is <em>Slightly Included 2</em> and <em>Slightly Included 1</em> will be combined into the level <em>Slightly Included</em>, etc.</p>
 <div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" title="1"><span class="co"># Since the level notation is somewhat cryptic, we want to change it</span></a>
 <a class="sourceLine" id="cb48-2" title="2"><span class="co"># and drop the numerical distinction within each category.</span></a>
@@ -684,8 +684,8 @@ The <code>diamonds$clarity</code> column is an ideal example for the use of <cod
 <a class="sourceLine" id="cb52-3" title="3">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb52-4" title="4"><span class="st">  </span><span class="kw">fct_anon</span>(<span class="dt">prefix=</span><span class="st">&quot;id&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb52-5" title="5"><span class="st">  </span><span class="kw">head</span>(<span class="dv">25</span>)</a></code></pre></div>
-<pre><code>##  [1] id11 id11 id11 id11 id11 id11 id11 id11 id11 id11 id06 id06 id06 id03 id11
-## [16] id08 id08 id09 id09 id09 id09 id09 id09 id09 id06
+<pre><code>##  [1] id12 id12 id12 id12 id12 id12 id12 id12 id12 id12 id10 id10 id10 id02 id12
+## [16] id05 id05 id08 id08 id08 id08 id08 id08 id08 id10
 ## Levels: id01 id02 id03 id04 id05 id06 id07 id08 id09 id10 id11 id12</code></pre>
 </div>
 <div id="collapse-multiple-levels-into-one" class="section level3">
@@ -769,7 +769,7 @@ The following code demonstrates how to only keep the levels <code>Denmark</code>
 <a class="sourceLine" id="cb65-10" title="10"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
 <pre><code>##  [1] &quot;I1&quot;   &quot;SI2&quot;  &quot;SI1&quot;  &quot;VS2&quot;  &quot;VS1&quot;  &quot;VVS2&quot; &quot;VVS1&quot; &quot;IF&quot;   &quot;FL&quot;   &quot;I2&quot;  
 ## [11] &quot;I3&quot;</code></pre>
-<p>Note that the additional levels get appended which is not necessarily what we want. Thus an additional manual reordering of the levels as describe in <a href="#manual-reordering">5.4.1 Manual reordering of levels</a> is required here:</p>
+<p>Note that the additional levels get appended which is not necessarily what we want. Thus an additional manual reordering of the levels as describe in <a href="forcats.html#manual-reordering">5.4.1 Manual reordering of levels</a> is required here:</p>
 <div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" title="1"><span class="co"># All GIA grades in the correct order.</span></a>
 <a class="sourceLine" id="cb67-2" title="2">all_GIA_grades &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;FL&quot;</span>, <span class="st">&quot;IF&quot;</span>, <span class="st">&quot;VVS1&quot;</span>, <span class="st">&quot;VVS2&quot;</span>, <span class="st">&quot;VS1&quot;</span>, <span class="st">&quot;VS2&quot;</span>, <span class="st">&quot;SI1&quot;</span>, <span class="st">&quot;SI2&quot;</span>, <span class="st">&quot;I1&quot;</span>, <span class="st">&quot;I2&quot;</span>, <span class="st">&quot;I3&quot;</span>)</a>
 <a class="sourceLine" id="cb67-3" title="3"></a>
