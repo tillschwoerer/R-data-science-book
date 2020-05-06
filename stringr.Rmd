@@ -187,6 +187,7 @@ We could use the function to show more text from the description column than can
 ```{r, echo=TRUE}
 
 head(str_trunc(recipes$description, width = 100, side = "right"),5)
+recipes %>% mutate(description_short = str_trunc(description, width = 100, side = "right")) %>% select(name, description_short) %>% head()
 
 ```
 
@@ -398,9 +399,84 @@ Then you can see, that the first " i " is indeed from position 22 to 24. The len
 
 ### Mutate Strings
 
+In this part we will use Italy, a subset of "recipes" that is exclusively containing recipes mentioning "pizza".
+``` {r, echo=FALSE}
+Italy <- recipes %>% filter(stringr::str_detect(name, "pizza"))
+```
+
+#### str_replace (and replace_all) 
+
+```{r, echo=FALSE}
+Italy <- Italy %>% 
+  mutate(name1 = str_replace(Italy$name, "pizza", "fluffy pizza"))
+```
+
+The replace functions of stringr are used to match patterns and replace them with new strings. 
+Example: For seo (search engine optimization) we will add the popular word "fluffy" to all our pizza recipes in the name column.  
+In order to replace several matches use str_replace_all and create a vektor containing multiple coditions.
+
+``` {r, echo=FALSE}
+Italy <- Italy %>% 
+  mutate(name2 = str_replace_all(Italy$name, c("pizza" = "fluffy pizza", "easy" = "easy peasy")))
+```
+
+##### str_to_lower
+
+We can use str_to_ to change the case of text strings. They are intutitive: 
+str_to_lower will change text to lower case, 
+str_to_upper will change text to upper case,
+str_to_title will change first letter of a string into a capital letter.
+... 
+``` {r, echo=FALSE}
+p <- c("i","like","pizza","and","i don't share pizzza")
+str_to_upper(p)
+str_to_sentence(p)
+p <- str_c(p, collapse = " ") #make it one sentence (see str_c)
+str_to_sentence(p)
+```
+
+Attention: Locales will apply language conventions when changing the case. As you know, capitalization is used different in German and English. Above, the default would be locale = "en" but you can change it into every other language. The code for your langugage can be found in Wikipedia - List of ISO 639-1 codes.
+
+Locales also come in handy for the str_order or str_sort fuction. 
+str_sort will sort a list of string vectors by alphabet (locale will determine wich alphabet is applied)
+
+```{r, echo=FALSE}
+str_sort(Italy$name1[1:10], decreasing = FALSE, na_last = TRUE, locale = "en", numeric = FALSE)
+```
+
 ### Join and Split
 
-### Order Strings
+#### str_c
+
+If you want to merge several strings into one, the str_c funtion is what you need. It is simple: either you join two or more single strings using the seperate argument to choose a separation sign or you join a vector of strings by having the argument collapse control how the strings are separeted. 
+In our Pizza example you can first see the join of the first few names into one string separated by ", " and then a vector that is joint into one string unsig the words "and then" as a form of separation. 
+
+```{r, echo=FALSE}
+str_c(Italy$name2[1],Italy$name2[2], Italy$name2[3], sep = ", ")
+str_c(Italy$name2[1:3], collapse = " and then ")
+```
+
+#### str_split
+
+The str_split function will split a vector of strings into a list of substrings. The split is made where there is a match with a pattern of your choice.
+In our exapmle we will split the cloumn step containing step by step instructions into single substrings. As the steps currently have the format of a list, we can use the comma as a pattern to seperate the strings. 
+
+```{r, echo=FALSE}
+Italy$steps %>% str_split("', '") %>% head(2)
+
+```
+If you'd rather have the subset of strings in a matrix, you can use str_split_fixed and choose n for the number of columns in the matrix. 
+
+#### str_glue
+
+```{r, echo=FALSE}
+pandas <- c("Carl","Jakob","Jakob","Markus","Robert")
+str_glue("Hey {pandas}! I'd recommend the recipe '{str_to_title(Italy$name2[1:5])}' for you." )
+
+```
+
+As you can see, str_glue literally glues strings together to create a new string. Expressions must be written in {} but everything else is up to you: you can use data frames, listes and regex. Useful for customized mailing, ditribution of tasks ect. 
+
 
 
 ## Literature
