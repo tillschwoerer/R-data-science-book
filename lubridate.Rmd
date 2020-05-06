@@ -10,18 +10,15 @@ Resources:
 Suggested data set: weather-kiel-holtenau
 
 ## What is Lubridate?
-Lubridate is an R-Package designed to ease working with date/time variables. These can be quite challenging in baseR and lubridate allows for frictionless working with dates and times, hence the name.
+Lubridate is an R-Package designed to ease working with date/time variables. These can be challenging in baseR and lubridate allows for frictionless working with dates and times, hence the name.
 
 Lubridate ist part of the tidyverse package, but can be installed seperately as well. It probably reveals most of its usefullness in collaboration with other tidyverse packages. A useful extension, depending on your data, might be the time-series package which is not part of tidyverse.
 
-All mentioned packages can be optained with the following commands. 
+All mentioned packages can be optained with the following commands in the console. 
 
-TODO @Robert funktioniert bei mir nicht
-package.install("lubridate")
-package.install("tidyverse")
-
-TODO @Robert in use?
-package.install("time-series")
+install.packages("lubridate")
+install.packages("tidyverse")
+install.packages("time-series")
 
 If the have been installed previously in your environment, they might have to be called upon by using 
 library(tidyverse) and so forth - see code chunks below.
@@ -30,30 +27,38 @@ library(tidyverse) and so forth - see code chunks below.
 
 Some examples of real world date - time formats found in datasets:
 
-How people talk about dates and times often differs from the notation of the given information. Depending on the specific use of the data, the given information might be more or less granular. When people in the USA talk distance between two places, they often give an approximation of how long it will take a person to drive from A to B and round-up or down to the hour. 
+How people talk about dates and times often differs from the notation. Depending on the specific use of the data, the given information might be more or less granular. When people in the USA talk distance between two places, they often give an approximation of how long it will take a person to drive from A to B and round-up or down to the hour. 
 
-Flight schedules will most likely be exact to the minute, while some sensordata will probably need to be exact to the milisecond. So there will be differing granularity in date and time data. 
+Flight schedules will most likely be exact to the minute, while some sensordata will probably need to be exact to the second. So there will be differing granularity in date and time data. 
 
-Even if this would not be a challenge, we still would have to deal with different notations of date and time. People in Germany will write a day-date like: dd.mm.yyyy or short dd.mm.yy, while the anglo-saxon realm will use mm.dd.yyyy frequently and the most chronologically sound way would be to use yyyy.mm.dd, but this doesn't seem to stick with humans. 
+Even if this would not be challenging, we still would have to deal with different notations of date and time. People in Germany will write a day-date like: dd.mm.yyyy or short dd.mm.yy, while the anglo-saxon realm will use mm.dd.yyyy frequently and the most chronologically sound way would be to use yyyy.mm.dd, but this doesn't seem to stick with humans. 
 
-On top of these issues there's the fact that time itself does not make the impression of being the most exact parameter out there. Universal time might appear linear, but the way our planet revolves our galaxy has made it neccessary to adjust date and times every now and then, so our Kalender stays in tune with our defined seasons. This creates leap years, skipped seconds, daylight-savings time and last, but not least time-zones, which can mess things up even further.
-
-TODO @Robert - Wollen die noch mehr beschreiben?
-Three types of date/time data
-Sys.time() functions
-Time Formats
+On top of these issues there's the fact that time itself does not make the impression of being the most exact parameter out there. Physical time might appear linear, but the way our planet revolves within our galaxy has made it neccessary to adjust date and times every now and then, so our calendar stays in tune with defined periods and seasongs. This creates leap years, skipped seconds, daylight-savings time and last, but not least time-zones, which can mess things up even further. After defining date-time data as distinct "places in time" often the need for calculation with them arises.
 
 ## Import data, clean date-time
 We will apply the lubridate package to Weather data from on stationary sensor in northern Germany, the weather station in Kiel-Holtenau to be more exact.
 
-Before we introduce the library, the prerequisites must be created.
+Before we introduce the library, the technical prerequisites must be created.
 ```{r libararies, echo=FALSE}
 library(readr)          # part of the tidyverse
 library(lubridate)      # the mentioned lubrication for date-time wrangling
 library(tidyverse)      # the tidyverse with its dplyr functions for data wrangling
 library(ggplot2)        # data visualisation package (is actually part of tidyverse, but still)
 ```
-A first step is to import the data, which is given in a csv-format. We will use the tidyverse version of read_csv to accomplish this step.
+With the lubridate package activated, we can now call some simple functions to check where we are in time:
+```{r current date-time, echo=FALSE}
+today()
+now()
+Sys.Date()
+Sys.time()
+```
+The first function delivers a date, while the second delivers a date-time (a date + a time).
+The third is a baseR function that produces the date, the operating system sees as current, while the fourth displays the systems full current timestamp. The third and fourth functions are both baseR and therefore case sensitive, while the first and second are lubridate functions which behave just nicer and allow for fluent calculations.
+
+Now let's have a look at some real world data and the challenges of date-time formatting.
+
+A first step is to import the data, which is given in a csv-format. 
+We will use the tidyverse version of read_csv to accomplish this step.
 
 The data will be called df (data.frame) in order to make reference in code an writing more efficient further down.
 
@@ -78,8 +83,8 @@ head(df,5)
 ```
 We will examine the data further down below. At this point it should be mentioned again that we generated the code to import the data by using the import readr tool of RStudio. This allows a first look at the raw csv data before import and some tweaking of the variables and their classes. We left the locale portion of the import tool untouched.
 
-The following lines of Code import the same data in the MESS_DATUM column as a string of characters again and then calls a specific lubridate function (ymd = year-month-day) which basically recognizes the time format in the column given only very little information. In our case we only specify the order in which the date-time information is given, which is Year-Month-Day-Hour-Minute. The ymd_hm function delivers the desired result however, only if it is applied to a character string, which is why we chose to overwrite the dataset df with a new import procedure that makes sure that the column MESS_DATUM is given as a character after import.
-```{r read_csv alternate 1, echo=FALSE}
+The following lines of code import the same data in the MESS_DATUM column as a string of characters again and then calls a specific lubridate function (ymd = year-month-day) which basically recognizes the time format in the column given only very little information. In our case we only specify the order in which the date-time information is given, which is Year-Month-Day-Hour-Minute. The ymd_hm function delivers the desired result however, only if it is applied to a character string, which is why we chose to overwrite the dataset df with a new import procedure that makes sure that the column MESS_DATUM is given as a character after import in order to be then transformed to a date-time.
+```{r read_csv alternative 1, echo=FALSE}
 df1 <- read_csv("data/weather_kiel_holtenau.csv", 
           col_types = cols(
             MESS_DATUM = col_character(), 
@@ -90,18 +95,19 @@ head(df1,5)
 ```
 As can be seen above, the MESS_DATUM is now in a POSIXct format again, which is what will be needed for further calculations and analysis of the data set.
 
-Alternatively you could use the following parsing function to achieve the same result. Note that the parse_date_time function also needs the timestamp to be in character format.
-```{r read_csv alternate 2, echo=FALSE}
+Alternatively you could use the following parsing function to achieve the same result. Note that the parse_date_time function of lubridate also needs the timestamp to be in character format in order to work.
+```{r read_csv alternative 2, echo=FALSE}
 df2 <- read_csv("data/weather_kiel_holtenau.csv", 
     col_types = cols(MESS_DATUM = col_character()))
 df2$MESS_DATUM <- parse_date_time(df2$MESS_DATUM, orders ="Ymd HM")
 head(df2,5)
 ```
-OK we have successfully formated the time-stamp data into a productive date-time (dttm) format.
+OK, we have successfully formated the time-stamp data into a productive date-time (dttm) format 
+using three different approaches.
 
 ## Check and modify data
 The next steps are a check and elimination procedure to eliminate missing values (NAs) from the dataset,
-if some observations might have failed to generate data successfully.
+if some observations might have failed to generate a timestamp.
 ```{r is NA in MESS_DATUM, echo=FALSE}
 df %>% 
   filter(is.na(MESS_DATUM)) %>%                   # Checking if there are observations with a missing MESS_DATUM
@@ -112,12 +118,14 @@ We don't encounter any NAs in the MESS_DATUM column. Eliminating NAs from the ME
 df <- df %>% 
   filter(!is.na(MESS_DATUM))                      # missing MESS_DATUM observations (NAs) would/will be excluded from the data frame
 ```
-OK. Time to have first explorative look at the data set.
+Now it is time to have a first explorative look at the data set.
 ```{r max/min/range MESS_DATUM, echo=FALSE}
 max(df$MESS_DATUM)                                # The latest observation is dated 10 minutes before midnight on the 13th of April 2020
 min(df$MESS_DATUM)                                # The earliest observaation is dated 14th of April 2019
 range(df$MESS_DATUM)                              # Another way to get the same information
 ```
+We are dealing with data over the course of one year starting on midnight 14th April 2019 until 10 minutes to midnight on 13th April 2020. 
+
 To gather some information on the other variables we can use the range function again.
 ```{r range of other columns, echo=FALSE}
 range(df$STATIONS_ID)                             # This confirms: We are only dealing with data from one and only one weather sensor in the whole data set.
@@ -127,12 +135,12 @@ range(df$NIEDERSCHLAGSDAUER)                      # This delivers an implausible
 range(df$NIEDERSCHLAGSHOEHE)                      # Again the range shows a minimum at -999 and a maximum of 7.85 which has to be interpreted as mm which equals litres per square meter (6 x 7.85 = 47.1/h = torrential)
 range(df$NIEDERSCHLAGSINDIKATOR)                  # A look at the data reveals a binary 1 or a 0 for this variable, i.e. it rained or it didn't. -999 must be interpreted as a failed observation
 ```
-We found observations in a number of variables that would need to be deleted from the table to get operable data.
-Theoretically, the following columns are only relevant if the NIEDERSCHLAGSINDIKATOR is set to 1 = rainfall.  This column can be considered like a switch for the other two rain-connected columns:
+Here we find observations in a number of variables that would need to be deleted from the table to get operable data.
+Theoretically, the following columns are only relevant if the NIEDERSCHLAGSINDIKATOR is set to 1 = rainfall. This column can be considered like a switch for the other two rain-connected columns:
 - NIEDERSCHLAGSDAUER
 - NIEDERSCHLAGSHOEHE
 
-Getting an idea about the extent of failed observations can be accomplished with the following code snippet:
+Getting an idea about the extent of weird/failed observations can be accomplished with the following code snippet:
 ```{r correct NIEDERSCHLAGSINDIKATOR - before, echo=FALSE}
 values_of_ind <- df %>% 
   group_by(NIEDERSCHLAGSINDIKATOR) %>%
@@ -147,6 +155,8 @@ value_of_ind_n <- df %>%
   tally()
 head(value_of_ind_n)
 ```
+We now have a binary indicator of rainfall. Over the course of the observed year it rained 9287/43417*100 = 21.4% of the time frames observed.
+
 The column RELATIVE_FEUCHTE must also be adjusted in the same way.
 ```{r correct RELATIVE_FEUCHTE - before, echo=FALSE}
 values_of_rel <- df %>% 
@@ -164,7 +174,7 @@ values_of_rel_n <- df %>%
 head(values_of_rel_n)
 ```
 The column NIEDERSCHLAGSHOEHE can also be tested and adjusted in the same way.
-It is not necessary because the negative values can be hidden in the further analyzes using the NIEDERSCHLAGSINDIKATOR = 1.
+This is not strictly necessary since the negative values could be hidden from further analysis using the NIEDERSCHLAGSINDIKATOR = 1.
 ```{r}
 values_of_ARN <- df %>% 
   group_by(NIEDERSCHLAGSHOEHE) %>%
@@ -179,46 +189,48 @@ values_of_RFH <- df %>%
   tally()
 head(values_of_RFH)
 ```
-We have set Variable NIEDERSCHLAGSHOEHE to 0 in these 129 oberservations. In a total of 47,753 observations with 0 as a value the distortion this will cause can be called negligible.
+We have set Variable NIEDERSCHLAGSHOEHE to 0 in these 129 oberservations. In a total of 47,753 observations with 0 as a value the distortion this might cause can be called negligible.
 
 ## Before exploration
-We now have clean and tidy data and can begin with exploration and interpretation.
+We now have clean and tidy data and can begin with general exploration, analysis and interpretation.
 
 The "TEMPERATUR" is given in degrees Celsius, the "RELATIVE-FEUCHTE" is a percentage Value for humidity which refers to the degree of water saturation that is prevalent in the air at a given temperature. As temperature increases, the air can absorb larger amounts of water, hence the relativity of this variable.
 
 The next variable is "NIEDERSCHLAGSDAUER" which is given as an integer smaller or equal to 10. Therefore it gives the time it has rained during the timestamp intervall of 10 Minutes.
+
 The variable "NIEDERSCHLAGSHOEHE" is a measure of rainfall intensity. Its maximum value can also be checked by the following command:
-TODO @Marcus / @Robert - Entfernen Auswertung jetzt mit Indikator
 ```{r max NIEDERSCHLAGSHOEHE NA, echo=FALSE}
 max(df$NIEDERSCHLAGSHOEHE, na.rm = FALSE)
 ```
-We can assume that this number gives us the amount of rainfall in milimeters, which is a common definiton and is equivalent as liters of rainfall per squaremeter in a given time intervall. A strong rainfall in central Europe can be expected to generate around 30mm/h of rainfall, i.e. 30 liters of rainfall per squaremeter per hour. The maximum value is therefore an indicator of a very heavy downpour as a continuation for a whole hour would have yielded 6 x 7.85 = 47.1 litres per hour.
+We can assume that this number gives us the amount of rainfall in milimeters, which is a common definiton and is equivalent as liters of rainfall per squaremeter in a given time intervall. A strong rainfall in central Europe can be expected to generate around 30mm/h of rainfall, i.e. 30 liters per squaremeter per hour. The maximum value is therefore an indicator of a very heavy downpour as a continuation for a whole hour would have yielded 6 x 7.85 = 47.1 litres per hour.
 
-The next variable is simply a binary expression of rainfall (1) or no rainfall (0) in the given intervall. This is relevant to measure as some types of rainfall do not generate enough water to messure an amount of water. The dreaded Northgerman "drizzle" comes to mind.
+The next variable is simply a binary expression of rainfall (1) or no rainfall (0) in the given intervall. This is relevant to measure as some types of rainfall seem to not generate enough water to messure an actual amount of water. The dreaded Northgerman "drizzle" comes to mind.
 
 Again: Since the sensor has taken a snapshot every 10 minutes, we have six observations per hour.
 
 ### Intervals
-Lubridate allows for the definition of an object with the "interval" class. The intervall is simply defined as the time elapsed between two points on the date-time line.
-The interval of a single day - from the first of March to the second of March in the following example can be defined as follows:
+Lubridate allows for the definition of an interval object with the "interval" class. The intervall is simply defined as the time elapsed between two points on the date-time line.
+
+e.g. The interval of a single day - from the first of March to the second of March can be defined as follows:
 ```{r interval TAG, echo=FALSE}
 tag_int <- interval(ymd("2020-03-01"), ymd("2020-03-02"))
 class(tag_int)
 ```
-A small interval of one day turned out to be good for the further analysis.
-This makes it easier to check the results at a glance.
+A small interval of one day turned out to be good for further analysis.
+This makes it easier to check results at a glance without having to query the whole dataset.
 
-Only when the expected results have been achieved for a short period do we consider the next largest period, e.g. Week, month, quarter and year.
+When the desired results can be achieved for a small interval we could consider the next largest period, e.g. Week, month, quarter and year.
 
 TODO @MARCUS - Dein folgender Code würde zumindest schnell eine durchschnittsstemperatur für die jeweilige Jahreszeit liefern. Es müsste dann halt noch in einer Tabelle zusammengeführt werden.
 Hier könnte jetzt die Betrachtung von Intervallen als Anwendung auf die Jahreszeiten folgen.
 
 ### PERIODS and DURATIONS
-For any weather data, an analysis fo seasonal differences is a natural (excuse the pun) objective.
-The beginning of each years seasons align with the solar incidences, i.e. the spring and autumnal equinoxes an the days of most and least sunlight hours in summer and winter.
+For any weather data, an analysis of seasonal differences is a natural (excuse the pun) objective.
+The beginning of each years seasons align with the solar incidences, i.e. the spring and autumnal equinoxes and the days of most and least sunlight hours in summer and winter, respectively.
+
 The following code snippets define the starting points of the different seasons as points on the POSIXct timeline and use these points to calculate new points in time by adding durations to them.
 
-For a seasons view, we create the appropriate times.
+For a seasons view, we create the appropriate points in time, where each season begins.
 ```{r create durations}
 season_19_spring <- ymd_hm("2019-03-20 22:58", tz="CET")
 season_19_summer <- ymd_hm("2019-06-21 17:54", tz="CET")
@@ -227,9 +239,9 @@ season_19_winter <- ymd_hm("2019-12-22 05:19", tz="CET")
 season_20_spring <- ymd_hm("2020-03-20 04:49", tz="CET")
 season_20_summer <- ymd_hm("2020-06-20 23:43", tz="CET")
 ```
-The information of seasons are [from ](https://www.timeanddate.de/astronomie/jahreszeiten "timeanddate.de")
+Source re: starts of seasons (https://www.timeanddate.de/astronomie/jahreszeiten "timeanddate.de")
 
-Our target is to create an interval spring.
+Our goal is to create an interval for the spring season.
 The following information are available to determine the end point of spring:
 **Frühling** 2020
 Beginn (Tag-und-Nachtgleiche März)
@@ -241,7 +253,7 @@ Beginn (Sonnenwende Juni)
 Dauer 93 Tage, 15 Std, 46 Min
 ```{r}
 print(paste("spring 2020 - start: ",season_20_spring))
-print(ddays(92))                             # create a DURATIONS
+print(ddays(92))                             # create a DURATION
 class(ddays(92))
 typeof(ddays(92))
 season_20_spring_dur <- season_20_spring + 
@@ -253,7 +265,7 @@ class(season_20_spring_dur)
 typeof(season_20_spring_dur)
 print(paste("spring 2020 - end with DURATIONS:",season_20_spring_dur, "expected:", season_20_summer, "is failure:", season_20_spring_dur!=season_20_summer))
 
-print(days(92))                              # create a PERIODS
+print(days(92))                              # create a PERIOD
 class(days(92))
 typeof(days(92))
 season_20_spring_p <- season_20_spring + 
@@ -297,7 +309,6 @@ Or the columns can be named directly in the Group-By command:
 df_group <- df_sel %>% 
   group_by(STATIONS_ID , STUNDE = hour(MESS_DATUM) , TAG = day(MESS_DATUM) ) 
 head(df_group, 5)
-
 ```
 Now we can filter the data by year, month, week, day and hour of the day. This should give us possibilities to aggregate freely over any time interval.
 
@@ -331,34 +342,31 @@ ggplot(df)+
 ```
 This is a representation of all 52,704 observations of temperature and naturally appears quite crowded. 
 However, a typical course of the seasons during a year can already be interpreted from this plot.
+Please note that the chart starts at the start of the observations (April 2019) and stretches over a year from there.
 
-ACHTUNG - ENTWEDER IN BESSER ODER RAUS! IST NICE TO HAVE!
-Versuch des Plottings einer Regression. Hier entsteht natürlich eine Regressionslinie durch alle Punkte, was keinen Sinn ergibt. 
-Es müsste als eine Regression auf eine Zeitreihe definiert bzw. vermutlich auf rollierende Durchschnitte berechnet werden.
-Mit einem vernünftigen rollierenden Durchschnitt kann so eine regression inkl. Standard-Error aber auch eine schöne Visualiserung abgeben (ggf. sogar ohne die Datenpunkte selbst)
-
-```{r ggplot MESS_DATUM TEMPERATUR, echo=FALSE}
+The following delivers a simple regression over this data and basically illustrates why this is NOT the right
+approach to deal with time-series data as the corresponding regression function does not deliver relevant information.
+```{r ggplot MESS_DATUM TEMPERATUR regls, echo=FALSE}
 ggplot(df, aes(MESS_DATUM, TEMPERATUR))+
   geom_smooth(method = "lm", se=TRUE, color="black", formula = y ~ x) +
             geom_point(color = "red", size = 0.1)
 ```
-Let'S try to get a clearer picture of the temperature during the course of the observed year. 
+Let'S try to get a clearer picture of the temperature variable during the course of the observed year. 
 We need to form averages and aggregates to make visualisation more to the point and get less crowded pictures.
 
-New variables should represent other dimensions of date-time data. So we could produce variables for hours, 24hdays, weeks, months and even possibly seasons.
-Luckily lubridate has functions for us that will generate these new variables:
+New variables should represent other dimensions of date-time data. We can use lubridate functions to produce variables for hours, 24hdays, weeks, months and even possibly seasons.
 
 Assigning a year to every observation by creating a new column with lubridate function "year":
 ```{r mutate MESS_DATUM - JAHR, echo=FALSE}
 df <- df %>% 
   mutate(JAHR = year(df$MESS_DATUM))
 ```
-Assigning a month to every observation by creating a new column with lubridate function "month"
+Assigning the specific month to every observation by creating a new column with lubridate function "month"
 ```{r mutate MESS_DATUM - MONAT, echo=FALSE}
 df <- df %>% 
   mutate(MONAT = month(df$MESS_DATUM))
 ```
-Assigning an Epiweeknr (EKW = Epi Kalender Woche) to every observation by creating a new column with lubridate function "epiweek":
+Assigning an Epiweeknr (EKW = Epi Kalender Woche) to every observation through a  column with the function "epiweek":
 ```{r  mutate MESS_DATUM - EKW, echo=FALSE}
 df <- df %>% 
   mutate(EKW = epiweek(df$MESS_DATUM))
@@ -373,7 +381,8 @@ Assigning an hour to every observation by creating a new column "STUNDE"
 df <- df %>%
   mutate(STUNDE = hour(df$MESS_DATUM))
 ```
-Our data frame (df) has 12 variables now and thus we can filter the data by year, month, week, day and hour of the day. This gives us possibilities to aggregate.
+Our data frame (df) has 12 variables now and thus we can filter the data by year, month, week, day and hour of the day. This gives us new possibilities to aggregate.
+
 The following GROUP_BY command creates a unique grouping per hour and then calculates the average temperature for every hour, then pastes this value into each observation per hour.
 ```{r avg TEMPERATUR STUNDE, echo=FALSE}
 df_group_Stunde <- df %>%
@@ -384,12 +393,13 @@ df_av_temp_Stunde  <- df_group_Stunde %>%
   arrange(STATIONS_ID, JAHR, MONAT, EKW, JTAG, STUNDE)
 ```
 This newly created table has reduced the number of observations by the factor 6 to 8,784 and reveals the average temperature per hour.
+
 Let's plot the data again as hourly temperature averages per day:
 ```{r ggplot avg TEMPERATUR STUNDE, echo=FALSE}
 ggplot(df_av_temp_Stunde)+
   geom_point(aes(JTAG, AVGTEMPH), colour = "red", size = 0.1)
 ```
-We can clearly see that the data has become aggregated and that the temperature picture becomes somewhat more clear.
+We can see that the data has become aggregated and that the temperature picture becomes somewhat more clear.
 Also the visualisation now stretches over the course of a whole calender year from left to right.
 Let's go on step further and shorten the data down to daily averages by:
 ```{r avg TEMPERATUR JTAG, echo=FALSE}
@@ -405,10 +415,9 @@ This newly created table has reduced the number of observations by the factor 24
 Let's plot the data again as dayly temperature averages over the whole period as a line:
 ```{r ggplot avg TEMPERATUR JTAG, echo=FALSE}
 ggplot(df_av_temp_JTAG)+
-  geom_line(aes(JTAG, AVGTEMPD), colour = "red", size = 0.1)
+  geom_line(aes(JTAG, AVGTEMPD), colour = "red", size = 0.5)
 ```
-The data starts to make more visual sense. The key take-aways from this plot, next to the rather trivial finding of higher summer temperatures, 
-is the rather high volatility that appears to be attached to daily average temperature throughout the year.
+The data starts to make even more visual sense. The key take-aways from this plot, next to the rather trivial finding of higher summer temperatures, is the rather high volatility that appears to be attached to daily average temperature throughout the year. This could be interpreted as the changes between high and low pressure weather systems that cross northern Germany.
 
 Let's boil the data down to weekly temperature averages:
 ```{r avg TEMPERATUR WOCHE, echo=FALSE}
@@ -425,6 +434,7 @@ and plot again:
 ggplot(df_av_temp_EKW)+
   geom_line(aes(EKW, AVGTEMPW), colour = "red", size = 0.5)
 ```
+Even in weekyl aggregates of temperature averages the resulting visualisations still tells a story of volatility.
 Let's look at monthly averages:
 ```{r avg TEMPERATUR MONAT, echo=FALSE}
 df_group_MONAT <- df %>%
@@ -440,49 +450,43 @@ and plot again:
 ggplot(df_av_temp_MONAT)+
   geom_line(aes(MONAT, AVGTEMPM), colour = "red", size = 1)
 ```
-Which is the kind of temperature curve we would expect to see in a north German location like Kiel with a clear pattern of 3 months of summer with high average temperatures.
-It is interesting to note that April 2020 is apparently much warmer on average than 2019. The dimension indicates a difference of about 2 degrees celsius.
-in April 2019 represents about the second half of April and the data collected in 2020 represents just about the first half of April. This means, even though the 2020 data has been 
-collected earlier during the course of the year, the average temperature has been significantly higher.
+Which is the kind of temperature curve we would expect to see in a north German location like Kiel with a clear pattern of 3 months of summer with higher average temperatures just below 20 degrees.
+
+It is interesting to note that (at least the first half of April 2020 is apparently much warmer on average than the second half of April in 2019. The dimension indicates a difference of about 2 degrees celsius, a significant difference.
 
 #### Average temperature for a day
-In principle, no indicator has to be used to determine the average temperature, since the value is completely in the data frame.
+Generally, no separate variables would have to be created to determine the average temperatures. The values can be gleaned differently from the data frame.
 ```{r avg TEMPERATUR TAG STUNDE on an interval of a day}
 df_avg1 <- df_group %>% 
   summarise(avg = mean(TEMPERATUR)) %>% 
   arrange( STATIONS_ID , TAG , STUNDE) %>%
   view()  
 ```
-
 ### Rainfall
 #### Sum with condition
-The situation is different with the duration of precipitation. 
-The indicator must be used here to determine the duration.
+The question here is, how long has ist rained during an hour/day?
+There are two different possible approaches. One is without the binary indicator and the other uses it as a switch.
 
-without indicator
+Without indicator
 ```{r sum NIEDERSCHLAGSDAUER - Tag/Stunde on an interval of a day, echo=FALSE}
 df_sum1 <- df_group %>% 
   summarise(sum(NIEDERSCHLAGSDAUER)) %>% 
   arrange( STATIONS_ID , TAG, STUNDE) %>%
   view()
 ```
-
-with indicator and renamed column
+With indicator and renamed column
 ```{r sum NIEDERSCHLAGSDAUER - condition - Tag/Stunde on an interval of a day, echo=FALSE}
 df_sum2 <- df_group %>% 
   summarise(MENGE = sum(NIEDERSCHLAGSDAUER[NIEDERSCHLAGSINDIKATOR==1])) %>% 
   arrange( STATIONS_ID , TAG, STUNDE) %>%
   view()
 ```
-
-(Idea - check, if data is openly available as well. This could lead to an excurse about how to generate a raw dataset from this weatherstation.)
-
 ### Humidity
-What we can say at this point is that the temperatures in the City of Kiel have a clear seasonal pattern, but remain highly volatile intra-day and inter-day.
-Weather however is not just defined as temperature, but humidity and precipitation play an integral role of our sensation and definition of weather as well.
+What we can say at this point is that the temperatures in the city of Kiel have a clear seasonal pattern, but remain highly volatile intra-day and inter-day.
 
-Let's look at humidity the same way we looked at temperatures as hourly averages:
+Weather however is not just defined as temperature, but humidity and precipitation play a role regarding our sensation and definition of weather as well.
 
+Let's have one look at humidity the same way we looked at temperatures as hourly averages:
 ```{r avg RELATIVE_FEUCHTE, echo=FALSE}
 df_av_humi_Stunde  <- df_group_Stunde %>%
   summarise(AVGHUMI = mean(RELATIVE_FEUCHTE)) %>%
@@ -493,27 +497,18 @@ Let's plot the data again as hourly humidity averages per day:
 ggplot(df_av_humi_Stunde)+
   geom_point(aes(JTAG, AVGHUMI), colour = "red", size = 0.1)
 ```
-ACHTUNG: in dieser Ansicht zerstören die -999 und offenbar auch noch ein paar -125er Werte die Ansicht. Das müsste sich nach MARCUS Bereinigungsmethode ja erledigen.
-Dann auch hier Tages, Wochen, Monats und Jahreszeitendurchschnitte berechnen und zeigen.
-
-Im nächsten Schritt wären dann die Niederschläge zu zeigen. Hier haben wir es dann nicht mehr mit durchschnitten, sondern Summen (machen Stunden Sinn?) an Niederschlagsmengen bzw. ggf. auch Niederschlagsdauern pro Zeitrahmen zu tun.
-
-Im Endergebnis haben wir vier verschiedene Variablen in unterschiedlichen Verdichtungen (Stunde, Tag, Woche, Monat und Jahreszeit)
-Es könnte ggf. nochmal Sinn machen diese in zwei Paaren zu untersuchen: Niederschlagsdauer vs. Menge (die Frage/Hypothese dahinter wäre: gibt es Monate in denen es lage aber nicht heftig regnet vs. solche wo 
-es nur zu kurzen aber heftigen Regengüssen kommt?) und die Frage nach der Paarung Luftfeuchtigkeit und Temperatur (feuchte vs. trockene Hitze/Kälte macht einen großen Unterschied beim subjektiven
-Temperaturempfinden)
-
-In einer finalen Visualisierung lassen sie diese Erkenntnisse ggf. nochmals prägnanter Visualisieren (eine Heatmap comes to mind).
-
-
-- can we find historic KPIs to compare our findings (eg. average temperature in January in Kiel 1900)
-
-What Visualisations make sense for our kind of data/insights? Research and try&error
+This plot shows the dryer monts during the summer as having a lot more hours with lower humidity values than the months that fall into autumn and winter. 
 
 ## Wrap up - outlook date-time / time-series
-what potential problems have not been adressed?
+As we have seen earlier, plain vanilla regression is mostly useless for date-time data = timeseries data. If we would want to make another approach at getting more meaning out of the data we would have to use time-series classes of R.
 
-## Wrap up - What's next/out there?
-Insights from data / data vis
+A quick dip into time series might drive this point home. Let's pull a selection of variables from the data frame (df):
+```{r selecting variables for time-series operation, echo=FALSE}
+dfts <- df %>%
+select(TEMPERATUR)
+myts <- dfts %>% 
+  ts(start=c(2019-04-14), end=c(2020-04-13) frequency = 144)
+```
+
 
 What potential problems have not been adressed? (Time series package? etc?)
