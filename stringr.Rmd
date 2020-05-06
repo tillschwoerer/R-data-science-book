@@ -65,7 +65,7 @@ recipes_test <- str_sub(recipes.c$nutrition[1], 2, str_length(recipes.c$nutritio
 recipes_test <- strsplit(recipes$nutrition[1], ", ")
 recipes_test_1 <- as.numeric(recipes_test[[1]])
 
-#//[!!!] I am aware this is not consequently done as it is, but I leave it as it is, to not cause any conflicts further down.
+#//[!!!] I'm aware this is not consequently done as it is, but I leave it as it is, to not cause any conflicts further down.
 
 ```
 
