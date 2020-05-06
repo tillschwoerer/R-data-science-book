@@ -10,37 +10,32 @@ library(tidyverse)     # alternatively use library(tidyverse) which covers dplyr
 df <- readr::read_csv("data/spotify_charts_germany.csv")
 ```
 
-## Two typial workflows
+## Two typial workflows {#typical-workflows}
 Before looking in detail into specific functions, let's start with two typical workflows. We will note that 
 
-- dplyr works with the pipe (`%`) such that multiple operations can be combined one after the other, without the need to create intermediate results. 
+- dplyr works with the pipe (`%>%`) such that multiple operations can be combined one after the other, without the need to create intermediate results. 
 - function names are quite expressive, basically telling us what they are doing.
 - there is a strong analogy to SQL: due to this analogy it is even possible to run dplyr commands with a database backend (the package `dbplyr` needs to be installed)
 
-The first workflow returns an ordered list of the 10 tracks with the highest number of streams on a single day, together with information on the number of streams, day, artist, and track name. 
+The first workflow returns an ordered list of the 5 tracks with the highest number of streams on a single day:
 
 
 ```r
 df %>%                                              # data
-  arrange(-Streams) %>%                             # order rows by some variable 
   select(Streams, date, Artist, Track.Name) %>%     # select columns by name
-  slice(1:10)                                       # select rows by position
+  arrange(-Streams) %>%                             # order rows by some variable 
+  slice(1:5)                                        # select rows by position
 ```
 
 ```
-## # A tibble: 10 x 4
-##    Streams date       Artist          Track.Name                                
-##      <dbl> <date>     <chr>           <chr>                                     
-##  1 1964217 2019-12-24 Mariah Carey    All I Want for Christmas Is You           
-##  2 1939974 2019-12-24 Wham!           Last Christmas                            
-##  3 1788621 2019-06-21 Capital Bra     Tilidin                                   
-##  4 1603796 2019-12-24 Chris Rea       Driving Home for Christmas - 2019 Remaster
-##  5 1538169 2019-06-22 Capital Bra     Tilidin                                   
-##  6 1482692 2019-06-24 Capital Bra     Tilidin                                   
-##  7 1469042 2019-12-24 Shakin' Stevens Merry Christmas Everyone                  
-##  8 1461501 2019-05-17 Samra           Wieder Lila                               
-##  9 1408165 2019-09-23 Capital Bra     110                                       
-## 10 1378266 2019-09-27 Capital Bra     110
+## # A tibble: 5 x 4
+##   Streams date       Artist       Track.Name                                
+##     <dbl> <date>     <chr>        <chr>                                     
+## 1 1964217 2019-12-24 Mariah Carey All I Want for Christmas Is You           
+## 2 1939974 2019-12-24 Wham!        Last Christmas                            
+## 3 1788621 2019-06-21 Capital Bra  Tilidin                                   
+## 4 1603796 2019-12-24 Chris Rea    Driving Home for Christmas - 2019 Remaster
+## 5 1538169 2019-06-22 Capital Bra  Tilidin
 ```
 The second workflow returns the average number of streams per day of week since the beginning of the year 2020. For this operation, the day of week is derived from the date and added as an additional variable via the `mutate` function. 
 
@@ -108,60 +103,92 @@ df %>%
 ## 13 Mariah Carey    Oh Santa!
 ```
 
-We can select rows by position via `slice`. Alternatively, we can use the functions `top_n` of `top_fraq` to extract a specified number or fraction of rows. Different from `slice` these functions operate also on grouped data, and we can specify according to which variables the top rows shall be chosen. 
+We can select rows by position via `slice`. If we want to display the first or last n rows, we can also use the base R functions `head` and `tail`. The functions `top_n` of `top_fraq` allow us to extract the  specified number/fraction of rows, according to the ordering of a specified variable. In addition, `top_n` and `top_frac` also operate also on grouped data
+
+
+```r
+df %>% slice(c(1,3,5))   # selects rows by position (in the given order)
+```
+
+```
+## # A tibble: 3 x 15
+##   Position Track.Name Artist Streams date       danceability energy loudness
+##      <dbl> <chr>      <chr>    <dbl> <date>            <dbl>  <dbl>    <dbl>
+## 1        1 Cherry La~ Capit~ 1040382 2019-03-30        0.838  0.549    -7.14
+## 2        3 Blackberr~ Eno     704316 2019-03-30        0.805  0.625    -8.59
+## 3        5 Puerto Ri~ Fero47  557781 2019-03-30        0.687  0.766    -6.74
+## # ... with 7 more variables: speechiness <dbl>, acousticness <dbl>,
+## #   instrumentalness <dbl>, liveness <dbl>, valence <dbl>, tempo <dbl>,
+## #   duration_ms <dbl>
+```
+
+```r
+df %>% head(3)           # selects first n rows (in the given order)
+```
+
+```
+## # A tibble: 3 x 15
+##   Position Track.Name Artist Streams date       danceability energy loudness
+##      <dbl> <chr>      <chr>    <dbl> <date>            <dbl>  <dbl>    <dbl>
+## 1        1 Cherry La~ Capit~ 1040382 2019-03-30        0.838  0.549    -7.14
+## 2        2 Affalterb~ Shindy  822209 2019-03-30        0.819  0.674    -4.66
+## 3        3 Blackberr~ Eno     704316 2019-03-30        0.805  0.625    -8.59
+## # ... with 7 more variables: speechiness <dbl>, acousticness <dbl>,
+## #   instrumentalness <dbl>, liveness <dbl>, valence <dbl>, tempo <dbl>,
+## #   duration_ms <dbl>
+```
+
+```r
+df %>% top_n(3, Streams) # selects top n rows (based on the variable Streams)
+```
+
+```
+## # A tibble: 3 x 15
+##   Position Track.Name Artist Streams date       danceability energy loudness
+##      <dbl> <chr>      <chr>    <dbl> <date>            <dbl>  <dbl>    <dbl>
+## 1        1 Tilidin    Capit~ 1788621 2019-06-21        0.631  0.673    -4.89
+## 2        1 All I Wan~ Maria~ 1964217 2019-12-24        0.335  0.625    -7.46
+## 3        2 Last Chri~ Wham!  1939974 2019-12-24        0.735  0.478   -12.5 
+## # ... with 7 more variables: speechiness <dbl>, acousticness <dbl>,
+## #   instrumentalness <dbl>, liveness <dbl>, valence <dbl>, tempo <dbl>,
+## #   duration_ms <dbl>
+```
+
 
 
 ```r
 df %>%                        
   group_by(date) %>%        # group by date 
   top_n(1, wt=Streams) %>%  # select 1 row per date, the one with the highest number of streams
-  slice(1:10) %>%           # return only the first 10 rows of the resulting data frame
-  select(date, Streams, Track.Name, Artist)
+  select(date, Streams, Track.Name, Artist) %>%
+  head(5)
 ```
 
 ```
-## # A tibble: 366 x 4
-## # Groups:   date [366]
-##    date       Streams Track.Name  Artist     
-##    <date>       <dbl> <chr>       <chr>      
-##  1 2019-03-30 1040382 Cherry Lady Capital Bra
-##  2 2019-03-31  771685 Cherry Lady Capital Bra
-##  3 2019-04-01  861671 Cherry Lady Capital Bra
-##  4 2019-04-02  818911 Cherry Lady Capital Bra
-##  5 2019-04-03  783832 Cherry Lady Capital Bra
-##  6 2019-04-04  770632 Cherry Lady Capital Bra
-##  7 2019-04-05  917254 Harami      Samra      
-##  8 2019-04-06  836777 Cherry Lady Capital Bra
-##  9 2019-04-07  698789 Harami      Samra      
-## 10 2019-04-08  798083 Harami      Samra      
-## # ... with 356 more rows
+## # A tibble: 5 x 4
+## # Groups:   date [5]
+##   date       Streams Track.Name  Artist     
+##   <date>       <dbl> <chr>       <chr>      
+## 1 2019-03-30 1040382 Cherry Lady Capital Bra
+## 2 2019-03-31  771685 Cherry Lady Capital Bra
+## 3 2019-04-01  861671 Cherry Lady Capital Bra
+## 4 2019-04-02  818911 Cherry Lady Capital Bra
+## 5 2019-04-03  783832 Cherry Lady Capital Bra
 ```
 
-Another useful feature is selecting rows randomly via `sample_n` or `sample_frac`.
+Another useful feature is selecting rows randomly via `sample_n` or `sample_frac` (output hidden).
 
 ```r
-df %>% sample_n(5, replace = TRUE) # Select 5 rows randomly with replacement
+df %>% sample_n(5)                     # Select 5 rows randomly with replacement
+df %>% sample_frac(0.1, replace=TRUE)  # Select a 10% random sample with replacement
 ```
 
-```
-## # A tibble: 5 x 15
-##   Position Track.Name Artist Streams date       danceability energy loudness
-##      <dbl> <chr>      <chr>    <dbl> <date>            <dbl>  <dbl>    <dbl>
-## 1       49 Monster    LUM!X   121935 2019-12-29        0.83   0.794    -6.28
-## 2       38 Sucker     Jonas~  201504 2019-04-18        0.842  0.734    -5.07
-## 3        8 Dance Mon~ Tones~  357890 2020-02-06        0.825  0.593    -6.40
-## 4      106 Eiskalt    Lored~   90070 2020-03-11        0.786  0.606    -6.00
-## 5       37 Skifahren~ The C~  146074 2020-03-08       NA     NA        NA   
-## # ... with 7 more variables: speechiness <dbl>, acousticness <dbl>,
-## #   instrumentalness <dbl>, liveness <dbl>, valence <dbl>, tempo <dbl>,
-## #   duration_ms <dbl>
-```
 ### Arranging rows
 The function `arrange` is used to order rows by some variable(s). Use minus (`-`) or the `desc` function for arranging in descending order. The following code returns the five most danceable chart tracks of 2019-03-30 by arranging first by date (ascending) and second by danceability (descending). 
 
 ```r
 df %>% 
-  arrange(date, -danceability) %>% 
+  arrange(date, -danceability) %>%     # orders the data first by date (asc), then by danceability (desc)
   slice(1:5) %>% 
   select(Track.Name, date, danceability)
 ```
@@ -224,100 +251,67 @@ Equivalent scoped variants exist for `select`and `summarise` as well.
 
 
 ```r
-df %>% mutate_all(as.character) %>% str()  # change ALL columns to character type
+df %>% mutate_all(as.character) %>% head(5) # change ALL columns to character type
 ```
 
 ```
-## tibble [73,200 x 15] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
-##  $ Position        : chr [1:73200] "1" "2" "3" "4" ...
-##  $ Track.Name      : chr [1:73200] "Cherry Lady" "Affalterbach" "Blackberry Sky" "Wolke 10" ...
-##  $ Artist          : chr [1:73200] "Capital Bra" "Shindy" "Eno" "MERO" ...
-##  $ Streams         : chr [1:73200] "1040382" "822209" "704316" "681426" ...
-##  $ date            : chr [1:73200] "2019-03-30" "2019-03-30" "2019-03-30" "2019-03-30" ...
-##  $ danceability    : chr [1:73200] "0.838" "0.819" "0.805" "0.77" ...
-##  $ energy          : chr [1:73200] "0.549" "0.674" "0.625" "0.797" ...
-##  $ loudness        : chr [1:73200] "-7.145" "-4.663" "-8.589" "-4.985" ...
-##  $ speechiness     : chr [1:73200] "0.0755" "0.327" "0.0434" "0.0693" ...
-##  $ acousticness    : chr [1:73200] "0.877" "0.013" "0.25" "0.0662" ...
-##  $ instrumentalness: chr [1:73200] "0.000964" "0" "0.00527" "3.81e-06" ...
-##  $ liveness        : chr [1:73200] "0.115" "0.384" "0.0954" "0.0858" ...
-##  $ valence         : chr [1:73200] "0.654" "0.766" "0.647" "0.393" ...
-##  $ tempo           : chr [1:73200] "114.445" "115.897" "102.996" "100.003" ...
-##  $ duration_ms     : chr [1:73200] "135597" "173220" "156497" "172827" ...
+## # A tibble: 5 x 15
+##   Position Track.Name Artist Streams date  danceability energy loudness
+##   <chr>    <chr>      <chr>  <chr>   <chr> <chr>        <chr>  <chr>   
+## 1 1        Cherry La~ Capit~ 1040382 2019~ 0.838        0.549  -7.145  
+## 2 2        Affalterb~ Shindy 822209  2019~ 0.819        0.674  -4.663  
+## 3 3        Blackberr~ Eno    704316  2019~ 0.805        0.625  -8.589  
+## 4 4        Wolke 10   MERO   681426  2019~ 0.77         0.797  -4.985  
+## 5 5        Puerto Ri~ Fero47 557781  2019~ 0.687        0.766  -6.739  
+## # ... with 7 more variables: speechiness <chr>, acousticness <chr>,
+## #   instrumentalness <chr>, liveness <chr>, valence <chr>, tempo <chr>,
+## #   duration_ms <chr>
 ```
 
 
 ```r
-# Apply the function round to ALL SPECIFIED columns
 df %>% 
-  mutate_at(vars(danceability, valence), round, digits=1) %>% 
-  select(Track.Name,danceability, valence)
-```
-
-```
-## # A tibble: 73,200 x 3
-##    Track.Name             danceability valence
-##    <chr>                         <dbl>   <dbl>
-##  1 Cherry Lady                     0.8     0.7
-##  2 Affalterbach                    0.8     0.8
-##  3 Blackberry Sky                  0.8     0.6
-##  4 Wolke 10                        0.8     0.4
-##  5 Puerto Rico                     0.7     0.6
-##  6 Wir ticken                      0.6     0.8
-##  7 Pass auf wen du liebst          0.6     0.3
-##  8 Alleen                          0.7     0.9
-##  9 Ya Salame                       0.7     0.4
-## 10 DEUTSCHLAND                     0.5     0.2
-## # ... with 73,190 more rows
-```
-
-```r
+  mutate_at(vars(danceability, valence), round, digits=1) %>% # Round all specified columns
+  select(Track.Name,danceability, valence, energy) %>%        # We see that energy was not rounded
   head(5)
 ```
 
 ```
-## [1] 5
+## # A tibble: 5 x 4
+##   Track.Name     danceability valence energy
+##   <chr>                 <dbl>   <dbl>  <dbl>
+## 1 Cherry Lady             0.8     0.7  0.549
+## 2 Affalterbach            0.8     0.8  0.674
+## 3 Blackberry Sky          0.8     0.6  0.625
+## 4 Wolke 10                0.8     0.4  0.797
+## 5 Puerto Rico             0.7     0.6  0.766
 ```
 If there is no predefined function, one can define an anonymous function (which cannot be used outside this context) on the fly:
 
 ```r
-# transmute is a variant of mutate
 df %>% 
-  mutate_at(vars(danceability, valence), function(x) x*100) %>%
-  select(Track.Name,danceability, valence)
-```
-
-```
-## # A tibble: 73,200 x 3
-##    Track.Name             danceability valence
-##    <chr>                         <dbl>   <dbl>
-##  1 Cherry Lady                    83.8    65.4
-##  2 Affalterbach                   81.9    76.6
-##  3 Blackberry Sky                 80.5    64.7
-##  4 Wolke 10                       77      39.3
-##  5 Puerto Rico                    68.7    62.9
-##  6 Wir ticken                     63      82  
-##  7 Pass auf wen du liebst         59.2    31.5
-##  8 Alleen                         73.2    92.7
-##  9 Ya Salame                      71.4    40.8
-## 10 DEUTSCHLAND                    52.1    23.7
-## # ... with 73,190 more rows
-```
-
-```r
+  mutate_at(vars(danceability, valence), function(x) x*100) %>% # Here we define a custom function in-line
+  select(Track.Name,danceability, valence) %>%
   head(5)
 ```
 
 ```
-## [1] 5
+## # A tibble: 5 x 3
+##   Track.Name     danceability valence
+##   <chr>                 <dbl>   <dbl>
+## 1 Cherry Lady            83.8    65.4
+## 2 Affalterbach           81.9    76.6
+## 3 Blackberry Sky         80.5    64.7
+## 4 Wolke 10               77      39.3
+## 5 Puerto Rico            68.7    62.9
 ```
 
 The typical use case for `mutate_if` is changing the variable types of all variables satisfying a specific condition. 
 
 ```r
 df %>% 
-  mutate_if(is.character, as.factor) %>%  # turns all character variables into factors
-  glimpse()
+  mutate_if(is.character, as.factor) %>%  # IF column has type character, change it to factor
+  glimpse()                               # We see that Track.Name and Artist were coerced to factor
 ```
 
 ```
@@ -412,28 +406,19 @@ df %>%
 The `count` function is a useful shortcut for `group_by` followed by `summarise(n = n())`.
 
 ```r
-df %>% count(Artist)
+# df %>% group_by(Artist) %>% summarise(n = n()) %>% ungroup() %>% head(5)
+df %>% count(Artist) %>% head(5)
 ```
 
 ```
-## # A tibble: 585 x 2
-##    Artist                     n
-##    <chr>                  <int>
-##  1 *NSYNC                    13
-##  2 102 Boyz                   9
-##  3 18 Karat                 175
-##  4 24kGoldn                  26
-##  5 5 Seconds of Summer      109
-##  6 88-Keys                    1
-##  7 a-ha                       1
-##  8 A Boogie Wit da Hoodie   203
-##  9 A$AP Rocky                 7
-## 10 AchtVier                   1
-## # ... with 575 more rows
-```
-
-```r
-# df %>% group_by(Artist) %>% summarise(n = n()) %>% ungroup()
+## # A tibble: 5 x 2
+##   Artist                  n
+##   <chr>               <int>
+## 1 *NSYNC                 13
+## 2 102 Boyz                9
+## 3 18 Karat              175
+## 4 24kGoldn               26
+## 5 5 Seconds of Summer   109
 ```
 
 Sometimes, we want to add the (group) aggregates as a new column to the existing data frame. In this case we just use `mutate` rather than `summarise`. 
@@ -442,7 +427,8 @@ Sometimes, we want to add the (group) aggregates as a new column to the existing
 df %>% 
   group_by(date) %>%
   mutate(Total_Streams = sum(Streams), Share = Streams/Total_Streams) %>%
-  select(Streams, Total_Streams, Share, Artist)
+  select(Streams, Total_Streams, Share, Artist) %>%
+  head(5)
 ```
 
 ```
@@ -450,26 +436,132 @@ df %>%
 ```
 
 ```
-## # A tibble: 73,200 x 5
-## # Groups:   date [366]
-##    date       Streams Total_Streams  Share Artist     
-##    <date>       <dbl>         <dbl>  <dbl> <chr>      
-##  1 2019-03-30 1040382      30400557 0.0342 Capital Bra
-##  2 2019-03-30  822209      30400557 0.0270 Shindy     
-##  3 2019-03-30  704316      30400557 0.0232 Eno        
-##  4 2019-03-30  681426      30400557 0.0224 MERO       
-##  5 2019-03-30  557781      30400557 0.0183 Fero47     
-##  6 2019-03-30  534339      30400557 0.0176 Capital Bra
-##  7 2019-03-30  487419      30400557 0.0160 Ufo361     
-##  8 2019-03-30  466665      30400557 0.0154 KC Rebell  
-##  9 2019-03-30  449259      30400557 0.0148 Luciano    
-## 10 2019-03-30  415859      30400557 0.0137 Rammstein  
-## # ... with 73,190 more rows
+## # A tibble: 5 x 5
+## # Groups:   date [1]
+##   date       Streams Total_Streams  Share Artist     
+##   <date>       <dbl>         <dbl>  <dbl> <chr>      
+## 1 2019-03-30 1040382      30400557 0.0342 Capital Bra
+## 2 2019-03-30  822209      30400557 0.0270 Shindy     
+## 3 2019-03-30  704316      30400557 0.0232 Eno        
+## 4 2019-03-30  681426      30400557 0.0224 MERO       
+## 5 2019-03-30  557781      30400557 0.0183 Fero47
 ```
 
 
 ## Combining tables
 ## Database backend
+### Motivation
+As mentioned before, the `dplyr` syntax reveals strong analogies with SQL. What is more, it is even possible to use `dplyr` with a database backend. 
+
+**What does this mean? And when is this useful?**
+
+In a company setting, raw data is usually stored in some form of database. When we want to work with the data in R, the standard way would be to open a connection to the database and read in the data into R's memory. However, if the size of data is large, there may be problems with this approach: 
+
+- Large data require long reading time 
+- Data sets might not even fit into memory
+- Computations might have low performance
+
+If we want to work on the raw data (e.g. for statistical / machine learning modelling), this constitutes a problem: either we need a system with larger memory / higher performance. Or we must restrict ourselves to a smaller sample of the data. Or we could connect R to a technology for distributed machine learning, such as Apache Spark.
+
+In some cases, however, we don't actually need to work on the raw data. We would be happy to let the database do the calculations for us (these are built to store and process huge amounts of data), and just read in the resulting data, which is often much smaller in size. This is precisely the use case for dplyr with a database backend.
+
+The idea is to write regular dplyr code. The code is translated into SQL under the hood. The data is retrieved from the database and only the results are actually read into R's memory.
+
+### Set up
+First, we need to install a few things: 
+
+- **Database:** In a company setting, the database will already be there. If you want to install a database on your computer, popular choices are PostgreSQL or MySQL. Here is an [overview of possible choices](https://db.rstudio.com/databases/)S For this book we will use an in-memory SQLite database. The benefit is that everyone will be able to run the code without the need to set up a proper database.    
+- **DBI backend package:** DBI stands for database interface. We need a package that corresponds to our database. In our case we will use the package `RSQLite`. With many other databases, the package `odbc` would be proper choice.
+- **`dbplyr` package** This package needs to be installed, but we never need to load it explictly. Once installed, it is sufficient to load the regular `dplyr` package.
+
+Second, we need to connect R to the database. The arguments look slightly different, depending on the database that you are using. Usually, you would also need to specify a user name and password.
+
+```r
+con <- DBI::dbConnect(RSQLite::SQLite(), dbname = ":memory:")
+```
+
+Third, we need to have data in our database. In a company setting, the data would already be there. In our case, we create a table `spotify-charts-germany` in the database and copy the corresponding data from R's memory (df) into this table.
+
+
+```r
+copy_to(con, df, "spotify-charts-germany")
+```
+
+### Querying the database
+First, we register the database table via the `tbl` function. 
+
+```r
+spotify_db <- tbl(con, "spotify-charts-germany")
+```
+
+Now we can query this database table using regular `dplyr` syntax. Note that this works smoothly for the majority but not for all `dplyr` commands. For instance the `slice` function is not implemented, i.e. it has no translation to SQL. Hence, in the following statement we extract the first five rows via `head(5)` instead of `slice(1:5)`. Otherwise the sequence of commands looks identical to the one [presented above based on a normal R data frame/tibble](#typical-workflows).
+
+
+```r
+spotify_db %>%                                      # reference to the database table
+  select(Streams, date, Artist, Track.Name) %>%     # select columns by name
+  arrange(-Streams) %>%                             # order rows by some variable   
+  head(5)                                           # select rows by position  
+```
+
+```
+## # Source:     lazy query [?? x 4]
+## # Database:   sqlite 3.29.0 [:memory:]
+## # Ordered by: -Streams
+##   Streams  date Artist       Track.Name                                
+##     <dbl> <dbl> <chr>        <chr>                                     
+## 1 1964217 18254 Mariah Carey All I Want for Christmas Is You           
+## 2 1939974 18254 Wham!        Last Christmas                            
+## 3 1788621 18068 Capital Bra  Tilidin                                   
+## 4 1603796 18254 Chris Rea    Driving Home for Christmas - 2019 Remaster
+## 5 1538169 18069 Capital Bra  Tilidin
+```
+
+We can actually see the SQL generated by dplyr in the background via `show_query`. 
+
+
+```r
+spotify_db %>%
+  select(Streams, date, Artist, Track.Name) %>%
+  arrange(-Streams) %>%
+  head(5) %>% 
+  show_query()                                      # shows the translation into SQL
+```
+
+```
+## <SQL>
+## SELECT `Streams`, `date`, `Artist`, `Track.Name`
+## FROM `spotify-charts-germany`
+## ORDER BY -`Streams`
+## LIMIT 5
+```
+
+Alternatively, we could achieve the same by writing the SQL query ourselves, and send the query to the database.
+
+```r
+query <-  "SELECT Streams, date, Artist, `Track.Name` 
+          FROM `spotify-charts-germany`
+          ORDER BY Streams DESC
+          LIMIT 5"
+RMySQL::dbSendQuery(con, query)
+```
+
+It is important to understand that the data is not in R's memory until we explicitly `collect` the data. Once the data is collected, it behaves like any regular R data frame.
+
+```r
+rdata <- 
+  spotify_db %>%
+  select(Streams, date, Artist, Track.Name) %>%
+  arrange(-Streams) %>%
+  head(5) %>% 
+  collect()                   # this pulls the data into R's memory
+class(rdata)                  # this is a regular R data frame / tibble
+```
+
+```
+## [1] "tbl_df"     "tbl"        "data.frame"
+```
+
 
 
 
