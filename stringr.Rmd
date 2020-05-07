@@ -1,3 +1,8 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 # Character data: stringr {#stringr}
 
 Resources:
@@ -116,9 +121,11 @@ Regular expressions (regex) are used mostly in all programming languages and the
 
 
 For regular expressions, the following holds:
+
+
 * For the regular expression "a", you use the character "a"
-* For all punctuation marks a backslash is put in front. E.g. "\?" is the regular expression for the question mark: "?".
-* For any digit, you can use the regular expression "\d" or also "[:digit:]". For word characters, you use "\w" or "[:alpha:]" as a regular expression. To write the regular expression in R you have to write "\\?", so two backslahes are needed.
+* For all punctuation marks a backslash is put in front. E.g. "\\\?" is the regular expression for the question mark: "?". But to write "?" in R, you have to use two backslahes: "\\\\?"
+* For any digit, you can use the regular expression "\d" or also "[:digit:]". For word characters, you use "\w" or "[:alpha:]" as a regular expression. 
 * If you have finite list of alternatives, you can use the regular expression for one of those, like "[abc]". So a word is just matched, if it either contains a,b or c.
 * Also of interest might be the regular expression "a[n]", which indicates, that you just want to have those strings, which contain a n times. "a[2]" would match the string "banana" for example, because it contains two "n" s.
 * You can group regular expressions with (). If you have the regex "(a|b)c", then you have three groups. First "(a|b)", then "c", at last the whole term a group. Even if you have just set one bracket pair. The reason to group a regex within a regex is the possibility to call the groups by an assigned number and also some of the functions in stringr make use of the group structure, e.g. provide a match for every group.
@@ -127,7 +134,7 @@ For regular expressions, the following holds:
 There are many more. Since providing information to all the regular expressions, would cost too much space here, we'd like to redirect you to look for more information on the web, e.g. second page of the cheatsheet of stringr, if you want to know more about regular expressions:
 http://edrub.in/CheatSheets/cheatSheetStringr.pdf
 
-Keep in mind that it might be not easy to find regular expressions, which defines the members of the set, which you want to match. Take e.g. the string "love". If you want to match every conjugation or word related to "love", like "loved", "lover" etc, than you need a regular expression to define this set. If you use the regular expression love\\w" then as a regular expression, most of these are matched and given back correctly. If you have "loved", "loved" is given back. But for "lovely" just "lovel" is given back, because you have just accounted for one additional character.
+Keep in mind that it might be not easy to find regular expressions, which defines the members of the set, which you want to match. Take e.g. the string "love". If you want to match every conjugation or word related to "love", like "loved", "lover" etc, than you need a regular expression to define this set. If you use the regular expression love\\\\w" then as a regular expression, most of these are matched and given back correctly. If you have "loved", "loved" is given back. But for "lovely" just "lovel" is given back, because you have just accounted for one additional character.
 
 There are many caveats like this in regular expressions.
 
@@ -249,7 +256,9 @@ Here it is useful, that We can use the str_sub also to eliminate unwanted signs 
 str_sub(recipes$nutrition[1], 2,str_length(recipes$nutrition[1])-1)
 
 ```
-Then we can use the strsplit() function from base R to split the string into a list of strings (or see str_split).
+
+Then we can use the strsplit() function from base R to split the string into a list of strings by using ", " as the seperator. We don't have to care for the brackets additionally then.
+
 
 
 
@@ -282,7 +291,7 @@ If you simply give in a word as an argument for pattern, then the first match is
 The function can also be used with a vector of strings as an argument for pattern. Then the function gives back the first string of the vector, which has been found in the string of the first argument, which shall be searched. str_detect would just indicate that one of the strings in the vector is true, but not which of them.
 
 
-If you don't simply want the first match, then you can use also str.extract.all(). The output is a list of vectors (???).
+If you don't simply want the first match, then you can use also str.extract.all(). The output is a list of vectors.
 
 <u>Example 1</u>
 
@@ -291,10 +300,11 @@ We look at the common words love and recipe in the description. The result shows
 
 
 ```{r , echo=TRUE }
-head(str_extract(recipes$description, "(love\\w|recipe\\w)"),100)
+head(str_extract(recipes$description, "(love\\w|recipe\\w)"),60)
 
 ```
 This example also shows, that you have to be careful with regular expressions. The 55rd entry "lovel" comes from "lovely". Maybe you would rather have "lovely" returned.
+
 
 
 <u>Example 2</u>
@@ -322,7 +332,7 @@ In this function if a match of a is detected, this is a match for group 1 and th
 As with str_extract, here also exists a str_match_all function to get all the matches and not just the first.
 
 
-<u>Example 1</u>
+<u>Example</u>
 
 Here we want to match the regular expression (love\\w|recipe\\w).+(beef). This means "love" and "recipe" form one group and beef forms the other. The whole expression as such is also a group.
 
@@ -412,7 +422,8 @@ Italy <- recipes %>% filter(stringr::str_detect(name, "pizza"))
 The replace functions of stringr are used to match patterns and replace them with new strings. 
 
 <u>Example</u>
-```{r, echo=FALSE}
+```{r, echo=TRUE}
+
 Italy <- Italy %>% 
   mutate(name1 = str_replace(Italy$name, "pizza", "fluffy pizza"))
 ```
@@ -422,7 +433,7 @@ For seo (search engine optimization) we will add the popular word "fluffy" to al
 In order to replace several matches, use str_replace_all and create a vector containing multiple conditions.
 
 
-``` {r, echo=FALSE}
+``` {r, echo=TRUE}
 Italy <- Italy %>% 
   mutate(name2 = str_replace_all(Italy$name, c("pizza" = "fluffy pizza", "easy" = "easy peasy")))
 ```
@@ -434,8 +445,12 @@ str_to_lower will change text to lower case,
 str_to_upper will change text to upper case,
 str_to_title will change first letter of a string into a capital letter.
 
+... 
+
+
+
 <u>Example</u>
-``` {r, echo=FALSE}
+``` {r, echo=TRUE}
 p <- c("i","like","pizza","and","i don't share pizzza")
 str_to_upper(p)
 str_to_sentence(p)
@@ -448,7 +463,7 @@ Attention: Locales will apply language conventions when changing the case. As yo
 Locales also come in handy for the str_order or str_sort fuction. 
 str_sort will sort a list of string vectors by alphabet (locale will determine wich alphabet is applied)
 
-```{r, echo=FALSE}
+```{r, echo=TRUE}
 str_sort(Italy$name1[1:10], decreasing = FALSE, na_last = TRUE, locale = "en", numeric = FALSE)
 ```
 
@@ -461,7 +476,7 @@ If you want to merge several strings into one, the str_c function is what you ne
 <u>Example</u>
 In our Pizza example you can first see the join of the first few names into one string separated by ", " and then a vector that is joint into one string using the words "and then" as a form of separation. 
 
-```{r, echo=FALSE}
+```{r, echo=TRUE}
 str_c(Italy$name2[1],Italy$name2[2], Italy$name2[3], sep = ", ")
 str_c(Italy$name2[1:3], collapse = " and then ")
 ```
@@ -473,7 +488,7 @@ The str_split function will split a vector of strings into a list of substrings.
 <u>Example</u>
 In our example we will split the column step containing step by step instructions into single substrings. As the steps currently have the format of a list, we can use the comma as a pattern to separate the strings. 
 
-```{r, echo=FALSE}
+```{r, echo=TRUE}
 Italy$steps %>% str_split("', '") %>% head(2)
 
 ```
@@ -481,8 +496,9 @@ If you'd rather have the subset of strings in a matrix, you can use str_split_fi
 
 #### str_glue
 
+
 <u>Example</u>
-```{r, echo=FALSE}
+```{r, echo=TRUE}
 pandas <- c("Carl","Jakob","Jakob","Markus","Robert")
 str_glue("Hey {pandas}! I'd recommend the recipe '{str_to_title(Italy$name2[1:5])}' for you." )
 
