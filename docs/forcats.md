@@ -453,9 +453,9 @@ countries_in_1896 %>%
 ```
 
 ```
-##  [1] "Switzerland"   "France"        "Greece"        "Australia"    
-##  [5] "Germany"       "Austria"       "Denmark"       "Hungary"      
-##  [9] "Great Britain" "Sweden"        "United States" "Italy"
+##  [1] "United States" "Greece"        "Hungary"       "Switzerland"  
+##  [5] "Italy"         "Germany"       "Australia"     "Sweden"       
+##  [9] "Denmark"       "Great Britain" "Austria"       "France"
 ```
 ### Reordering levels by other variables
 The functions presented in this section bare great similarity to the `fct_relevel()` function introduced in the beginning of this section.
@@ -583,8 +583,8 @@ countries_in_1896 %>%
 ```
 
 ```
-##  [1] id12 id12 id12 id12 id12 id12 id12 id12 id12 id12 id10 id10 id10 id02 id12
-## [16] id05 id05 id08 id08 id08 id08 id08 id08 id08 id10
+##  [1] id02 id02 id02 id02 id02 id02 id02 id02 id02 id02 id11 id11 id11 id03 id02
+## [16] id06 id06 id07 id07 id07 id07 id07 id07 id07 id11
 ## Levels: id01 id02 id03 id04 id05 id06 id07 id08 id09 id10 id11 id12
 ```
 
