@@ -26,7 +26,7 @@ Advice: Many of the examples in the Vignettes just refer to vectors. How can we 
 #install.packages("gutenbergr")
 #install.packages("tidytext")
 
-#Keep in mind that knitr doesn't work, if those are not commented out. The packages are necessary to run the script nonetheless.
+#Keep in mind that knitr doesn't work, if those commands are not commented out. The packages are necessary to run the script nonetheless.
 
 library(readr)
 library(stringr)
@@ -48,12 +48,7 @@ tm_text <- gutenberg_download(35)
 recipes <- read_csv("data/recipes.csv")
 
 str(recipes)
-
-   #//[!!!]It might make sense to have two versions of the database. One, where most columns just contain strings, and another version, where every column has the appropriate data type. One could make use of the stringr methods e.g. on the dates if they're not in date format, but in character format.
-
 recipes.c <- recipes
-
-#//[!!!] Instead of doing everything manually, maybe reimport via read.r
     
 
 #The ids of the recipe and of the contributor are de facto factors.
@@ -75,10 +70,10 @@ recipes_test_1 <- as.numeric(recipes_test[[1]])
 ```
 
 
-
 ## Introduction
 
 ### Use of stringR in the R environment
+
 
 StringR is a package, which deals with measuring strings, search in strings and also altering strings. StringR is thus mostly involved with data preprocessing, but it can also be used for text analysis. E.g. in text mining to determine the frequency of words. In the following, we have listed most of the available functions in an encyclopedic style and describe their usage mostly with a single database, based on cooking recipes.
 
@@ -113,14 +108,17 @@ This limits your ability to make use of the stringR functions, because stringR s
 
 
 
+
 ## Data Set for examples
 
-As a data set for most of our examples we use the recipes data set, which contains recipes from various recipe websites from the USA. The dataset contains the recipe name, tags of the recipes such as vegetarian, the estimated time to cook it, the nutrition, the steps of the recipe itself and a decription of the recipe from the author. Also the ingredients are listed.
+As a data set for most of our examples we use the recipes data set, which contains recipes from various recipe websites from the USA. The dataset contains the recipe name, tags of the recipes such as vegetarian, the estimated time to cook it, the nutrition, the steps of the recipe itself and a description of the recipe from the author. Also, the ingredients are listed.
 
 
 ## Regular Expressions
 
+
 Regular expressions (regex) are used mostly in all programming languages and they are a way to normalize the syntax of strings. More importantly they can be used to express not a static word, but could also, more generally, define a group of words. For example, the set of words, which end on "r" contain the words "letter", "bear", "beer" etc.. So regular expressions are often used not to match a single word, but also a set of words.
+
 
 For regular expressions, the following holds:
 
@@ -150,7 +148,7 @@ There are many caveats like this in regular expressions.
 
 #### str_length
 
-str_length(string) shows the number of characters (!not words)in the given argument string. This includes white spaces and also punctuation marks.
+str_length(string) shows the number of characters (!not words) in the given argument string. This includes both white spaces and punctuation marks.
 
 This could be used to compare the length of two strings, especially if they have to have the same length. This could also be used to determine the frequency of characters in a string.
 
@@ -171,10 +169,10 @@ In the above string there are 13 characters and 10 word characters. If you just 
 
 #### str_pad
 
-str_pad(string, width, side = c("left", "right",
-"both"), pad = " ") adds characters either to the left or right of a string (as a default white spaces). The argument width states how long the string should be after the adding of the additional characters. Both as a parameter for the side means that the added characters are split between the left and the right side of the string. With the pad argument any other character can be added.
+str_pad(string, width, side = c("left", "right","both"), pad = " ") adds characters either to the left or right of a string (as a default white spaces). The argument width states how long the string should be after the adding of the additional characters. Both as a parameter for the side means that the added characters are split between the left and the right side of the string. With the pad argument any other character can be added.
 
-The idea seems to be to adjust strings of different length to the same length to match them in a subsequent step. E.g. when the comparison of the numbers 000247 with 247 should result in a match, we add 0s in front of the second number.
+
+The idea is to adjust strings of different length to the same length in order to match them in a subsequent step. E.g. when the comparison of the numbers 000247 with 247 should result in a match, we add 0s in front of the second number.
 
 
 <u>Example</u>
@@ -183,19 +181,19 @@ In our dataset, the id consists sometimes of 5 or 6 digits, as you can see here:
 
 ```{r, echo=FALSE}
 
-head(recipes$id,50)
+head(recipes$id,10)
 
 ```
 
-We want to adjust all of the numbers to the same length. So we add a zero in front to those 5 digit numbers.
+We want to adjust all of the numbers to the same length. So, we add a zero in front to those 5-digit numbers.
 
 ```{r, echo=FALSE}
 
-head(str_pad(recipes$id, width = 6, side = "left", pad = "0"),50)
+head(str_pad(recipes$id, width = 6, side = "left", pad = "0"),10)
 
 ```
 
-As we can see, some ids have now a 0 in front. These were 5 digit numbers before. 
+As we can see, some ids have now a 0 in front. These were 5-digit numbers before. 
 
 This works also, if id is of numeric type in r, but the type is then changed to character. As you can see here, the numbers above don't have quotation marks, while the ones below have some.
 
@@ -207,12 +205,12 @@ str_trunc(string, width, side = c("right", "left",
 
 <u>Example</u>
 
-We could use the function to show more text from the description column than can be seen in the view(recipes) tab, to get a better impression, of what these texts are about. But we might not need the full text. We just want the first 100 characters, so we cut off to the right.
+We could use the function to show more text from the description column than can be seen in the view(recipes) tab, to get a better impression, of what these texts are about. But we might not need the full text. We just want the first 50 characters, so we cut off to the right.
 
 ```{r, echo=TRUE}
 
-head(str_trunc(recipes$description, width = 100, side = "right"),5)
-recipes %>% mutate(description_short = str_trunc(description, width = 100, side = "right")) %>% select(name, description_short) %>% head()
+head(str_trunc(recipes$description, width = 50, side = "right"),5)
+recipes %>% mutate(description_short = str_trunc(description, width = 50, side = "right")) %>% select(name, description_short) %>% head()
 
 ```
 
@@ -240,7 +238,7 @@ For deleting all the white spaces in a larger string, you could also use a regul
 
 #### str_sub
 
-str_sub(string, start=1L, end = -1L) can be used to extract substrings of a string. As a first parameter you give the text and as 2nd and 3rd parameter the start and end index of the substring are entered into the function. This can also be used to delete characters at the beginning and end of a string by extracting a version of the string without the beginning and end characters.
+str_sub(string, start=1L, end = -1L) can be used to extract substrings of a string. The first argument requires text and as 2nd and 3rd parameter the start and end index of the substring must be given. This can also be used to delete characters at the beginning and end of a string by extracting a version of the string without the beginning and end characters.
 
 
 <u>Example</u>
@@ -249,7 +247,7 @@ In our data we have the nutrition given as a character string in the following f
 ```{r , echo=FALSE}
 recipes$nutrition[1]
 ```
-This whole term is a string, which we want to split into a list. First we have to delete the "[" in the beginning of the string and "]" at the end.
+This whole term is a string, which we want to split into a list. First, we have to delete the "[" in the beginning of the string and "]" at the end.
 
 Here it is useful, that We can use the str_sub also to eliminate unwanted signs at the beginning and the end of a string.
 
@@ -258,7 +256,9 @@ Here it is useful, that We can use the str_sub also to eliminate unwanted signs 
 str_sub(recipes$nutrition[1], 2,str_length(recipes$nutrition[1])-1)
 
 ```
+
 Then we can use the strsplit() function from base R to split the string into a list of strings by using ", " as the seperator. We don't have to care for the brackets additionally then.
+
 
 
 
@@ -268,7 +268,7 @@ str_subset(string, pattern) gives back strings that contain a pattern match. The
 
 <u>Example</u>
 
-To give an example, we look at the description of a recipe, which looks like the following
+To give an example, we look at the description of a recipe, which looks like the following:
 
 ```{r , echo=FALSE }
 recipes$description[1]
@@ -286,7 +286,7 @@ As you can see, the set of strings has been reduced just to two strings. These a
 
 str_extract(string, pattern) returns the first pattern match found in each string as a vector. 
 
-If you simply give in a word as an argument for pattern, then the first match is either the word itself or the function gives NA out, if there is no match. If you give in a set of strings, the result is a vector with just the two aforementioned entries. Since this just gives the information, if a string contains a word or not, the str_detect function would be more suitable for the task.
+If you simply give in a word as an argument for pattern, then the first match is either the word itself or the function gives NA out, if there is no match. If you give in a set of strings, the result is a vector with just the two entries mentioned before. Since this just gives the information, if a string contains a word or not, the str_detect function would be more suitable for the task.
 
 The function can also be used with a vector of strings as an argument for pattern. Then the function gives back the first string of the vector, which has been found in the string of the first argument, which shall be searched. str_detect would just indicate that one of the strings in the vector is true, but not which of them.
 
@@ -295,7 +295,9 @@ If you don't simply want the first match, then you can use also str.extract.all(
 
 <u>Example 1</u>
 
+
 We look at the common words love and recipe in the description. The result shows, in which decriptions which word of these comes first or gives back NA if the pattern isn't found at all in the string. 
+
 
 ```{r , echo=TRUE }
 head(str_extract(recipes$description, "(love\\w|recipe\\w)"),60)
@@ -314,6 +316,7 @@ head(str_extract_all(recipes$ingredients, "milk|eggs"),5)
 
 
 ```
+
 
 As you can see the second recipe contains both eggs and milk, the 4th and 5th recipe contain just milk, but no eggs.
 
@@ -338,7 +341,9 @@ head(str_match(recipes$description, "(love\\w|recipe\\w).+(beef)"),5)
 
 ```
 
+
 As you can see, in the first column there is the entry beloging to the whole regular expression as a group. The string contains "love" as well as "beef". In the second column, the string matched from the first group is "love", in the third column the string matched from the second group is "beef".
+
 
 
 ### Detect matches
@@ -380,7 +385,7 @@ str_count(string, pattern) counts the number of matches in a string.
 
 <u>Example</u>
 
-"i" occurs very often in the descriptions of the recipes. Let's see how often per description. As a regular expression we have chosen " i ", that is an i sourrounded by white spaces. This means in sentences like "I ...." the i is not matched.
+"i" occurs very often in the descriptions of the recipes. Let's see how often per description. As a regular expression we have chosen " i ", that is an i surrounded by white spaces. This means in sentences like "I ...." the i is not matched.
 
 ```{r , echo=TRUE }
 head(str_count(recipes$description, " i "),100)
@@ -414,14 +419,19 @@ Italy <- recipes %>% filter(stringr::str_detect(name, "pizza"))
 
 #### str_replace (and replace_all) 
 
+The replace functions of stringr are used to match patterns and replace them with new strings. 
+
+<u>Example</u>
 ```{r, echo=TRUE}
+
 Italy <- Italy %>% 
   mutate(name1 = str_replace(Italy$name, "pizza", "fluffy pizza"))
 ```
 
-The replace functions of stringr are used to match patterns and replace them with new strings. 
-Example: For seo (search engine optimization) we will add the popular word "fluffy" to all our pizza recipes in the name column.  
-In order to replace several matches use str_replace_all and create a vector containing multiple conditions.
+
+For seo (search engine optimization) we will add the popular word "fluffy" to all our pizza recipes in the name column.  
+In order to replace several matches, use str_replace_all and create a vector containing multiple conditions.
+
 
 ``` {r, echo=TRUE}
 Italy <- Italy %>% 
@@ -430,11 +440,16 @@ Italy <- Italy %>%
 
 ##### str_to_lower
 
-We can use str_to_ to change the case of text strings. They are intutitive: 
+We can use str_to_ to change the case of text strings. They are intuitive: 
 str_to_lower will change text to lower case, 
 str_to_upper will change text to upper case,
 str_to_title will change first letter of a string into a capital letter.
+
 ... 
+
+
+
+<u>Example</u>
 ``` {r, echo=TRUE}
 p <- c("i","like","pizza","and","i don't share pizzza")
 str_to_upper(p)
@@ -443,7 +458,7 @@ p <- str_c(p, collapse = " ") #make it one sentence (see str_c)
 str_to_sentence(p)
 ```
 
-Attention: Locales will apply language conventions when changing the case. As you know, capitalization is used different in German and English. Above, the default would be locale = "en" but you can change it into every other language. The code for your langugage can be found in Wikipedia - List of ISO 639-1 codes.
+Attention: Locales will apply language conventions when changing the case. As you know, capitalization is used different in German and English. Above, the default would be locale = "en" but you can change it into every other language. The code for your language can be found in Wikipedia - List of ISO 639-1 codes.
 
 Locales also come in handy for the str_order or str_sort fuction. 
 str_sort will sort a list of string vectors by alphabet (locale will determine wich alphabet is applied)
@@ -456,8 +471,10 @@ str_sort(Italy$name1[1:10], decreasing = FALSE, na_last = TRUE, locale = "en", n
 
 #### str_c
 
-If you want to merge several strings into one, the str_c funtion is what you need. It is simple: either you join two or more single strings using the seperate argument to choose a separation sign or you join a vector of strings by having the argument collapse control how the strings are separeted. 
-In our Pizza example you can first see the join of the first few names into one string separated by ", " and then a vector that is joint into one string unsig the words "and then" as a form of separation. 
+If you want to merge several strings into one, the str_c function is what you need. It is simple: either you join two or more single strings using the separate argument to choose a separation sign or you join a vector of strings by having the argument collapse control how the strings are separated. 
+
+<u>Example</u>
+In our Pizza example you can first see the join of the first few names into one string separated by ", " and then a vector that is joint into one string using the words "and then" as a form of separation. 
 
 ```{r, echo=TRUE}
 str_c(Italy$name2[1],Italy$name2[2], Italy$name2[3], sep = ", ")
@@ -467,7 +484,9 @@ str_c(Italy$name2[1:3], collapse = " and then ")
 #### str_split
 
 The str_split function will split a vector of strings into a list of substrings. The split is made where there is a match with a pattern of your choice.
-In our exapmle we will split the cloumn step containing step by step instructions into single substrings. As the steps currently have the format of a list, we can use the comma as a pattern to seperate the strings. 
+
+<u>Example</u>
+In our example we will split the column step containing step by step instructions into single substrings. As the steps currently have the format of a list, we can use the comma as a pattern to separate the strings. 
 
 ```{r, echo=TRUE}
 Italy$steps %>% str_split("', '") %>% head(2)
@@ -477,13 +496,15 @@ If you'd rather have the subset of strings in a matrix, you can use str_split_fi
 
 #### str_glue
 
+
+<u>Example</u>
 ```{r, echo=TRUE}
 pandas <- c("Carl","Jakob","Jakob","Markus","Robert")
 str_glue("Hey {pandas}! I'd recommend the recipe '{str_to_title(Italy$name2[1:5])}' for you." )
 
 ```
 
-As you can see, str_glue literally glues strings together to create a new string. Expressions must be written in {} but everything else is up to you: you can use data frames, listes and regex. Useful for customized mailing, ditribution of tasks ect. 
+As you can see, str_glue literally glues strings together to create a new string. Expressions must be written in {}, everything else is up to you tough: you can use data frames, lists and regex. Useful for customized mailing, distribution of tasks ect. 
 
 
 

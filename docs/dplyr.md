@@ -44,8 +44,7 @@ The second workflow returns the average number of streams per day of week since 
 df %>%                                 # data              
   filter(date>="2020-01-01") %>%       # select rows where condition evaluates to TRUE
                                        # create an additional variable 
-  mutate(day_of_week=lubridate::wday(date, label=TRUE, abbr=FALSE, 
-                                     locale="American_America.1252", week_start=1)) %>%
+  mutate(day_of_week=lubridate::wday(date, label=TRUE, abbr=FALSE, week_start=1)) %>%
   group_by(day_of_week) %>%            # group the data 
   summarise(streams = mean(Streams))   # aggregate per group via functions such as mean, min, etc. 
 ```
@@ -54,13 +53,13 @@ df %>%                                 # data
 ## # A tibble: 7 x 2
 ##   day_of_week streams
 ##   <ord>         <dbl>
-## 1 Monday      125182.
-## 2 Tuesday     125230.
-## 3 Wednesday   122318.
-## 4 Thursday    125505.
-## 5 Friday      156173.
-## 6 Saturday    141063.
-## 7 Sunday      112455.
+## 1 Montag      125182.
+## 2 Dienstag    125230.
+## 3 Mittwoch    122318.
+## 4 Donnerstag  125505.
+## 5 Freitag     156173.
+## 6 Samstag     141063.
+## 7 Sonntag     112455.
 ```
 
 Note that in this particular case, we can write the code more concise by generating the new variable `day_of_week` inside the `group_by` function.
@@ -69,7 +68,7 @@ Note that in this particular case, we can write the code more concise by generat
 ```r
 df %>%                                              
   filter(date>="2020-01-01") %>%                    
-  group_by(day_of_week=lubridate::wday(date, label=TRUE, abbr=FALSE, locale="American_America.1252", week_start=1)) %>% 
+  group_by(day_of_week=lubridate::wday(date, label=TRUE, abbr=FALSE, week_start=1)) %>% 
   summarise(streams = mean(Streams))          
 ```
 
