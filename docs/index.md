@@ -1,7 +1,7 @@
 ---
 title: "R Data Science Book"
 author: "Tools and Programming Languages for Data Scientists, FH Kiel, Summer Term 2020"
-date: "2020-05-07"
+date: "2020-05-08"
 site: bookdown::bookdown_site
 documentclass: book
 output:

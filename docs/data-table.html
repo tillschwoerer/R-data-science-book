@@ -24,7 +24,7 @@
 <meta name="author" content="Tools and Programming Languages for Data Scientists, FH Kiel, Summer Term 2020" />
 
 
-<meta name="date" content="2020-05-07" />
+<meta name="date" content="2020-05-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -146,12 +146,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.3.2" data-path="dplyr.html"><a href="dplyr.html#create-new-columns"><i class="fa fa-check"></i><b>3.3.2</b> Create new columns</a></li>
 </ul></li>
 <li class="chapter" data-level="3.4" data-path="dplyr.html"><a href="dplyr.html#scoped-functions"><i class="fa fa-check"></i><b>3.4</b> Scoped functions</a></li>
-<li class="chapter" data-level="3.5" data-path="dplyr.html"><a href="dplyr.html#summarise"><i class="fa fa-check"></i><b>3.5</b> Summarise</a></li>
-<li class="chapter" data-level="3.6" data-path="dplyr.html"><a href="dplyr.html#combining-tables"><i class="fa fa-check"></i><b>3.6</b> Combining tables</a></li>
-<li class="chapter" data-level="3.7" data-path="dplyr.html"><a href="dplyr.html#database-backend"><i class="fa fa-check"></i><b>3.7</b> Database backend</a><ul>
-<li class="chapter" data-level="3.7.1" data-path="dplyr.html"><a href="dplyr.html#motivation"><i class="fa fa-check"></i><b>3.7.1</b> Motivation</a></li>
-<li class="chapter" data-level="3.7.2" data-path="dplyr.html"><a href="dplyr.html#set-up"><i class="fa fa-check"></i><b>3.7.2</b> Set up</a></li>
-<li class="chapter" data-level="3.7.3" data-path="dplyr.html"><a href="dplyr.html#querying-the-database"><i class="fa fa-check"></i><b>3.7.3</b> Querying the database</a></li>
+<li class="chapter" data-level="3.5" data-path="dplyr.html"><a href="dplyr.html#aggregate"><i class="fa fa-check"></i><b>3.5</b> Aggregate</a></li>
+<li class="chapter" data-level="3.6" data-path="dplyr.html"><a href="dplyr.html#window-functions"><i class="fa fa-check"></i><b>3.6</b> Window functions</a></li>
+<li class="chapter" data-level="3.7" data-path="dplyr.html"><a href="dplyr.html#combining-tables"><i class="fa fa-check"></i><b>3.7</b> Combining tables</a></li>
+<li class="chapter" data-level="3.8" data-path="dplyr.html"><a href="dplyr.html#database-backend"><i class="fa fa-check"></i><b>3.8</b> Database backend</a><ul>
+<li class="chapter" data-level="3.8.1" data-path="dplyr.html"><a href="dplyr.html#motivation"><i class="fa fa-check"></i><b>3.8.1</b> Motivation</a></li>
+<li class="chapter" data-level="3.8.2" data-path="dplyr.html"><a href="dplyr.html#set-up"><i class="fa fa-check"></i><b>3.8.2</b> Set up</a></li>
+<li class="chapter" data-level="3.8.3" data-path="dplyr.html"><a href="dplyr.html#querying-the-database"><i class="fa fa-check"></i><b>3.8.3</b> Querying the database</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="lubridate.html"><a href="lubridate.html"><i class="fa fa-check"></i><b>4</b> Dates and times: lubridate</a><ul>
@@ -254,34 +255,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Okay, let’s get started with this chapter on high performance computing using the R package data.table.</p>
 <pre><code>## [1] &quot;Hello data.table&quot;</code></pre>
 <p>If <code>data.table</code> is not yet installed, we install it via:</p>
-<div class="sourceCode" id="cb278"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb278-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;data.table&quot;</span> , <span class="dt">repos=</span><span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb399"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb399-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;data.table&quot;</span> , <span class="dt">repos=</span><span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</a></code></pre></div>
 <p>We load <code>data.table</code> package and - to demonstrate the differences - also the <code>tidyverse</code> library.</p>
-<div class="sourceCode" id="cb279"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb279-1" title="1"><span class="kw">library</span>(tidyverse) </a>
-<a class="sourceLine" id="cb279-2" title="2"><span class="kw">library</span>(data.table)</a></code></pre></div>
+<div class="sourceCode" id="cb400"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb400-1" title="1"><span class="kw">library</span>(tidyverse) </a>
+<a class="sourceLine" id="cb400-2" title="2"><span class="kw">library</span>(data.table)</a></code></pre></div>
 <p>Data.table objects are similar to a data.frame object but with some extensions. Let us first load some data with the <code>data.table</code> file reader fread(), which is optimised for performance and creates a <code>data.table</code> object.</p>
-<div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb280-1" title="1">inpOlympic &lt;-<span class="st"> </span><span class="cf">if</span> (<span class="kw">file.exists</span>(<span class="st">&quot;data/olympic-games.csv&quot;</span>)) {</a>
-<a class="sourceLine" id="cb280-2" title="2">   <span class="st">&quot;data/olympic-games.csv&quot;</span></a>
-<a class="sourceLine" id="cb280-3" title="3">} </a>
-<a class="sourceLine" id="cb280-4" title="4"></a>
-<a class="sourceLine" id="cb280-5" title="5"></a>
-<a class="sourceLine" id="cb280-6" title="6">inpSpoti &lt;-<span class="st"> </span><span class="cf">if</span> (<span class="kw">file.exists</span>(<span class="st">&quot;data/spotify_charts_germany.csv&quot;</span>)) {</a>
-<a class="sourceLine" id="cb280-7" title="7">   <span class="st">&quot;data/spotify_charts_germany.csv&quot;</span></a>
-<a class="sourceLine" id="cb280-8" title="8">} </a>
-<a class="sourceLine" id="cb280-9" title="9"></a>
-<a class="sourceLine" id="cb280-10" title="10">olympics &lt;-<span class="st"> </span><span class="kw">fread</span>(inpOlympic)</a>
-<a class="sourceLine" id="cb280-11" title="11">spotify &lt;-<span class="st"> </span><span class="kw">fread</span>(inpSpoti)</a></code></pre></div>
+<div class="sourceCode" id="cb401"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb401-1" title="1">inpOlympic &lt;-<span class="st"> </span><span class="cf">if</span> (<span class="kw">file.exists</span>(<span class="st">&quot;data/olympic-games.csv&quot;</span>)) {</a>
+<a class="sourceLine" id="cb401-2" title="2">   <span class="st">&quot;data/olympic-games.csv&quot;</span></a>
+<a class="sourceLine" id="cb401-3" title="3">} </a>
+<a class="sourceLine" id="cb401-4" title="4"></a>
+<a class="sourceLine" id="cb401-5" title="5"></a>
+<a class="sourceLine" id="cb401-6" title="6">inpSpoti &lt;-<span class="st"> </span><span class="cf">if</span> (<span class="kw">file.exists</span>(<span class="st">&quot;data/spotify_charts_germany.csv&quot;</span>)) {</a>
+<a class="sourceLine" id="cb401-7" title="7">   <span class="st">&quot;data/spotify_charts_germany.csv&quot;</span></a>
+<a class="sourceLine" id="cb401-8" title="8">} </a>
+<a class="sourceLine" id="cb401-9" title="9"></a>
+<a class="sourceLine" id="cb401-10" title="10">olympics &lt;-<span class="st"> </span><span class="kw">fread</span>(inpOlympic)</a>
+<a class="sourceLine" id="cb401-11" title="11">spotify &lt;-<span class="st"> </span><span class="kw">fread</span>(inpSpoti)</a></code></pre></div>
 <div id="motivation-1" class="section level2">
 <h2><span class="header-section-number">7.1</span> Motivation</h2>
 <p>The package <code>data.table</code> provides an enhanced data frame object called (big surprise: ) <strong>data.table</strong> and a different type of syntax for common types of data manipulations. In this sense it is similar to the tidyverse (especially the dplyr part of it). A <code>data.table</code> object has the following form DT[i,j,by] where i represent the rows, j the columns and by the grouping argument.</p>
-<div class="sourceCode" id="cb281"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb281-1" title="1"><span class="kw">class</span>(olympics)   <span class="co"># We see that a data.table inherits properties of data.frames</span></a></code></pre></div>
+<div class="sourceCode" id="cb402"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb402-1" title="1"><span class="kw">class</span>(olympics)   <span class="co"># We see that a data.table inherits properties of data.frames</span></a></code></pre></div>
 <pre><code>## [1] &quot;data.table&quot; &quot;data.frame&quot;</code></pre>
-<div class="sourceCode" id="cb283"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb283-1" title="1">                  <span class="co"># and we can easily cast an data.frame object to data.table</span></a>
-<a class="sourceLine" id="cb283-2" title="2"></a>
-<a class="sourceLine" id="cb283-3" title="3">matrix &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>),<span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>),<span class="kw">c</span>(<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>))</a>
-<a class="sourceLine" id="cb283-4" title="4"><span class="kw">class</span>(matrix)</a></code></pre></div>
+<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb404-1" title="1">                  <span class="co"># and we can easily cast an data.frame object to data.table</span></a>
+<a class="sourceLine" id="cb404-2" title="2"></a>
+<a class="sourceLine" id="cb404-3" title="3">matrix &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>),<span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>),<span class="kw">c</span>(<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>))</a>
+<a class="sourceLine" id="cb404-4" title="4"><span class="kw">class</span>(matrix)</a></code></pre></div>
 <pre><code>## [1] &quot;data.frame&quot;</code></pre>
-<div class="sourceCode" id="cb285"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb285-1" title="1"><span class="kw">setDT</span>(matrix)</a>
-<a class="sourceLine" id="cb285-2" title="2"><span class="kw">class</span>(matrix)</a></code></pre></div>
+<div class="sourceCode" id="cb406"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb406-1" title="1"><span class="kw">setDT</span>(matrix)</a>
+<a class="sourceLine" id="cb406-2" title="2"><span class="kw">class</span>(matrix)</a></code></pre></div>
 <pre><code>## [1] &quot;data.table&quot; &quot;data.frame&quot;</code></pre>
 <p>So what are the main differences between <code>data.table</code> and <code>tidyverse</code>? Why or when would we want to use one or the other</p>
 <ul>
@@ -291,26 +292,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><strong>Quoted and unquoted names:</strong> in data.tables we usually have the option to use either quoted column names (which makes writing functions easier) or unquoted column names (which is convenient for exploration). In dplyr the default is unquoted column names and it is a bit trickier to use quoted column names.</li>
 </ul>
 <p>Before we go into the details, let’s start with two motivating examples of differences between data.table and tidyverse syntax. First, we want to know the 5 sports with the highest average weight of players in the 2016 summer olympic games.</p>
-<div class="sourceCode" id="cb287"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb287-1" title="1"><span class="co"># data.table syntax is short</span></a>
-<a class="sourceLine" id="cb287-2" title="2">olympics[game<span class="op">==</span><span class="st">&quot;2016 Summer&quot;</span>, .(<span class="dt">weight =</span> <span class="kw">mean</span>(weight, <span class="dt">na.rm=</span>T)), sport][<span class="kw">order</span>(<span class="op">-</span>weight)][<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb408-1" title="1"><span class="co"># data.table syntax is short</span></a>
+<a class="sourceLine" id="cb408-2" title="2">olympics[game<span class="op">==</span><span class="st">&quot;2016 Summer&quot;</span>, .(<span class="dt">weight =</span> <span class="kw">mean</span>(weight, <span class="dt">na.rm=</span>T)), sport][<span class="kw">order</span>(<span class="op">-</span>weight)][<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
 <pre><code>##         sport   weight
 ## 1: Basketball 87.86786
 ## 2: Water Polo 85.44961
 ## 3:   Handball 83.26912
 ## 4: Volleyball 80.29329
 ## 5:     Rowing 79.87226</code></pre>
-<div class="sourceCode" id="cb289"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb289-1" title="1"><span class="co"># tidyverse syntax is more expressive and readable</span></a>
-<a class="sourceLine" id="cb289-2" title="2">olympics <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb289-3" title="3"><span class="st">  </span><span class="kw">filter</span>(game<span class="op">==</span><span class="st">&quot;2016 Summer&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb289-4" title="4"><span class="st">  </span><span class="kw">group_by</span>(sport) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb289-5" title="5"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">weight =</span> <span class="kw">mean</span>(weight, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb289-6" title="6"><span class="st">  </span><span class="kw">arrange</span>(<span class="op">-</span>weight) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb289-7" title="7"><span class="st">  </span><span class="kw">head</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb410"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb410-1" title="1"><span class="co"># tidyverse syntax is more expressive and readable</span></a>
+<a class="sourceLine" id="cb410-2" title="2">olympics <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb410-3" title="3"><span class="st">  </span><span class="kw">filter</span>(game<span class="op">==</span><span class="st">&quot;2016 Summer&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb410-4" title="4"><span class="st">  </span><span class="kw">group_by</span>(sport) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb410-5" title="5"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">weight =</span> <span class="kw">mean</span>(weight, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb410-6" title="6"><span class="st">  </span><span class="kw">arrange</span>(<span class="op">-</span>weight) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb410-7" title="7"><span class="st">  </span><span class="kw">head</span>()</a></code></pre></div>
 <p>Next, we want to change an existing column:</p>
-<div class="sourceCode" id="cb290"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb290-1" title="1"><span class="co"># data.tables are mutable objects, i.e. changes happen in-place</span></a>
-<a class="sourceLine" id="cb290-2" title="2">olympics[,age<span class="op">:</span><span class="er">=</span><span class="kw">as.numeric</span>(age)]   <span class="co"># age is coerced from character to numeric</span></a></code></pre></div>
-<div class="sourceCode" id="cb291"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb291-1" title="1"><span class="co"># tidyverse&#39;s tibbles are immutable, i.e. we need to reassign to make permanent changes to the data</span></a>
-<a class="sourceLine" id="cb291-2" title="2">olympics &lt;-<span class="st"> </span>olympics <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">age_numeric =</span><span class="kw">as.numeric</span>(age))</a></code></pre></div>
+<div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb411-1" title="1"><span class="co"># data.tables are mutable objects, i.e. changes happen in-place</span></a>
+<a class="sourceLine" id="cb411-2" title="2">olympics[,age<span class="op">:</span><span class="er">=</span><span class="kw">as.numeric</span>(age)]   <span class="co"># age is coerced from character to numeric</span></a></code></pre></div>
+<div class="sourceCode" id="cb412"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb412-1" title="1"><span class="co"># tidyverse&#39;s tibbles are immutable, i.e. we need to reassign to make permanent changes to the data</span></a>
+<a class="sourceLine" id="cb412-2" title="2">olympics &lt;-<span class="st"> </span>olympics <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">age_numeric =</span><span class="kw">as.numeric</span>(age))</a></code></pre></div>
 </div>
 <div id="data-exploration" class="section level2">
 <h2><span class="header-section-number">7.2</span> Data exploration</h2>
@@ -319,10 +320,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">7.2.1</span> Subsetting rows</h3>
 <p>We can condition on the rows one time, which gives us all swimmers.</p>
 <p>again, for repetition the code tidyverse syntax</p>
-<div class="sourceCode" id="cb292"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb292-1" title="1">swimmers &lt;-<span class="st"> </span>olympics <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(sport <span class="op">==</span><span class="st"> &quot;Swimming&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb413"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb413-1" title="1">swimmers &lt;-<span class="st"> </span>olympics <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(sport <span class="op">==</span><span class="st"> &quot;Swimming&quot;</span>)</a></code></pre></div>
 <p>and in <code>data.table</code> syntax</p>
-<div class="sourceCode" id="cb293"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb293-1" title="1">swimmers &lt;-<span class="st"> </span>olympics[sport <span class="op">==</span><span class="st"> &quot;Swimming&quot;</span>]</a>
-<a class="sourceLine" id="cb293-2" title="2">olympics[sport<span class="op">==</span><span class="st">&quot;Swimming&quot;</span>]                <span class="co"># or without assinging operator</span></a></code></pre></div>
+<div class="sourceCode" id="cb414"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb414-1" title="1">swimmers &lt;-<span class="st"> </span>olympics[sport <span class="op">==</span><span class="st"> &quot;Swimming&quot;</span>]</a>
+<a class="sourceLine" id="cb414-2" title="2">olympics[sport<span class="op">==</span><span class="st">&quot;Swimming&quot;</span>]                <span class="co"># or without assinging operator</span></a></code></pre></div>
 <pre><code>##               game city    sport                                    discipline
 ##     1: 1952 Summer &lt;NA&gt; Swimming           Swimming Men&#39;s 400 metres Freestyle
 ##     2: 1912 Summer &lt;NA&gt; Swimming        Swimming Men&#39;s 200 metres Breaststroke
@@ -360,40 +361,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 23194:   M   &lt;NA&gt;
 ## 23195:   M   &lt;NA&gt;</code></pre>
 <p>And two or more times with the ‘&amp;’ operator (‘|’ operator for the logical or),for example all gold medal winners in swimming.</p>
-<div class="sourceCode" id="cb295"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb295-1" title="1">swimmers_gold &lt;-<span class="st"> </span>olympics[sport <span class="op">==</span><span class="st"> &quot;Swimming&quot;</span> <span class="op">&amp;</span><span class="st"> </span>medal <span class="op">==</span><span class="st"> &quot;Gold&quot;</span>]</a>
-<a class="sourceLine" id="cb295-2" title="2"></a>
-<a class="sourceLine" id="cb295-3" title="3"></a>
-<a class="sourceLine" id="cb295-4" title="4">swimmers_gold_without_doping &lt;-<span class="st"> </span>swimmers_gold[<span class="op">!</span>country<span class="op">==</span><span class="st">&quot;Russia&quot;</span> <span class="op">&amp;</span><span class="st"> </span>country<span class="op">!=</span><span class="st"> &quot;China&quot;</span>]  <span class="co">#the `!` operator negates the logical expression </span></a></code></pre></div>
+<div class="sourceCode" id="cb416"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb416-1" title="1">swimmers_gold &lt;-<span class="st"> </span>olympics[sport <span class="op">==</span><span class="st"> &quot;Swimming&quot;</span> <span class="op">&amp;</span><span class="st"> </span>medal <span class="op">==</span><span class="st"> &quot;Gold&quot;</span>]</a>
+<a class="sourceLine" id="cb416-2" title="2"></a>
+<a class="sourceLine" id="cb416-3" title="3"></a>
+<a class="sourceLine" id="cb416-4" title="4">swimmers_gold_without_doping &lt;-<span class="st"> </span>swimmers_gold[<span class="op">!</span>country<span class="op">==</span><span class="st">&quot;Russia&quot;</span> <span class="op">&amp;</span><span class="st"> </span>country<span class="op">!=</span><span class="st"> &quot;China&quot;</span>]  <span class="co">#the `!` operator negates the logical expression </span></a></code></pre></div>
 <p>The <code>i</code> argument also allows for regular expressions</p>
-<div class="sourceCode" id="cb296"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb296-1" title="1">Michael_Phelps &lt;-<span class="st"> </span>olympics[sport<span class="op">==</span><span class="st">&quot;Swimming&quot;</span> <span class="op">&amp;</span><span class="st"> </span>athlete <span class="op">%like%</span><span class="st"> &quot;Phelps&quot;</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb417"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb417-1" title="1">Michael_Phelps &lt;-<span class="st"> </span>olympics[sport<span class="op">==</span><span class="st">&quot;Swimming&quot;</span> <span class="op">&amp;</span><span class="st"> </span>athlete <span class="op">%like%</span><span class="st"> &quot;Phelps&quot;</span>]</a></code></pre></div>
 <p>The columns can be treated like variables so the expression <code>olympics$sport</code> is not necessary here but would work too. In additon we can select for the row numbers:</p>
 <p>tidyverse:</p>
-<div class="sourceCode" id="cb297"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb297-1" title="1">var &lt;-<span class="st"> </span>swimmers <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb418"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb418-1" title="1">var &lt;-<span class="st"> </span>swimmers <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</a></code></pre></div>
 <p>data.table</p>
-<div class="sourceCode" id="cb298"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb298-1" title="1">var &lt;-<span class="st"> </span>swimmers[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb419"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb419-1" title="1">var &lt;-<span class="st"> </span>swimmers[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
 <p>This is especially useful after ordering the data:</p>
-<div class="sourceCode" id="cb299"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb299-1" title="1">height &lt;-<span class="st"> </span>swimmers[<span class="kw">order</span>(height)]</a></code></pre></div>
+<div class="sourceCode" id="cb420"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb420-1" title="1">height &lt;-<span class="st"> </span>swimmers[<span class="kw">order</span>(height)]</a></code></pre></div>
 <p>or in decreasing order( here we pick the first element, so the tallest swimmer)</p>
-<div class="sourceCode" id="cb300"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb300-1" title="1">height &lt;-<span class="st"> </span>swimmers[<span class="kw">order</span>(<span class="op">-</span>height)][<span class="dv">1</span><span class="op">:</span><span class="dv">1</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb421"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb421-1" title="1">height &lt;-<span class="st"> </span>swimmers[<span class="kw">order</span>(<span class="op">-</span>height)][<span class="dv">1</span><span class="op">:</span><span class="dv">1</span>]</a></code></pre></div>
 <p>The order function, called on data.table objects calls the internal <code>forder()</code> function which is optimised on such objects. Counting rows is possible with different aproaches:</p>
-<div class="sourceCode" id="cb301"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb301-1" title="1">usmedals &lt;-<span class="st"> </span>olympics[sport <span class="op">==</span><span class="st"> &quot;Swimming&quot;</span> <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(medal), <span class="kw">length</span>(medal)]</a></code></pre></div>
+<div class="sourceCode" id="cb422"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb422-1" title="1">usmedals &lt;-<span class="st"> </span>olympics[sport <span class="op">==</span><span class="st"> &quot;Swimming&quot;</span> <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(medal), <span class="kw">length</span>(medal)]</a></code></pre></div>
 <p>or with the .N approach</p>
-<div class="sourceCode" id="cb302"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb302-1" title="1">usmedals &lt;-<span class="st"> </span>olympics[sport <span class="op">==</span><span class="st"> &quot;Swimming&quot;</span> <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(medal), .N]</a>
-<a class="sourceLine" id="cb302-2" title="2">usmedals</a></code></pre></div>
+<div class="sourceCode" id="cb423"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb423-1" title="1">usmedals &lt;-<span class="st"> </span>olympics[sport <span class="op">==</span><span class="st"> &quot;Swimming&quot;</span> <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(medal), .N]</a>
+<a class="sourceLine" id="cb423-2" title="2">usmedals</a></code></pre></div>
 <pre><code>## [1] 3048</code></pre>
 <p>As you see above we come now to the second argument of data.table objects:</p>
 </div>
 <div id="selecting-columns" class="section level3">
 <h3><span class="header-section-number">7.2.2</span> Selecting Columns</h3>
 <p>Now we want to condition on the colums too. Here we can either write the column names as unquoted names inside a list. Note we can use the <code>.</code> as an abbreviation for <code>list</code> here.</p>
-<div class="sourceCode" id="cb304"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb304-1" title="1">swimmers_gold[, <span class="kw">list</span>(athlete, country, medal)][<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]   <span class="co"># list with unquoted column names </span></a></code></pre></div>
+<div class="sourceCode" id="cb425"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb425-1" title="1">swimmers_gold[, <span class="kw">list</span>(athlete, country, medal)][<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]   <span class="co"># list with unquoted column names </span></a></code></pre></div>
 <pre><code>##                        athlete       country medal
 ## 1: Rebecca &quot;&quot;Becky&quot;&quot; Adlington Great Britain  Gold
 ## 2: Rebecca &quot;&quot;Becky&quot;&quot; Adlington Great Britain  Gold
 ## 3:      Nathan Ghar-Jun Adrian United States  Gold
 ## 4:      Nathan Ghar-Jun Adrian United States  Gold
 ## 5:      Nathan Ghar-Jun Adrian United States  Gold</code></pre>
-<div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb306-1" title="1">swimmers_gold[,    .(athlete,country, medal)][<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]   <span class="co"># . is an abbreviation for lists</span></a></code></pre></div>
+<div class="sourceCode" id="cb427"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb427-1" title="1">swimmers_gold[,    .(athlete,country, medal)][<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]   <span class="co"># . is an abbreviation for lists</span></a></code></pre></div>
 <pre><code>##                        athlete       country medal
 ## 1: Rebecca &quot;&quot;Becky&quot;&quot; Adlington Great Britain  Gold
 ## 2: Rebecca &quot;&quot;Becky&quot;&quot; Adlington Great Britain  Gold
@@ -401,7 +402,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 4:      Nathan Ghar-Jun Adrian United States  Gold
 ## 5:      Nathan Ghar-Jun Adrian United States  Gold</code></pre>
 <p>Or we can write the quoted column names inside the <code>c()</code> function.</p>
-<div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb308-1" title="1">swimmers[,  <span class="kw">c</span>(<span class="st">&quot;athlete&quot;</span>, <span class="st">&quot;medal&quot;</span>)][<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>] <span class="co">#</span></a></code></pre></div>
+<div class="sourceCode" id="cb429"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb429-1" title="1">swimmers[,  <span class="kw">c</span>(<span class="st">&quot;athlete&quot;</span>, <span class="st">&quot;medal&quot;</span>)][<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>] <span class="co">#</span></a></code></pre></div>
 <pre><code>##                             athlete  medal
 ## 1: Einar Ferdinand &quot;&quot;Einari&quot;&quot; Aalto   &lt;NA&gt;
 ## 2:             Arvo Ossian Aaltonen   &lt;NA&gt;
@@ -409,10 +410,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 4:             Arvo Ossian Aaltonen Bronze
 ## 5:             Arvo Ossian Aaltonen Bronze</code></pre>
 <p>The tidyverse syntax for comparison was</p>
-<div class="sourceCode" id="cb310"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb310-1" title="1">swimmers <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="st">&quot;athlete&quot;</span>, <span class="st">&quot;medal&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb431"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb431-1" title="1">swimmers <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="st">&quot;athlete&quot;</span>, <span class="st">&quot;medal&quot;</span>)</a></code></pre></div>
 <p>This syntax also allows us to define the column in a separate step.</p>
-<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb311-1" title="1">cols &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;athlete&quot;</span>, <span class="st">&quot;medal&quot;</span>)  <span class="co"># columns are defined in a separate step</span></a>
-<a class="sourceLine" id="cb311-2" title="2">swimmers_gold[, ..cols][<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]        <span class="co"># note the .. syntax  </span></a></code></pre></div>
+<div class="sourceCode" id="cb432"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb432-1" title="1">cols &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;athlete&quot;</span>, <span class="st">&quot;medal&quot;</span>)  <span class="co"># columns are defined in a separate step</span></a>
+<a class="sourceLine" id="cb432-2" title="2">swimmers_gold[, ..cols][<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]        <span class="co"># note the .. syntax  </span></a></code></pre></div>
 <pre><code>##                        athlete medal
 ## 1: Rebecca &quot;&quot;Becky&quot;&quot; Adlington  Gold
 ## 2: Rebecca &quot;&quot;Becky&quot;&quot; Adlington  Gold
@@ -420,8 +421,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 4:      Nathan Ghar-Jun Adrian  Gold
 ## 5:      Nathan Ghar-Jun Adrian  Gold</code></pre>
 <p>or using the ‘with’ statement</p>
-<div class="sourceCode" id="cb313"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb313-1" title="1">colums &lt;-<span class="st"> </span>swimmers_gold[, cols, with =<span class="st"> </span><span class="ot">FALSE</span>]</a>
-<a class="sourceLine" id="cb313-2" title="2"><span class="kw">head</span>(colums)</a></code></pre></div>
+<div class="sourceCode" id="cb434"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb434-1" title="1">colums &lt;-<span class="st"> </span>swimmers_gold[, cols, with =<span class="st"> </span><span class="ot">FALSE</span>]</a>
+<a class="sourceLine" id="cb434-2" title="2"><span class="kw">head</span>(colums)</a></code></pre></div>
 <pre><code>##                        athlete medal
 ## 1: Rebecca &quot;&quot;Becky&quot;&quot; Adlington  Gold
 ## 2: Rebecca &quot;&quot;Becky&quot;&quot; Adlington  Gold
@@ -430,40 +431,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 5:      Nathan Ghar-Jun Adrian  Gold
 ## 6:      Nathan Ghar-Jun Adrian  Gold</code></pre>
 <p>and operations on the rows and colums at the same time:</p>
-<div class="sourceCode" id="cb315"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb315-1" title="1">var &lt;-<span class="st"> </span>olympics[sport <span class="op">==</span><span class="st"> &quot;Swimming&quot;</span> <span class="op">&amp;</span><span class="st"> </span>medal <span class="op">==</span><span class="st"> &quot;Gold&quot;</span>, ..cols]</a></code></pre></div>
+<div class="sourceCode" id="cb436"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb436-1" title="1">var &lt;-<span class="st"> </span>olympics[sport <span class="op">==</span><span class="st"> &quot;Swimming&quot;</span> <span class="op">&amp;</span><span class="st"> </span>medal <span class="op">==</span><span class="st"> &quot;Gold&quot;</span>, ..cols]</a></code></pre></div>
 <p>We can also execute functions on the columns e.g. to find out the average age of all olympians</p>
-<div class="sourceCode" id="cb316"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb316-1" title="1">olympics[, <span class="kw">mean</span>(age, <span class="dt">na.rm=</span>T)]</a></code></pre></div>
+<div class="sourceCode" id="cb437"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb437-1" title="1">olympics[, <span class="kw">mean</span>(age, <span class="dt">na.rm=</span>T)]</a></code></pre></div>
 <pre><code>## [1] 25.45227</code></pre>
 <p>and last but not least we can directly plot within the <code>j</code> argument (even if the informative value is questionable here)</p>
-<div class="sourceCode" id="cb318"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb318-1" title="1">spotify[,<span class="kw">plot</span>(danceability,Streams)]</a></code></pre></div>
+<div class="sourceCode" id="cb439"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb439-1" title="1">spotify[,<span class="kw">plot</span>(danceability,Streams)]</a></code></pre></div>
 </div>
 <div id="grouping-results" class="section level3">
 <h3><span class="header-section-number">7.2.3</span> Grouping results</h3>
 <p>Now we’ll consider the third parameter of the data.table object DT[i, j, by].
 Let’s count the competitions grouped by sports.
 (Hint: if we have a look at the data in teamsports, every athlete is listed so caution with this result.)</p>
-<div class="sourceCode" id="cb319"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb319-1" title="1">sports &lt;-<span class="st"> </span>olympics[, .N, by =<span class="st"> &quot;sport&quot;</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb440-1" title="1">sports &lt;-<span class="st"> </span>olympics[, .N, by =<span class="st"> &quot;sport&quot;</span>]</a></code></pre></div>
 <p>So using all three arguments we find all swimmers, and grouping they by the country</p>
-<div class="sourceCode" id="cb320"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb320-1" title="1">sw &lt;-<span class="st"> </span>olympics[sport<span class="op">==</span><span class="st"> &quot;Swimming&quot;</span>, .N,by =<span class="st"> </span>country]</a></code></pre></div>
+<div class="sourceCode" id="cb441"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb441-1" title="1">sw &lt;-<span class="st"> </span>olympics[sport<span class="op">==</span><span class="st"> &quot;Swimming&quot;</span>, .N,by =<span class="st"> </span>country]</a></code></pre></div>
 <p>grouping by more colums</p>
-<div class="sourceCode" id="cb321"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb321-1" title="1">sw &lt;-<span class="st"> </span>olympics[sport<span class="op">==</span><span class="st"> &quot;Swimming&quot;</span>, .N,by =<span class="st"> </span>.(country,discipline)]</a></code></pre></div>
+<div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb442-1" title="1">sw &lt;-<span class="st"> </span>olympics[sport<span class="op">==</span><span class="st"> &quot;Swimming&quot;</span>, .N,by =<span class="st"> </span>.(country,discipline)]</a></code></pre></div>
 <p>If we want to order the data we have to change by to keyby</p>
-<div class="sourceCode" id="cb322"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb322-1" title="1">sw &lt;-<span class="st"> </span>olympics[sport<span class="op">==</span><span class="st"> &quot;Swimming&quot;</span>, .N,keyby =<span class="st"> </span>.(country,discipline)]</a></code></pre></div>
+<div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb443-1" title="1">sw &lt;-<span class="st"> </span>olympics[sport<span class="op">==</span><span class="st"> &quot;Swimming&quot;</span>, .N,keyby =<span class="st"> </span>.(country,discipline)]</a></code></pre></div>
 <p>Chaining operations on the data.table object:</p>
-<div class="sourceCode" id="cb323"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb323-1" title="1">ordOlym &lt;-<span class="st"> </span>olympics[,.N, by =<span class="st"> </span>.(country,game)][<span class="kw">order</span>(<span class="op">-</span>game,country)]</a></code></pre></div>
+<div class="sourceCode" id="cb444"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb444-1" title="1">ordOlym &lt;-<span class="st"> </span>olympics[,.N, by =<span class="st"> </span>.(country,game)][<span class="kw">order</span>(<span class="op">-</span>game,country)]</a></code></pre></div>
 </div>
 <div id="editing-data" class="section level3">
 <h3><span class="header-section-number">7.2.4</span> Editing Data</h3>
 <p>When we want to edit a Data set of the class dataframe like</p>
-<div class="sourceCode" id="cb324"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb324-1" title="1">df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">name =</span> <span class="kw">c</span>(<span class="st">&quot;D&quot;</span>,<span class="st">&quot;a&quot;</span>,<span class="st">&quot;t&quot;</span>,<span class="st">&quot;a&quot;</span>), <span class="dt">a =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">b =</span> <span class="dv">5</span><span class="op">:</span><span class="dv">8</span>, <span class="dt">c =</span> <span class="dv">9</span><span class="op">:</span><span class="dv">12</span>)</a>
-<a class="sourceLine" id="cb324-2" title="2">df</a></code></pre></div>
+<div class="sourceCode" id="cb445"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb445-1" title="1">df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">name =</span> <span class="kw">c</span>(<span class="st">&quot;D&quot;</span>,<span class="st">&quot;a&quot;</span>,<span class="st">&quot;t&quot;</span>,<span class="st">&quot;a&quot;</span>), <span class="dt">a =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">b =</span> <span class="dv">5</span><span class="op">:</span><span class="dv">8</span>, <span class="dt">c =</span> <span class="dv">9</span><span class="op">:</span><span class="dv">12</span>)</a>
+<a class="sourceLine" id="cb445-2" title="2">df</a></code></pre></div>
 <pre><code>##   name a b  c
 ## 1    D 1 5  9
 ## 2    a 2 6 10
 ## 3    t 3 7 11
 ## 4    a 4 8 12</code></pre>
-<div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb326-1" title="1">df<span class="op">$</span>c &lt;-<span class="st"> </span><span class="dv">13</span><span class="op">:</span><span class="dv">16</span></a>
-<a class="sourceLine" id="cb326-2" title="2">df</a></code></pre></div>
+<div class="sourceCode" id="cb447"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb447-1" title="1">df<span class="op">$</span>c &lt;-<span class="st"> </span><span class="dv">13</span><span class="op">:</span><span class="dv">16</span></a>
+<a class="sourceLine" id="cb447-2" title="2">df</a></code></pre></div>
 <pre><code>##   name a b  c
 ## 1    D 1 5 13
 ## 2    a 2 6 14
@@ -471,39 +472,39 @@ Let’s count the competitions grouped by sports.
 ## 4    a 4 8 16</code></pre>
 <p>this is done via copying the data set and a bad performance. <code>Datatable</code> provides the ‘:=’ operator for an better performance. Here the Data object isn’t copied but edited by reference.</p>
 <p>Adding a column</p>
-<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb328-1" title="1">spotify[, <span class="st">&#39;:=&#39;</span>(<span class="dt">duration_s=</span>duration_ms<span class="op">/</span><span class="dv">1000</span>)]</a></code></pre></div>
+<div class="sourceCode" id="cb449"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb449-1" title="1">spotify[, <span class="st">&#39;:=&#39;</span>(<span class="dt">duration_s=</span>duration_ms<span class="op">/</span><span class="dv">1000</span>)]</a></code></pre></div>
 <p>this column is added ‘by reference’ which is done with a higher performance than adding a column to a <code>data.frame</code> object. In addition we do not have to assign the expression back to the variable.
 Edit an column</p>
-<div class="sourceCode" id="cb329"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb329-1" title="1">olympics[sex<span class="op">==</span><span class="st">&#39;M&#39;</span>, sex <span class="op">:</span><span class="er">=</span><span class="st"> &#39;Male&#39;</span>]</a>
-<a class="sourceLine" id="cb329-2" title="2">olympics[sex<span class="op">==</span><span class="st">&#39;F&#39;</span>, sex <span class="op">:</span><span class="er">=</span><span class="st"> &#39;Female&#39;</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb450"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb450-1" title="1">olympics[sex<span class="op">==</span><span class="st">&#39;M&#39;</span>, sex <span class="op">:</span><span class="er">=</span><span class="st"> &#39;Male&#39;</span>]</a>
+<a class="sourceLine" id="cb450-2" title="2">olympics[sex<span class="op">==</span><span class="st">&#39;F&#39;</span>, sex <span class="op">:</span><span class="er">=</span><span class="st"> &#39;Female&#39;</span>]</a></code></pre></div>
 <p>Deleting an column by reference</p>
-<div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb330-1" title="1">spotify[, duration_ms <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb451-1" title="1">spotify[, duration_ms <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]</a></code></pre></div>
 </div>
 <div id="side-effects" class="section level3">
 <h3><span class="header-section-number">7.2.5</span> Side effects</h3>
 <p>Sometimes we’re in the situation that we want to work with a <code>data.table</code> object but not on the object itself but on a copy. For example we want to add again the column duration_ms by reference, then the variable spotify_cols change too.</p>
-<div class="sourceCode" id="cb331"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb331-1" title="1">spotify_cols &lt;-<span class="st"> </span><span class="kw">names</span>(spotify)   <span class="co"># Columnnames</span></a>
-<a class="sourceLine" id="cb331-2" title="2">spotify_cols</a></code></pre></div>
+<div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb452-1" title="1">spotify_cols &lt;-<span class="st"> </span><span class="kw">names</span>(spotify)   <span class="co"># Columnnames</span></a>
+<a class="sourceLine" id="cb452-2" title="2">spotify_cols</a></code></pre></div>
 <pre><code>##  [1] &quot;Position&quot;         &quot;Track.Name&quot;       &quot;Artist&quot;           &quot;Streams&quot;         
 ##  [5] &quot;date&quot;             &quot;danceability&quot;     &quot;energy&quot;           &quot;loudness&quot;        
 ##  [9] &quot;speechiness&quot;      &quot;acousticness&quot;     &quot;instrumentalness&quot; &quot;liveness&quot;        
 ## [13] &quot;valence&quot;          &quot;tempo&quot;            &quot;duration_s&quot;</code></pre>
-<div class="sourceCode" id="cb333"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb333-1" title="1">spotify[, <span class="st">&#39;:=&#39;</span>(<span class="dt">duration_ms=</span>duration_s<span class="op">*</span><span class="dv">1000</span>)]</a>
-<a class="sourceLine" id="cb333-2" title="2">spotify_cols</a></code></pre></div>
+<div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb454-1" title="1">spotify[, <span class="st">&#39;:=&#39;</span>(<span class="dt">duration_ms=</span>duration_s<span class="op">*</span><span class="dv">1000</span>)]</a>
+<a class="sourceLine" id="cb454-2" title="2">spotify_cols</a></code></pre></div>
 <pre><code>##  [1] &quot;Position&quot;         &quot;Track.Name&quot;       &quot;Artist&quot;           &quot;Streams&quot;         
 ##  [5] &quot;date&quot;             &quot;danceability&quot;     &quot;energy&quot;           &quot;loudness&quot;        
 ##  [9] &quot;speechiness&quot;      &quot;acousticness&quot;     &quot;instrumentalness&quot; &quot;liveness&quot;        
 ## [13] &quot;valence&quot;          &quot;tempo&quot;            &quot;duration_s&quot;       &quot;duration_ms&quot;</code></pre>
 <p>If we want to prevent these side effect we have to work on a copy. So again:</p>
-<div class="sourceCode" id="cb335"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb335-1" title="1">spotify[, duration_ms <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]   <span class="co"># deleting by reference</span></a>
-<a class="sourceLine" id="cb335-2" title="2">spotify_cols</a></code></pre></div>
+<div class="sourceCode" id="cb456"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb456-1" title="1">spotify[, duration_ms <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]   <span class="co"># deleting by reference</span></a>
+<a class="sourceLine" id="cb456-2" title="2">spotify_cols</a></code></pre></div>
 <pre><code>##  [1] &quot;Position&quot;         &quot;Track.Name&quot;       &quot;Artist&quot;           &quot;Streams&quot;         
 ##  [5] &quot;date&quot;             &quot;danceability&quot;     &quot;energy&quot;           &quot;loudness&quot;        
 ##  [9] &quot;speechiness&quot;      &quot;acousticness&quot;     &quot;instrumentalness&quot; &quot;liveness&quot;        
 ## [13] &quot;valence&quot;          &quot;tempo&quot;            &quot;duration_s&quot;</code></pre>
-<div class="sourceCode" id="cb337"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb337-1" title="1">spotify_cols &lt;-<span class="st"> </span><span class="kw">copy</span>(<span class="kw">names</span>(spotify))</a>
-<a class="sourceLine" id="cb337-2" title="2">spotify[, <span class="st">&#39;:=&#39;</span>(<span class="dt">duration_ms=</span>duration_s<span class="op">*</span><span class="dv">1000</span>)]</a>
-<a class="sourceLine" id="cb337-3" title="3">spotify_cols</a></code></pre></div>
+<div class="sourceCode" id="cb458"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb458-1" title="1">spotify_cols &lt;-<span class="st"> </span><span class="kw">copy</span>(<span class="kw">names</span>(spotify))</a>
+<a class="sourceLine" id="cb458-2" title="2">spotify[, <span class="st">&#39;:=&#39;</span>(<span class="dt">duration_ms=</span>duration_s<span class="op">*</span><span class="dv">1000</span>)]</a>
+<a class="sourceLine" id="cb458-3" title="3">spotify_cols</a></code></pre></div>
 <pre><code>##  [1] &quot;Position&quot;         &quot;Track.Name&quot;       &quot;Artist&quot;           &quot;Streams&quot;         
 ##  [5] &quot;date&quot;             &quot;danceability&quot;     &quot;energy&quot;           &quot;loudness&quot;        
 ##  [9] &quot;speechiness&quot;      &quot;acousticness&quot;     &quot;instrumentalness&quot; &quot;liveness&quot;        
@@ -513,50 +514,50 @@ Edit an column</p>
 <div id="runtime-comparision" class="section level2">
 <h2><span class="header-section-number">7.3</span> Runtime comparision</h2>
 <p>Let us now compare the runtime of some expression made in <code>data.table</code> and <code>tidyverse</code>. Performance differs depending on the type of operation, and will likely also depend on the size of the data set. Here we test separately sorting, filtering, and grouping/aggregating for our data set of about 270.000 observations.</p>
-<div class="sourceCode" id="cb339"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb339-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;microbenchmark&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb340-1" title="1"><span class="kw">library</span>(microbenchmark)              <span class="co"># package for performance comparisons</span></a></code></pre></div>
+<div class="sourceCode" id="cb460"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb460-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;microbenchmark&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb461-1" title="1"><span class="kw">library</span>(microbenchmark)              <span class="co"># package for performance comparisons</span></a></code></pre></div>
 <pre><code>## Warning: Paket &#39;microbenchmark&#39; wurde unter R Version 3.6.3 erstellt</code></pre>
-<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb342-1" title="1">olympics_tbl &lt;-<span class="st"> </span><span class="kw">as_tibble</span>(olympics)  <span class="co"># create a tibble to compare performance</span></a>
-<a class="sourceLine" id="cb342-2" title="2"></a>
-<a class="sourceLine" id="cb342-3" title="3"><span class="co"># Sorting</span></a>
-<a class="sourceLine" id="cb342-4" title="4"><span class="kw">microbenchmark</span>(</a>
-<a class="sourceLine" id="cb342-5" title="5">  olympics_tbl <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(age),     <span class="co"># dplyr</span></a>
-<a class="sourceLine" id="cb342-6" title="6">  olympics[<span class="kw">order</span>(age)],              <span class="co"># data.table</span></a>
-<a class="sourceLine" id="cb342-7" title="7">  <span class="dt">times =</span> <span class="dv">5</span>                          <span class="co"># run 5 time to get more robust measurements</span></a>
-<a class="sourceLine" id="cb342-8" title="8">) </a></code></pre></div>
+<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb463-1" title="1">olympics_tbl &lt;-<span class="st"> </span><span class="kw">as_tibble</span>(olympics)  <span class="co"># create a tibble to compare performance</span></a>
+<a class="sourceLine" id="cb463-2" title="2"></a>
+<a class="sourceLine" id="cb463-3" title="3"><span class="co"># Sorting</span></a>
+<a class="sourceLine" id="cb463-4" title="4"><span class="kw">microbenchmark</span>(</a>
+<a class="sourceLine" id="cb463-5" title="5">  olympics_tbl <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(age),     <span class="co"># dplyr</span></a>
+<a class="sourceLine" id="cb463-6" title="6">  olympics[<span class="kw">order</span>(age)],              <span class="co"># data.table</span></a>
+<a class="sourceLine" id="cb463-7" title="7">  <span class="dt">times =</span> <span class="dv">5</span>                          <span class="co"># run 5 time to get more robust measurements</span></a>
+<a class="sourceLine" id="cb463-8" title="8">) </a></code></pre></div>
 <pre><code>## Unit: milliseconds
-##                           expr      min       lq      mean   median       uq
-##  olympics_tbl %&gt;% arrange(age) 106.6092 208.8035 198.92638 209.8906 210.9465
-##           olympics[order(age)]  39.0567  52.7196  62.80308  58.7847  78.2836
+##                           expr     min      lq      mean   median       uq
+##  olympics_tbl %&gt;% arrange(age) 96.7030 99.4314 117.22992 115.6790 135.1999
+##           olympics[order(age)] 34.6687 46.2439  54.21128  47.6448  49.4354
 ##       max neval
-##  258.3821     5
-##   85.1708     5</code></pre>
-<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb344-1" title="1"><span class="co"># Filtering</span></a>
-<a class="sourceLine" id="cb344-2" title="2"><span class="kw">microbenchmark</span>(</a>
-<a class="sourceLine" id="cb344-3" title="3">  olympics_tbl <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(height <span class="op">&gt;</span><span class="st"> </span><span class="dv">160</span>),   <span class="co"># dplyr</span></a>
-<a class="sourceLine" id="cb344-4" title="4">  olympics[height <span class="op">&gt;</span><span class="st"> </span><span class="dv">160</span>],                  <span class="co"># data.table</span></a>
-<a class="sourceLine" id="cb344-5" title="5">  <span class="dt">times =</span> <span class="dv">5</span></a>
-<a class="sourceLine" id="cb344-6" title="6">)</a></code></pre></div>
+##  139.1363     5
+##   93.0636     5</code></pre>
+<div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb465-1" title="1"><span class="co"># Filtering</span></a>
+<a class="sourceLine" id="cb465-2" title="2"><span class="kw">microbenchmark</span>(</a>
+<a class="sourceLine" id="cb465-3" title="3">  olympics_tbl <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(height <span class="op">&gt;</span><span class="st"> </span><span class="dv">160</span>),   <span class="co"># dplyr</span></a>
+<a class="sourceLine" id="cb465-4" title="4">  olympics[height <span class="op">&gt;</span><span class="st"> </span><span class="dv">160</span>],                  <span class="co"># data.table</span></a>
+<a class="sourceLine" id="cb465-5" title="5">  <span class="dt">times =</span> <span class="dv">5</span></a>
+<a class="sourceLine" id="cb465-6" title="6">)</a></code></pre></div>
 <pre><code>## Unit: milliseconds
-##                                   expr     min      lq     mean  median      uq
-##  olympics_tbl %&gt;% filter(height &gt; 160) 15.5657 16.4467 21.32812 17.8250 28.2513
-##                 olympics[height &gt; 160] 11.5033 12.0675 32.07294 12.9557 22.7597
-##       max neval
-##   28.5519     5
-##  101.0785     5</code></pre>
-<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb346-1" title="1"><span class="co"># Grouping</span></a>
-<a class="sourceLine" id="cb346-2" title="2"><span class="kw">microbenchmark</span>(</a>
-<a class="sourceLine" id="cb346-3" title="3">  olympics_tbl <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(athlete) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise</span>(<span class="kw">mean</span>(height, <span class="dt">na.rm=</span>T)),  <span class="co"># dplyr</span></a>
-<a class="sourceLine" id="cb346-4" title="4">  olympics[, .(<span class="kw">mean</span>(height, <span class="dt">na.rm=</span>T)), <span class="dt">keyby=</span>athlete],                      <span class="co"># data.table</span></a>
-<a class="sourceLine" id="cb346-5" title="5">  <span class="dt">times =</span> <span class="dv">5</span></a>
-<a class="sourceLine" id="cb346-6" title="6">) </a></code></pre></div>
+##                                   expr     min      lq     mean  median     uq
+##  olympics_tbl %&gt;% filter(height &gt; 160) 14.3292 15.7076 18.77070 17.0241 20.216
+##                 olympics[height &gt; 160] 12.0343 22.4867 35.87588 22.5284 25.425
+##      max neval
+##  26.5766     5
+##  96.9050     5</code></pre>
+<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb467-1" title="1"><span class="co"># Grouping</span></a>
+<a class="sourceLine" id="cb467-2" title="2"><span class="kw">microbenchmark</span>(</a>
+<a class="sourceLine" id="cb467-3" title="3">  olympics_tbl <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(athlete) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise</span>(<span class="kw">mean</span>(height, <span class="dt">na.rm=</span>T)),  <span class="co"># dplyr</span></a>
+<a class="sourceLine" id="cb467-4" title="4">  olympics[, .(<span class="kw">mean</span>(height, <span class="dt">na.rm=</span>T)), <span class="dt">keyby=</span>athlete],                      <span class="co"># data.table</span></a>
+<a class="sourceLine" id="cb467-5" title="5">  <span class="dt">times =</span> <span class="dv">5</span></a>
+<a class="sourceLine" id="cb467-6" title="6">) </a></code></pre></div>
 <pre><code>## Unit: milliseconds
 ##                                                                            expr
 ##  olympics_tbl %&gt;% group_by(athlete) %&gt;% summarise(mean(height,      na.rm = T))
 ##                         olympics[, .(mean(height, na.rm = T)), keyby = athlete]
-##        min        lq      mean    median        uq      max neval
-##  2571.6518 3235.8109 4857.7607 5519.9962 5698.1381 7263.206     5
-##   462.9999  470.9898  706.7133  503.1117  768.7061 1327.759     5</code></pre>
+##        min        lq     mean    median        uq       max neval
+##  2598.6271 2670.7910 3037.267 3115.6672 3120.4755 3680.7744     5
+##   418.4699  439.0937  463.506  445.1356  494.1703  520.6606     5</code></pre>
 </div>
 <div id="further-resources" class="section level2">
 <h2><span class="header-section-number">7.4</span> Further resources</h2>

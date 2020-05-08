@@ -24,7 +24,7 @@
 <meta name="author" content="Tools and Programming Languages for Data Scientists, FH Kiel, Summer Term 2020" />
 
 
-<meta name="date" content="2020-05-07" />
+<meta name="date" content="2020-05-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -146,12 +146,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.3.2" data-path="dplyr.html"><a href="dplyr.html#create-new-columns"><i class="fa fa-check"></i><b>3.3.2</b> Create new columns</a></li>
 </ul></li>
 <li class="chapter" data-level="3.4" data-path="dplyr.html"><a href="dplyr.html#scoped-functions"><i class="fa fa-check"></i><b>3.4</b> Scoped functions</a></li>
-<li class="chapter" data-level="3.5" data-path="dplyr.html"><a href="dplyr.html#summarise"><i class="fa fa-check"></i><b>3.5</b> Summarise</a></li>
-<li class="chapter" data-level="3.6" data-path="dplyr.html"><a href="dplyr.html#combining-tables"><i class="fa fa-check"></i><b>3.6</b> Combining tables</a></li>
-<li class="chapter" data-level="3.7" data-path="dplyr.html"><a href="dplyr.html#database-backend"><i class="fa fa-check"></i><b>3.7</b> Database backend</a><ul>
-<li class="chapter" data-level="3.7.1" data-path="dplyr.html"><a href="dplyr.html#motivation"><i class="fa fa-check"></i><b>3.7.1</b> Motivation</a></li>
-<li class="chapter" data-level="3.7.2" data-path="dplyr.html"><a href="dplyr.html#set-up"><i class="fa fa-check"></i><b>3.7.2</b> Set up</a></li>
-<li class="chapter" data-level="3.7.3" data-path="dplyr.html"><a href="dplyr.html#querying-the-database"><i class="fa fa-check"></i><b>3.7.3</b> Querying the database</a></li>
+<li class="chapter" data-level="3.5" data-path="dplyr.html"><a href="dplyr.html#aggregate"><i class="fa fa-check"></i><b>3.5</b> Aggregate</a></li>
+<li class="chapter" data-level="3.6" data-path="dplyr.html"><a href="dplyr.html#window-functions"><i class="fa fa-check"></i><b>3.6</b> Window functions</a></li>
+<li class="chapter" data-level="3.7" data-path="dplyr.html"><a href="dplyr.html#combining-tables"><i class="fa fa-check"></i><b>3.7</b> Combining tables</a></li>
+<li class="chapter" data-level="3.8" data-path="dplyr.html"><a href="dplyr.html#database-backend"><i class="fa fa-check"></i><b>3.8</b> Database backend</a><ul>
+<li class="chapter" data-level="3.8.1" data-path="dplyr.html"><a href="dplyr.html#motivation"><i class="fa fa-check"></i><b>3.8.1</b> Motivation</a></li>
+<li class="chapter" data-level="3.8.2" data-path="dplyr.html"><a href="dplyr.html#set-up"><i class="fa fa-check"></i><b>3.8.2</b> Set up</a></li>
+<li class="chapter" data-level="3.8.3" data-path="dplyr.html"><a href="dplyr.html#querying-the-database"><i class="fa fa-check"></i><b>3.8.3</b> Querying the database</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="lubridate.html"><a href="lubridate.html"><i class="fa fa-check"></i><b>4</b> Dates and times: lubridate</a><ul>
@@ -501,8 +502,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 4       11 Top 11-200 Gib Ihm    
 ## 5       12 Top 11-200 Jay Jay</code></pre>
 </div>
-<div id="summarise" class="section level2">
-<h2><span class="header-section-number">3.5</span> Summarise</h2>
+<div id="aggregate" class="section level2">
+<h2><span class="header-section-number">3.5</span> Aggregate</h2>
 <p>The <code>summarise</code> function is the generic way of calculating summary stats for specific variables. Within the function we can apply base R summary functions (<code>sum</code>, <code>mean</code> or <code>max</code>), one of dplyr’s specific summary functions (<code>n</code>, <code>n_distinct</code>) or a user defined summary function. In the standard case the <code>summarise</code> function returns one row.</p>
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb34-2" title="2"><span class="st">  </span><span class="kw">filter</span>(date <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(date)) <span class="op">%&gt;%</span></a>
@@ -564,13 +565,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 4 2019-03-30  681426      30400557 0.0224 MERO       
 ## 5 2019-03-30  557781      30400557 0.0183 Fero47</code></pre>
 </div>
+<div id="window-functions" class="section level2">
+<h2><span class="header-section-number">3.6</span> Window functions</h2>
+<p>A window function is a variation on an aggregation function. While <code>mean</code> or <code>sum</code> take n inputs and return a single output, a window function returns n values. Window functions are used inside <code>mutate</code> and <code>filter</code> functions.</p>
+<ul>
+<li>Offsets:<code>lead</code> and <code>lag</code></li>
+<li>Cummulative aggregations: <code>cumsum</code>, <code>cummean</code>,…</li>
+<li>Rankings: <code>dense_rank</code>, <code>ntile</code>, …</li>
+</ul>
+</div>
 <div id="combining-tables" class="section level2">
-<h2><span class="header-section-number">3.6</span> Combining tables</h2>
+<h2><span class="header-section-number">3.7</span> Combining tables</h2>
 </div>
 <div id="database-backend" class="section level2">
-<h2><span class="header-section-number">3.7</span> Database backend</h2>
+<h2><span class="header-section-number">3.8</span> Database backend</h2>
 <div id="motivation" class="section level3">
-<h3><span class="header-section-number">3.7.1</span> Motivation</h3>
+<h3><span class="header-section-number">3.8.1</span> Motivation</h3>
 <p>As mentioned before, the <code>dplyr</code> syntax reveals strong analogies with SQL. What is more, it is even possible to use <code>dplyr</code> with a database backend.</p>
 <p><strong>What does this mean? And when is this useful?</strong></p>
 <p>In a company setting, raw data is usually stored in some form of database. When we want to work with the data in R, the standard way would be to open a connection to the database and read in the data into R’s memory. However, if the size of data is large, there may be problems with this approach:</p>
@@ -584,7 +594,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The idea is to write regular dplyr code. The code is translated into SQL under the hood. The data is retrieved from the database and only the results are actually read into R’s memory.</p>
 </div>
 <div id="set-up" class="section level3">
-<h3><span class="header-section-number">3.7.2</span> Set up</h3>
+<h3><span class="header-section-number">3.8.2</span> Set up</h3>
 <p>First, we need to install a few things:</p>
 <ul>
 <li><strong>Database:</strong> In a company setting, the database will already be there. If you want to install a database on your computer, popular choices are PostgreSQL or MySQL. Here is an <a href="https://db.rstudio.com/databases/">overview of possible choices</a>S For this book we will use an in-memory SQLite database. The benefit is that everyone will be able to run the code without the need to set up a proper database.<br />
@@ -598,7 +608,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" title="1"><span class="kw">copy_to</span>(con, df, <span class="st">&quot;spotify-charts-germany&quot;</span>)</a></code></pre></div>
 </div>
 <div id="querying-the-database" class="section level3">
-<h3><span class="header-section-number">3.7.3</span> Querying the database</h3>
+<h3><span class="header-section-number">3.8.3</span> Querying the database</h3>
 <p>First, we register the database table via the <code>tbl</code> function.</p>
 <div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1">spotify_db &lt;-<span class="st"> </span><span class="kw">tbl</span>(con, <span class="st">&quot;spotify-charts-germany&quot;</span>)</a></code></pre></div>
 <p>Now we can query this database table using regular <code>dplyr</code> syntax. Note that this works smoothly for the majority but not for all <code>dplyr</code> commands. For instance the <code>slice</code> function is not implemented, i.e. it has no translation to SQL. Hence, in the following statement we extract the first five rows via <code>head(5)</code> instead of <code>slice(1:5)</code>. Otherwise the sequence of commands looks identical to the one <a href="dplyr.html#typical-workflows">presented above based on a normal R data frame/tibble</a>.</p>

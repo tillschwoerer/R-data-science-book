@@ -530,12 +530,12 @@ microbenchmark(
 
 ```
 ## Unit: milliseconds
-##                           expr      min       lq      mean   median       uq
-##  olympics_tbl %>% arrange(age) 106.6092 208.8035 198.92638 209.8906 210.9465
-##           olympics[order(age)]  39.0567  52.7196  62.80308  58.7847  78.2836
+##                           expr     min      lq      mean   median       uq
+##  olympics_tbl %>% arrange(age) 96.7030 99.4314 117.22992 115.6790 135.1999
+##           olympics[order(age)] 34.6687 46.2439  54.21128  47.6448  49.4354
 ##       max neval
-##  258.3821     5
-##   85.1708     5
+##  139.1363     5
+##   93.0636     5
 ```
 
 ```r
@@ -549,12 +549,12 @@ microbenchmark(
 
 ```
 ## Unit: milliseconds
-##                                   expr     min      lq     mean  median      uq
-##  olympics_tbl %>% filter(height > 160) 15.5657 16.4467 21.32812 17.8250 28.2513
-##                 olympics[height > 160] 11.5033 12.0675 32.07294 12.9557 22.7597
-##       max neval
-##   28.5519     5
-##  101.0785     5
+##                                   expr     min      lq     mean  median     uq
+##  olympics_tbl %>% filter(height > 160) 14.3292 15.7076 18.77070 17.0241 20.216
+##                 olympics[height > 160] 12.0343 22.4867 35.87588 22.5284 25.425
+##      max neval
+##  26.5766     5
+##  96.9050     5
 ```
 
 ```r
@@ -571,9 +571,9 @@ microbenchmark(
 ##                                                                            expr
 ##  olympics_tbl %>% group_by(athlete) %>% summarise(mean(height,      na.rm = T))
 ##                         olympics[, .(mean(height, na.rm = T)), keyby = athlete]
-##        min        lq      mean    median        uq      max neval
-##  2571.6518 3235.8109 4857.7607 5519.9962 5698.1381 7263.206     5
-##   462.9999  470.9898  706.7133  503.1117  768.7061 1327.759     5
+##        min        lq     mean    median        uq       max neval
+##  2598.6271 2670.7910 3037.267 3115.6672 3120.4755 3680.7744     5
+##   418.4699  439.0937  463.506  445.1356  494.1703  520.6606     5
 ```
 
 

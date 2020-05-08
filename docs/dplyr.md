@@ -354,7 +354,7 @@ df %>%
 ```
 
 
-## Summarise
+## Aggregate
 The `summarise` function is the generic way of calculating summary stats for specific variables. Within the function we can apply base R summary functions (`sum`, `mean` or `max`), one of dplyr's specific summary functions (`n`, `n_distinct`) or a user defined summary function. In the standard case the `summarise` function returns one row.
 
 ```r
@@ -446,8 +446,15 @@ df %>%
 ## 5 2019-03-30  557781      30400557 0.0183 Fero47
 ```
 
+## Window functions
+A window function is a variation on an aggregation function. While `mean` or `sum` take n inputs and return a single output, a window function returns n values. Window functions are used inside `mutate` and `filter` functions.
+
+- Offsets:`lead` and `lag`
+- Cummulative aggregations: `cumsum`, `cummean`,...
+- Rankings: `dense_rank`, `ntile`, ...
 
 ## Combining tables
+
 ## Database backend
 ### Motivation
 As mentioned before, the `dplyr` syntax reveals strong analogies with SQL. What is more, it is even possible to use `dplyr` with a database backend. 
