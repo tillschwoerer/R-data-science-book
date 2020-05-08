@@ -240,7 +240,7 @@ season_19_winter <- ymd_hm("2019-12-22 05:19", tz="CET")
 season_20_spring <- ymd_hm("2020-03-20 04:49", tz="CET")
 season_20_summer <- ymd_hm("2020-06-20 23:43", tz="CET")
 ```
-Source re: starts of seasons [from](https://www.timeanddate.de/astronomie/jahreszeiten "timeanddate.de")
+Source re: starts of seasons from [timeanddate.de](https://www.timeanddate.de/astronomie/jahreszeiten "timeanddate.de")
 
 Our goal shall be to create an interval for the spring season.
 The following information is available to determine the end point of spring:
@@ -617,18 +617,32 @@ With indicator and renamed column
 ```{r sum NIEDERSCHLAGSDAUER - condition - Tag/Stunde on an interval of a day}
 df_sum2 <- df_group %>% 
   summarise(MENGE = sum(NIEDERSCHLAGSDAUER[NIEDERSCHLAGSINDIKATOR==1])) %>% 
+  filter(MENGE> 0)
   arrange( STATIONS_ID , TAG, STUNDE)
 head(df_sum2, 24) 
 ```
 
 Now we apply the knowledge with the indicator to the selection of autumn.
-Now we examine the duration of rainfall in autumn.
+First we examine the duration of rainfall in autumn.
 ```{r sum NIEDERSCHLAGSDAUER - condition - on an interval of season autumn}
-df_sum_autmn <- df_group_autmn %>% 
-  summarise(DAUER = sum(NIEDERSCHLAGSDAUER[NIEDERSCHLAGSINDIKATOR==1])) %>% 
-  arrange( STATIONS_ID , JAHR, MONAT, TAG)
+df_sum_autmn_group <- df_group_autmn 
+df_sum_autmn <- df_sum_autmn_group %>% 
+              summarise(DAUER = sum(NIEDERSCHLAGSDAUER[NIEDERSCHLAGSINDIKATOR==1])) %>% 
+              filter(DAUER>0) %>%
+              arrange( STATIONS_ID , JAHR, MONAT, TAG)
 head(df_sum_autmn, 10) 
 ```
+Now we examine the milliliter of rainfall.
+```{r sum NIEDERSCHLAGSHOEHE - condition - on an interval of season autumn}
+df_sum_autmn_liter_group <- df_group_autmn 
+df_sum_autmn_liter <- df_sum_autmn_liter_group %>%
+            summarise(MENGE = sum(NIEDERSCHLAGSHOEHE[NIEDERSCHLAGSINDIKATOR==1])) %>% 
+            filter(MENGE>0) %>%
+            arrange( STATIONS_ID , JAHR, MONAT, TAG)
+head(df_sum_autmn_liter, 10) 
+```
+
+
 
 ### Humidity
 What we can say at this point is that the temperatures in the city of Kiel have a clear seasonal pattern, but remain highly volatile intra-day and inter-day.
