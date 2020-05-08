@@ -1,3 +1,8 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 # Character data: stringr {#stringr}
 
 Resources:
@@ -18,31 +23,31 @@ Advice: Many of the examples in the Vignettes just refer to vectors. How can we 
 
 
 
-
 ## Introduction
 
 ### Use of stringR in the R environment
 
-StringR is a package, which deals with measuring strings, search in strings and also altering strings. StringR is thus mostly involved with data preprocessing, but it can also be used for text analysis. E.g. in text mining to determine the frequency of words. In the following, we have listed most of the available functions in an encyclopedic style and describe their usage mostly with a single database, based on cooking recipes.
 
-To give an orientation, what these functions might be like, we want to present a short overview over some of the (probably more common) functions.
+StringR is a package that deals with measuring strings, search in strings and altering strings. StringR is thus mostly involved with data preprocessing, but it can also be used for text analysis (e.g. in text mining for determining the frequency of words). In the following, we will list most of the functions available in an encyclopedic style and describe their usage mostly within a single database, based on cooking recipes.
 
-If you're interested in counting the words within a text, go to detect matches and especially str_detect. str_subset could be interesting, If you have a collection of documents and you just want to have a subset of these documents, which deal with a certain topic, you can use str_subset from the subset strings pattern. This is done by choosing a list of words related to the topic. Keep in mind thata topic modelling might be better. The function str_sub can replace substrings in a text. This might be useful, if a wrong word is used consistently and need change.Also to add strings togehter with str_c is possible or the order the single strings, e.g. by last name.
+To give an overall orientation of the functions, we want to present a short overview over some of the most commonly used functions.
 
-Probably the real life use cases are rather technical, but we hope the uses cases above provide some clarity of why stringR might be useful.
+If you're interested in counting the words within a text, go to detect matches and especially str_detect. str_subset could be interesting, if you have a collection of documents and you want to have a subset of these documents dealing with a certain topic. You can therefore choose a list of words related to the topic. Keep in mind that topic modelling might be better. The mutate-functions str_sub or str_replace can replace substrings or patterns in a text. This might be useful, if a word or expression is repeatedly used wrong and needs to be changed. Join several strings in order to create a long text can be done using str_c whereas the opposite, the splitting of string can be performed with the str_split function. Another useful tool in stringr are the str_sort and str_order functions. As their name indicates, they sort or order strings according to your conditions. 
+
+Probably the use cases in real-life are rather technical, but hopefully the uses cases above provide some clarity of why stringR might be useful.
 
 
 ### Types of data, which could be used with stringR
 
-The way you use the functions stringR is dependent on which kind of data you want to analyze. 
+The way you use the functions of stringR is dependent on which kind of data you want to analyze. 
 
-The simplest example is, one word as an entry in every box, e.g. the in the column job, there might be an entry "cook". Here stringR is best for formatting the words. StringR can also be used on number entries though.
+The simplest example is having one word as an entry in every box, e.g. the in the column "job", there might be an entry "cook". Here stringR is best for formatting the words. StringR can be used on number entries as well.
 
-But there could also be several words in one box, e.g. the tags for a computer game: "singleplayer, action, medieval". stringR can help you to format these multiple entries better.
+Regarding our example, there could also be more than one word per box, e.g. the tags for a computer game: "singleplayer, action, medieval". stringR can help formatting these multiple entries into a desired form.
 
-By having a closer look, we were under the impression that stringR is mostly desgned for the purpose of managing and analyzing full texts or longer strings.
+Researching the package, we were under the impression that stringR is mostly designed for the purpose of managing and analyzing full texts or longer strings.
 
-At this point, we want to give a hint, that full text analysis as done by text mining on a full text, e.g. the novel The Time Machine by H.G. Wells, doesn't operate on a long text as a whole string. But it rather tokenizes the text first (Silge Robinson 2017). That results in the situation that every word is put in another row, as you can see here:
+We want to point out that full text analysis as done in text mining, e.g. the novel The Time Machine by H.G. Wells, doesn't operate on a long text as a whole string. Instead, it'd rather tokenize the text first (Silge Robinson 2017). As a result every word is put in another row, as you can see here:
 
 
 
@@ -63,34 +68,38 @@ At this point, we want to give a hint, that full text analysis as done by text m
 ## # ... with 32,643 more rows
 ```
 
-This limits your ability to make use of the stringR functions, because stringR seems to be designed on full texts and not one word per entry. Some stringR methods like str_detect are used frequently in text mining though.
+This format will set restrictions on your ability to use the stringR functions, because stringR seems to be designed to operate on full texts and not on single worded strings. However, some stringR methods like str_detect are used frequently in text mining.
+
 
 
 
 ## Data Set for examples
 
-As a data set for most of our examples we use the recipes data set, which contains recipes from various recipe websites from the USA. The dataset contains the recipe name, tags of the recipes such as vegetarian, the estimated time to cook it, the nutrition, the steps of the recipe itself and a decription of the recipe from the author. Also the ingredients are listed.
+As a data set for most of our examples we use the recipes data set, which contains recipes from various recipe websites from the USA. The dataset contains the recipe name, tags (such as "vegetarian"), the estimated time to cook it, the nutrition score, the ingredients, the steps needed to cook the recipe itself and a description of the recipe from the author.
 
 
 ## Regular Expressions
 
-Regular expressions (regex) are used mostly in all programming languages and they are a way to normalize the syntax of strings. More importantly they can be used to express not a static word, but could also, more generally, define a group of words. For example, the set of words, which end on "r" contain the words "letter", "bear", "beer" etc.. So regular expressions are often used not to match a single word, but also a set of words.
+
+Regular expressions (regex) are used in almost every programming language. They are a way to normalize the syntax of strings. More importantly, they can not only be used to express a static word, but also to generally refer to defined group of words. For example, the set of words, which end on "r" contain the words "letter", "bear", "beer" etc. So, regular expressions are often used to match a set of words instead of a single word.
+
 
 For regular expressions, the following holds:
+
+
 * For the regular expression "a", you use the character "a"
-* For all punctuation marks a backslash is put in front. E.g. "\?" is the regular expression for the question mark: "?".
-* For any digit, you can use the regular expression "\d" or also "[:digit:]". For word characters, you use "\w" or "[:alpha:]" as a regular expression. To write the regular expression in R you have to write "\\?", so two backslahes are needed.
-* If you have finite list of alternatives, you can use the regular expression for one of those, like "[abc]". So a word is just matched, if it either contains a,b or c.
-* Also of interest might be the regular expression "a[n]", which indicates, that you just want to have those strings, which contain a n times. "a[2]" would match the string "banana" for example, because it contains two "n" s.
-* You can group regular expressions with (). If you have the regex "(a|b)c", then you have three groups. First "(a|b)", then "c", at last the whole term a group. Even if you have just set one bracket pair. The reason to group a regex within a regex is the possibility to call the groups by an assigned number and also some of the functions in stringr make use of the group structure, e.g. provide a match for every group.
+* For all punctuation marks a backslash is put in front. E.g. "\\\?" is the regular expression for the question mark: "?". But to write "?" in R, you must use two backslashes: "\\\\?"
+* For any digit, you can use the regular expression "\d" or also "[:digit:]". For word characters, you use "\w" or "[:alpha:]" as a regular expression. 
+* If you have finite list of alternatives, you can use the regular expression for one of those, like "[abc]". So a word is just matched, if it either contains a, b or c.
+* Another powerful regex might be "a[n]", which indicates, that you just want to have those strings, which contain a n times. "a[2]" would match the string "banana", because it contains two "n" s.
+* You can group regular expressions with (). If you have the regex "(a|b)c", you have three groups. First "(a|b)", then "c" and the whole term as a group. Even if you have just set one pair of parenthesis. The intention of grouping a regex within a regex is to gain the possibility of calling each group by an assigned number. Moreover, some of the functions in stringr make use of the group structure, e.g. by providing a match for every group.
 
 
-There are many more. Since providing information to all the regular expressions, would cost too much space here, we'd like to redirect you to look for more information on the web, e.g. second page of the cheatsheet of stringr, if you want to know more about regular expressions:
-http://edrub.in/CheatSheets/cheatSheetStringr.pdf
+Regex provide almost limitless possibilities for Data Scientists and are - when handled professionally - a powerful language for describing pattern in strings. Since giving credit to every regex would require the space of an own chapter in this book, we'd like to redirect you to the stringr cheat sheet of stringr. Please visit http://edrub.in/CheatSheets/cheatSheetStringr.pdf for more information about regex.
 
-Keep in mind that it might be not easy to find regular expressions, which defines the members of the set, which you want to match. Take e.g. the string "love". If you want to match every conjugation or word related to "love", like "loved", "lover" etc, than you need a regular expression to define this set. If you use the regular expression love\\w" then as a regular expression, most of these are matched and given back correctly. If you have "loved", "loved" is given back. But for "lovely" just "lovel" is given back, because you have just accounted for one additional character.
+Keep in mind that it might be difficult to find regular expressions, which define the members of the set you want to match. Take a look at the string "love". If you want to match every conjugation or word related to "love", like "loved", "lover" etc, you'll need a regular expression to define this set. If you use the regular expression love\\\\w" , most matches will be given back correctly. For example, when matching "loved", "loved" is given back. However, if matching "lovely" just "lovel" is given back, because you only have accounted for one additional character.
 
-There are many caveats like this in regular expressions.
+Always look out for caveats like this in regular expressions.
 
 
 
@@ -102,7 +111,7 @@ There are many caveats like this in regular expressions.
 
 #### str_length
 
-str_length(string) shows the number of characters (!not words)in the given argument string. This includes white spaces and also punctuation marks.
+str_length(string) shows the number of characters (!not words) in the given argument string. This includes both white spaces and punctuation marks.
 
 This could be used to compare the length of two strings, especially if they have to have the same length. This could also be used to determine the frequency of characters in a string.
 
@@ -126,10 +135,10 @@ In the above string there are 13 characters and 10 word characters. If you just 
 
 #### str_pad
 
-str_pad(string, width, side = c("left", "right",
-"both"), pad = " ") adds characters either to the left or right of a string (as a default white spaces). The argument width states how long the string should be after the adding of the additional characters. Both as a parameter for the side means that the added characters are split between the left and the right side of the string. With the pad argument any other character can be added.
+str_pad(string, width, side = c("left", "right","both"), pad = " ") adds characters either to the left or right of a string (as a default white spaces). The argument width states how long the string should be after the adding of the additional characters. Both as a parameter for the side means that the added characters are split between the left and the right side of the string. With the pad argument any other character can be added.
 
-The idea seems to be to adjust strings of different length to the same length to match them in a subsequent step. E.g. when the comparison of the numbers 000247 with 247 should result in a match, we add 0s in front of the second number.
+
+The idea is to adjust strings of different length to the same length in order to match them in a subsequent step. E.g. when the comparison of the numbers 000247 with 247 should result in a match, we add 0s in front of the second number.
 
 
 <u>Example</u>
@@ -139,26 +148,17 @@ In our dataset, the id consists sometimes of 5 or 6 digits, as you can see here:
 
 ```
 ##  [1] 144176 288190 174243 186363 231008 225599  70689 218370  90181 308152
-## [11]  48264 221397 204737 369749 385257 273444 408577 329649  85903 245730
-## [21]  38641 344011 191207 403155 318026 111095 144728 402960  41706 487957
-## [31] 204575 412908 322775 128188 338636 173003 291805 154329 161620 278164
-## [41] 510535  12810 469718  75554  36559 114583 174478 352161 194921 110449
 ```
 
-We want to adjust all of the numbers to the same length. So we add a zero in front to those 5 digit numbers.
+We want to adjust all of the numbers to the same length. So, we add a zero in front to those 5-digit numbers.
 
 
 ```
 ##  [1] "144176" "288190" "174243" "186363" "231008" "225599" "070689" "218370"
-##  [9] "090181" "308152" "048264" "221397" "204737" "369749" "385257" "273444"
-## [17] "408577" "329649" "085903" "245730" "038641" "344011" "191207" "403155"
-## [25] "318026" "111095" "144728" "402960" "041706" "487957" "204575" "412908"
-## [33] "322775" "128188" "338636" "173003" "291805" "154329" "161620" "278164"
-## [41] "510535" "012810" "469718" "075554" "036559" "114583" "174478" "352161"
-## [49] "194921" "110449"
+##  [9] "090181" "308152"
 ```
 
-As we can see, some ids have now a 0 in front. These were 5 digit numbers before. 
+As we can see, some ids have now a 0 in front. These were 5-digit numbers before. 
 
 This works also, if id is of numeric type in r, but the type is then changed to character. As you can see here, the numbers above don't have quotation marks, while the ones below have some.
 
@@ -170,35 +170,35 @@ str_trunc(string, width, side = c("right", "left",
 
 <u>Example</u>
 
-We could use the function to show more text from the description column than can be seen in the view(recipes) tab, to get a better impression, of what these texts are about. But we might not need the full text. We just want the first 100 characters, so we cut off to the right.
+We could use the function to show more text from the description column than can be seen in the view(recipes) tab, to get a better impression, of what these texts are about. But we might not need the full text. We just want the first 50 characters, so we cut off to the right.
 
 
 ```r
-head(str_trunc(recipes$description, width = 100, side = "right"),5)
+head(str_trunc(recipes$description, width = 50, side = "right"),5)
 ```
 
 ```
-## [1] "from oregonlive.com.  i loved the beef lettuce wraps from a restaurant in montauk, ny called east..."
-## [2] "this is just a recipe i came up with when i was in the mood of tinkering a little, rather than fo..."
-## [3] "i just love this recipe. it's quick, easy to make, and feeds plenty of people."                      
-## [4] "this is another of our family favorites that makes for an excellent addition to the serving tray...."
-## [5] "finally comfort food for us vegetarians!!  posted for zwt iii these little guys are really good a..."
+## [1] "from oregonlive.com.  i loved the beef lettuce ..."
+## [2] "this is just a recipe i came up with when i was..."
+## [3] "i just love this recipe. it's quick, easy to ma..."
+## [4] "this is another of our family favorites that ma..."
+## [5] "finally comfort food for us vegetarians!!  post..."
 ```
 
 ```r
-recipes %>% mutate(description_short = str_trunc(description, width = 100, side = "right")) %>% select(name, description_short) %>% head()
+recipes %>% mutate(description_short = str_trunc(description, width = 50, side = "right")) %>% select(name, description_short) %>% head()
 ```
 
 ```
 ## # A tibble: 6 x 2
-##   name                          description_short                               
-##   <chr>                         <chr>                                           
-## 1 chinese spicy beef lettuce w~ from oregonlive.com.  i loved the beef lettuce ~
-## 2 peanut butter and dark fudge~ this is just a recipe i came up with when i was~
-## 3 dorito casserole              i just love this recipe. it's quick, easy to ma~
-## 4 pink lady squares             this is another of our family favorites that ma~
-## 5 vegetable pot pie   pies      finally comfort food for us vegetarians!!  post~
-## 6 artichoke gratinata           this is a giada delaurentis recipe that i just ~
+##   name                                  description_short                       
+##   <chr>                                 <chr>                                   
+## 1 chinese spicy beef lettuce wraps      from oregonlive.com.  i loved the beef ~
+## 2 peanut butter and dark fudge brownie~ this is just a recipe i came up with wh~
+## 3 dorito casserole                      i just love this recipe. it's quick, ea~
+## 4 pink lady squares                     this is another of our family favorites~
+## 5 vegetable pot pie   pies              finally comfort food for us vegetarians~
+## 6 artichoke gratinata                   this is a giada delaurentis recipe that~
 ```
 
 
@@ -228,7 +228,7 @@ For deleting all the white spaces in a larger string, you could also use a regul
 
 #### str_sub
 
-str_sub(string, start=1L, end = -1L) can be used to extract substrings of a string. As a first parameter you give the text and as 2nd and 3rd parameter the start and end index of the substring are entered into the function. This can also be used to delete characters at the beginning and end of a string by extracting a version of the string without the beginning and end characters.
+str_sub(string, start=1L, end = -1L) can be used to extract substrings of a string. The first argument requires text and as 2nd and 3rd parameter the start and end index of the substring must be given. This can also be used to delete characters at the beginning and end of a string by extracting a version of the string without the beginning and end characters.
 
 
 <u>Example</u>
@@ -238,7 +238,7 @@ In our data we have the nutrition given as a character string in the following f
 ```
 ## [1] "[267.4, 18.0, 15.0, 28.0, 42.0, 20.0, 5.0]"
 ```
-This whole term is a string, which we want to split into a list. First we have to delete the "[" in the beginning of the string and "]" at the end.
+This whole term is a string, which we want to split into a list. First, we have to delete the "[" in the beginning of the string and "]" at the end.
 
 Here it is useful, that We can use the str_sub also to eliminate unwanted signs at the beginning and the end of a string.
 
@@ -251,7 +251,9 @@ str_sub(recipes$nutrition[1], 2,str_length(recipes$nutrition[1])-1)
 ```
 ## [1] "267.4, 18.0, 15.0, 28.0, 42.0, 20.0, 5.0"
 ```
-Then we can use the strsplit() function from base R to split the string into a list of strings.
+
+Then we can use the strsplit() function from base R to split the string into a list of strings by using ", " as the seperator. We don't have to care for the brackets additionally then.
+
 
 
 
@@ -261,7 +263,7 @@ str_subset(string, pattern) gives back strings that contain a pattern match. The
 
 <u>Example</u>
 
-To give an example, we look at the description of a recipe, which looks like the following
+To give an example, we look at the description of a recipe, which looks like the following:
 
 
 ```
@@ -285,40 +287,37 @@ As you can see, the set of strings has been reduced just to two strings. These a
 
 str_extract(string, pattern) returns the first pattern match found in each string as a vector. 
 
-If you simply give in a word as an argument for pattern, then the first match is either the word itself or the function gives NA out, if there is no match. If you give in a set of strings, the result is a vector with just the two aforementioned entries. Since this just gives the information, if a string contains a word or not, the str_detect function would be more suitable for the task.
+If you simply give in a word as an argument for pattern, then the first match is either the word itself or the function gives NA out, if there is no match. If you give in a set of strings, the result is a vector with just the two entries mentioned before. Since this just gives the information, if a string contains a word or not, the str_detect function would be more suitable for the task.
 
-The function can also be used with a vector of strings as an argument for pattern. Then the function gives back the first string of the vector, which has been found in the string of the first argument, which shall be searched.str_detect would just indicate that one of the strings in the vector is ture, but not which of them.
+The function can also be used with a vector of strings as an argument for pattern. Then the function gives back the first string of the vector, which has been found in the string of the first argument, which shall be searched. str_detect would just indicate that one of the strings in the vector is true, but not which of them.
 
 
-If you don't simply want the first match, then you can use also str.extract.all(). The output is a list of vectors (???).
+If you don't simply want the first match, then you can use also str.extract.all(). The output is a list of vectors.
 
 <u>Example 1</u>
+
 
 We look at the common words love and recipe in the description. The result shows, in which decriptions which word of these comes first or gives back NA if the pattern isn't found at all in the string. 
 
 
+
 ```r
-head(str_extract(recipes$description, "(love\\w|recipe\\w)"),100)
+head(str_extract(recipes$description, "(love\\w|recipe\\w)"),60)
 ```
 
 ```
-##   [1] "loved"   NA        NA        NA        NA        NA        NA       
-##   [8] NA        NA        NA        NA        "recipes" NA        NA       
-##  [15] NA        NA        NA        NA        NA        NA        "recipes"
-##  [22] NA        NA        NA        NA        NA        "recipes" NA       
-##  [29] NA        NA        NA        NA        NA        "loves"   NA       
-##  [36] NA        "recipel" NA        NA        NA        NA        NA       
-##  [43] NA        NA        NA        "recipes" NA        NA        NA       
-##  [50] NA        NA        NA        NA        "recipes" "lovel"   NA       
-##  [57] NA        NA        NA        NA        NA        NA        NA       
-##  [64] NA        NA        NA        NA        NA        NA        NA       
-##  [71] NA        NA        NA        NA        NA        NA        "loves"  
-##  [78] NA        NA        NA        NA        NA        NA        NA       
-##  [85] NA        NA        NA        NA        "recipes" NA        NA       
-##  [92] NA        NA        NA        NA        "recipes" NA        NA       
-##  [99] NA        "recipes"
+##  [1] "loved"   NA        NA        NA        NA        NA        NA       
+##  [8] NA        NA        NA        NA        "recipes" NA        NA       
+## [15] NA        NA        NA        NA        NA        NA        "recipes"
+## [22] NA        NA        NA        NA        NA        "recipes" NA       
+## [29] NA        NA        NA        NA        NA        "loves"   NA       
+## [36] NA        "recipel" NA        NA        NA        NA        NA       
+## [43] NA        NA        NA        "recipes" NA        NA        NA       
+## [50] NA        NA        NA        NA        "recipes" "lovel"   NA       
+## [57] NA        NA        NA        NA
 ```
 This example also shows, that you have to be careful with regular expressions. The 55rd entry "lovel" comes from "lovely". Maybe you would rather have "lovely" returned.
+
 
 
 <u>Example 2</u>
@@ -347,6 +346,7 @@ head(str_extract_all(recipes$ingredients, "milk|eggs"),5)
 ## [1] "milk"
 ```
 
+
 As you can see the second recipe contains both eggs and milk, the 4th and 5th recipe contain just milk, but no eggs.
 
 
@@ -361,7 +361,7 @@ In this function if a match of a is detected, this is a match for group 1 and th
 As with str_extract, here also exists a str_match_all function to get all the matches and not just the first.
 
 
-<u>Example 1</u>
+<u>Example</u>
 
 Here we want to match the regular expression (love\\w|recipe\\w).+(beef). This means "love" and "recipe" form one group and beef forms the other. The whole expression as such is also a group.
 
@@ -379,7 +379,9 @@ head(str_match(recipes$description, "(love\\w|recipe\\w).+(beef)"),5)
 ## [5,] NA               NA      NA
 ```
 
+
 As you can see, in the first column there is the entry beloging to the whole regular expression as a group. The string contains "love" as well as "beef". In the second column, the string matched from the first group is "love", in the third column the string matched from the second group is "beef".
+
 
 
 ### Detect matches
@@ -442,7 +444,7 @@ str_count(string, pattern) counts the number of matches in a string.
 
 <u>Example</u>
 
-"i" occurs very often in the descriptions of the recipes. Let's see how often per description. As a regular expression we have chosen " i ", that is an i sourrounded by white spaces. This means in sentences like "I ...." the i is not matched.
+"i" occurs very often in the descriptions of the recipes. Let's see how often per description. As a regular expression we have chosen " i ", that is an i surrounded by white spaces. This means in sentences like "I ...." the i is not matched.
 
 
 ```r
@@ -495,25 +497,51 @@ In this part we will use Italy, a subset of "recipes" that is exclusively contai
 
 #### str_replace (and replace_all) 
 
-
-
 The replace functions of stringr are used to match patterns and replace them with new strings. 
-Example: For seo (search engine optimization) we will add the popular word "fluffy" to all our pizza recipes in the name column.  
-In order to replace several matches use str_replace_all and create a vector containing multiple conditions.
+
+<u>Example</u>
+
+```r
+Italy <- Italy %>% 
+  mutate(name1 = str_replace(Italy$name, "pizza", "fluffy pizza"))
+```
 
 
+For seo (search engine optimization) we will add the popular word "fluffy" to all our pizza recipes in the name column.  
+In order to replace several matches, use str_replace_all and create a vector containing multiple conditions.
+
+
+
+```r
+Italy <- Italy %>% 
+  mutate(name2 = str_replace_all(Italy$name, c("pizza" = "fluffy pizza", "easy" = "easy peasy")))
+```
 
 ##### str_to_lower
 
-We can use str_to_ to change the case of text strings. They are intutitive: 
+We can use str_to_ to change the case of text strings. They are intuitive: 
 str_to_lower will change text to lower case, 
 str_to_upper will change text to upper case,
 str_to_title will change first letter of a string into a capital letter.
+
 ... 
+
+
+
+<u>Example</u>
+
+```r
+p <- c("i","like","pizza","and","i don't share pizzza")
+str_to_upper(p)
+```
 
 ```
 ## [1] "I"                    "LIKE"                 "PIZZA"               
 ## [4] "AND"                  "I DON'T SHARE PIZZZA"
+```
+
+```r
+str_to_sentence(p)
 ```
 
 ```
@@ -521,15 +549,24 @@ str_to_title will change first letter of a string into a capital letter.
 ## [4] "And"                  "I don't share pizzza"
 ```
 
+```r
+p <- str_c(p, collapse = " ") #make it one sentence (see str_c)
+str_to_sentence(p)
+```
+
 ```
 ## [1] "I like pizza and i don't share pizzza"
 ```
 
-Attention: Locales will apply language conventions when changing the case. As you know, capitalization is used different in German and English. Above, the default would be locale = "en" but you can change it into every other language. The code for your langugage can be found in Wikipedia - List of ISO 639-1 codes.
+Attention: Locales will apply language conventions when changing the case. As you know, capitalization is used different in German and English. Above, the default would be locale = "en" but you can change it into every other language. The code for your language can be found in Wikipedia - List of ISO 639-1 codes.
 
 Locales also come in handy for the str_order or str_sort fuction. 
 str_sort will sort a list of string vectors by alphabet (locale will determine wich alphabet is applied)
 
+
+```r
+str_sort(Italy$name1[1:10], decreasing = FALSE, na_last = TRUE, locale = "en", numeric = FALSE)
+```
 
 ```
 ##  [1] "fluffy pizza tomato sauce"                            
@@ -548,12 +585,22 @@ str_sort will sort a list of string vectors by alphabet (locale will determine w
 
 #### str_c
 
-If you want to merge several strings into one, the str_c funtion is what you need. It is simple: either you join two or more single strings using the seperate argument to choose a separation sign or you join a vector of strings by having the argument collapse control how the strings are separeted. 
-In our Pizza example you can first see the join of the first few names into one string separated by ", " and then a vector that is joint into one string unsig the words "and then" as a form of separation. 
+If you want to merge several strings into one, the str_c function is what you need. It is simple: either you join two or more single strings using the separate argument to choose a separation sign or you join a vector of strings by having the argument collapse control how the strings are separated. 
 
+<u>Example</u>
+In our Pizza example you can first see the join of the first few names into one string separated by ", " and then a vector that is joint into one string using the words "and then" as a form of separation. 
+
+
+```r
+str_c(Italy$name2[1],Italy$name2[2], Italy$name2[3], sep = ", ")
+```
 
 ```
 ## [1] "three cheese fluffy pizza with truffle oil, karen s slow cooker fluffy pizza chicken, yeast free fluffy pizza with fresh basil and tomatoes"
+```
+
+```r
+str_c(Italy$name2[1:3], collapse = " and then ")
 ```
 
 ```
@@ -563,8 +610,14 @@ In our Pizza example you can first see the join of the first few names into one 
 #### str_split
 
 The str_split function will split a vector of strings into a list of substrings. The split is made where there is a match with a pattern of your choice.
-In our exapmle we will split the cloumn step containing step by step instructions into single substrings. As the steps currently have the format of a list, we can use the comma as a pattern to seperate the strings. 
 
+<u>Example</u>
+In our example we will split the column step containing step by step instructions into single substrings. As the steps currently have the format of a list, we can use the comma as a pattern to separate the strings. 
+
+
+```r
+Italy$steps %>% str_split("', '") %>% head(2)
+```
 
 ```
 ## [[1]]
@@ -587,6 +640,13 @@ If you'd rather have the subset of strings in a matrix, you can use str_split_fi
 #### str_glue
 
 
+<u>Example</u>
+
+```r
+pandas <- c("Carl","Jakob","Jakob","Markus","Robert")
+str_glue("Hey {pandas}! I'd recommend the recipe '{str_to_title(Italy$name2[1:5])}' for you." )
+```
+
 ```
 ## Hey Carl! I'd recommend the recipe 'Three Cheese Fluffy Pizza With Truffle Oil' for you.
 ## Hey Jakob! I'd recommend the recipe 'Karen S Slow Cooker Fluffy Pizza Chicken' for you.
@@ -595,7 +655,7 @@ If you'd rather have the subset of strings in a matrix, you can use str_split_fi
 ## Hey Robert! I'd recommend the recipe 'Macaroni Fluffy Pizza Casserole' for you.
 ```
 
-As you can see, str_glue literally glues strings together to create a new string. Expressions must be written in {} but everything else is up to you: you can use data frames, listes and regex. Useful for customized mailing, ditribution of tasks ect. 
+As you can see, str_glue literally glues strings together to create a new string. Expressions must be written in {}, everything else is up to you tough: you can use data frames, lists and regex. Useful for customized mailing, distribution of tasks ect. 
 
 
 

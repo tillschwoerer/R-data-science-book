@@ -24,7 +24,7 @@
 <meta name="author" content="Tools and Programming Languages for Data Scientists, FH Kiel, Summer Term 2020" />
 
 
-<meta name="date" content="2020-05-07" />
+<meta name="date" content="2020-05-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -146,12 +146,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.3.2" data-path="dplyr.html"><a href="dplyr.html#create-new-columns"><i class="fa fa-check"></i><b>3.3.2</b> Create new columns</a></li>
 </ul></li>
 <li class="chapter" data-level="3.4" data-path="dplyr.html"><a href="dplyr.html#scoped-functions"><i class="fa fa-check"></i><b>3.4</b> Scoped functions</a></li>
-<li class="chapter" data-level="3.5" data-path="dplyr.html"><a href="dplyr.html#summarise"><i class="fa fa-check"></i><b>3.5</b> Summarise</a></li>
-<li class="chapter" data-level="3.6" data-path="dplyr.html"><a href="dplyr.html#combining-tables"><i class="fa fa-check"></i><b>3.6</b> Combining tables</a></li>
-<li class="chapter" data-level="3.7" data-path="dplyr.html"><a href="dplyr.html#database-backend"><i class="fa fa-check"></i><b>3.7</b> Database backend</a><ul>
-<li class="chapter" data-level="3.7.1" data-path="dplyr.html"><a href="dplyr.html#motivation"><i class="fa fa-check"></i><b>3.7.1</b> Motivation</a></li>
-<li class="chapter" data-level="3.7.2" data-path="dplyr.html"><a href="dplyr.html#set-up"><i class="fa fa-check"></i><b>3.7.2</b> Set up</a></li>
-<li class="chapter" data-level="3.7.3" data-path="dplyr.html"><a href="dplyr.html#querying-the-database"><i class="fa fa-check"></i><b>3.7.3</b> Querying the database</a></li>
+<li class="chapter" data-level="3.5" data-path="dplyr.html"><a href="dplyr.html#aggregate"><i class="fa fa-check"></i><b>3.5</b> Aggregate</a></li>
+<li class="chapter" data-level="3.6" data-path="dplyr.html"><a href="dplyr.html#window-functions"><i class="fa fa-check"></i><b>3.6</b> Window functions</a></li>
+<li class="chapter" data-level="3.7" data-path="dplyr.html"><a href="dplyr.html#combining-tables"><i class="fa fa-check"></i><b>3.7</b> Combining tables</a></li>
+<li class="chapter" data-level="3.8" data-path="dplyr.html"><a href="dplyr.html#database-backend"><i class="fa fa-check"></i><b>3.8</b> Database backend</a><ul>
+<li class="chapter" data-level="3.8.1" data-path="dplyr.html"><a href="dplyr.html#motivation"><i class="fa fa-check"></i><b>3.8.1</b> Motivation</a></li>
+<li class="chapter" data-level="3.8.2" data-path="dplyr.html"><a href="dplyr.html#set-up"><i class="fa fa-check"></i><b>3.8.2</b> Set up</a></li>
+<li class="chapter" data-level="3.8.3" data-path="dplyr.html"><a href="dplyr.html#querying-the-database"><i class="fa fa-check"></i><b>3.8.3</b> Querying the database</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="lubridate.html"><a href="lubridate.html"><i class="fa fa-check"></i><b>4</b> Dates and times: lubridate</a><ul>
@@ -263,23 +264,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <p>In this chapter we use the demo data set <code>diamonds</code> from the ggplot2-package (<a href="https://ggplot2.tidyverse.org/reference/diamonds.html">more information</a>) as well as a dataset <code>olympic-games</code> which shows the medal success of olympic athletes from 1896 to 2016. For the latter we focus on the summer games 1896 and the winter games 1924 for practical reasons.<br />
 Before you start reading, you should have read the chapter <strong><em>Wrangling Data: dplyr</em></strong> or be familiar with this field.</p>
-<div class="sourceCode" id="cb159"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb159-1" title="1"><span class="co"># The package tidyverse contains all libraries necessary for this chapter.</span></a>
-<a class="sourceLine" id="cb159-2" title="2"><span class="kw">library</span>(tidyverse)</a>
-<a class="sourceLine" id="cb159-3" title="3"></a>
-<a class="sourceLine" id="cb159-4" title="4"><span class="co"># Importing the &quot;diamonds&quot; dataset.</span></a>
-<a class="sourceLine" id="cb159-5" title="5">diamonds &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/diamonds.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb159-6" title="6"><span class="co"># Importing the &quot;olympic-games&quot; dataset.</span></a>
-<a class="sourceLine" id="cb159-7" title="7">olympic &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/olympic-games.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb159-8" title="8"></a>
-<a class="sourceLine" id="cb159-9" title="9"><span class="co"># Have a short look at the data.</span></a>
-<a class="sourceLine" id="cb159-10" title="10"><span class="kw">head</span>(diamonds, <span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb270"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb270-1" title="1"><span class="co"># The package tidyverse contains all libraries necessary for this chapter.</span></a>
+<a class="sourceLine" id="cb270-2" title="2"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb270-3" title="3"></a>
+<a class="sourceLine" id="cb270-4" title="4"><span class="co"># Importing the &quot;diamonds&quot; dataset.</span></a>
+<a class="sourceLine" id="cb270-5" title="5">diamonds &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/diamonds.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb270-6" title="6"><span class="co"># Importing the &quot;olympic-games&quot; dataset.</span></a>
+<a class="sourceLine" id="cb270-7" title="7">olympic &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/olympic-games.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb270-8" title="8"></a>
+<a class="sourceLine" id="cb270-9" title="9"><span class="co"># Have a short look at the data.</span></a>
+<a class="sourceLine" id="cb270-10" title="10"><span class="kw">head</span>(diamonds, <span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 2 x 10
 ##   carat cut     color clarity depth table price     x     y     z
 ##   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
 ## 1  0.23 Ideal   E     SI2      61.5    55   326  3.95  3.98  2.43
 ## 2  0.21 Premium E     SI1      59.8    61   326  3.89  3.84  2.31</code></pre>
-<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb161-1" title="1"><span class="co"># Have a short look at the data.</span></a>
-<a class="sourceLine" id="cb161-2" title="2"><span class="kw">head</span>(olympic, <span class="dv">2</span>)              </a></code></pre></div>
+<div class="sourceCode" id="cb272"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb272-1" title="1"><span class="co"># Have a short look at the data.</span></a>
+<a class="sourceLine" id="cb272-2" title="2"><span class="kw">head</span>(olympic, <span class="dv">2</span>)              </a></code></pre></div>
 <pre><code>## # A tibble: 2 x 12
 ##   game  city  sport discipline athlete country age   height weight   bmi sex  
 ##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
@@ -365,65 +366,65 @@ It is a categorical evaluation of the clarity of a diamond and a subset of the g
 </tbody>
 </table>
 <p>If you are interested in the distribution of the diamonds in this category, you could do this by using a suitable query:</p>
-<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb163-1" title="1"><span class="co"># Count the number of observations per clarity grade and plot the result.</span></a>
-<a class="sourceLine" id="cb163-2" title="2">diamonds <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb163-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(clarity) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb163-4" title="4"><span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st">   </span></a>
-<a class="sourceLine" id="cb163-5" title="5"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> clarity)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb163-6" title="6"><span class="st">  </span><span class="kw">geom_col</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb274"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb274-1" title="1"><span class="co"># Count the number of observations per clarity grade and plot the result.</span></a>
+<a class="sourceLine" id="cb274-2" title="2">diamonds <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb274-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(clarity) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb274-4" title="4"><span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span><span class="st">   </span></a>
+<a class="sourceLine" id="cb274-5" title="5"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> clarity)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb274-6" title="6"><span class="st">  </span><span class="kw">geom_col</span>()</a></code></pre></div>
 <p><img src="forcats_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>A sorting of the x-axis, which follows the order of the grades as shown in the table above, is unfortunately not possible in this form. A workaround is to convert the column <code>clarity</code> into a factor, which allows us to evaluate the individual categories. For this purpose we first define a vector, which ranks the categories according to their grade (from <em>bad</em> to <em>good</em>):</p>
-<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb164-1" title="1">levels_clarity &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;I1&quot;</span>, <span class="st">&quot;SI2&quot;</span>, <span class="st">&quot;SI1&quot;</span>, <span class="st">&quot;VS2&quot;</span>, <span class="st">&quot;VS1&quot;</span>, <span class="st">&quot;VVS2&quot;</span>, <span class="st">&quot;VVS1&quot;</span>, <span class="st">&quot;IF&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb275-1" title="1">levels_clarity &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;I1&quot;</span>, <span class="st">&quot;SI2&quot;</span>, <span class="st">&quot;SI1&quot;</span>, <span class="st">&quot;VS2&quot;</span>, <span class="st">&quot;VS1&quot;</span>, <span class="st">&quot;VVS2&quot;</span>, <span class="st">&quot;VVS1&quot;</span>, <span class="st">&quot;IF&quot;</span>)</a></code></pre></div>
 <p>In the next step we lay this newly created levels vector on the column <code>clarity</code> of our data set to create a factor. The function <code>factor()</code> is a base-R function.</p>
-<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb165-1" title="1">factor_clarity &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="dt">x =</span> diamonds<span class="op">$</span>clarity, <span class="dt">levels =</span> levels_clarity)</a></code></pre></div>
+<div class="sourceCode" id="cb276"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb276-1" title="1">factor_clarity &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="dt">x =</span> diamonds<span class="op">$</span>clarity, <span class="dt">levels =</span> levels_clarity)</a></code></pre></div>
 <p>The factor <code>factor_clarity</code> consists solely of the <code>clarity</code> column of the original <code>diamonds</code> data set.</p>
 <p>Another possibility to create a factor is to convert a vector using <code>as_factor()</code>. Here the levels are created automatically. Their order however depends on the appearance of the corresponding value in the source vector.</p>
-<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb166-1" title="1"><span class="kw">as_factor</span>(diamonds<span class="op">$</span>clarity) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb166-2" title="2"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb277-1" title="1"><span class="kw">as_factor</span>(diamonds<span class="op">$</span>clarity) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb277-2" title="2"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
 <pre><code>## [1] &quot;SI2&quot;  &quot;SI1&quot;  &quot;VS1&quot;  &quot;VS2&quot;  &quot;VVS2&quot; &quot;VVS1&quot; &quot;I1&quot;   &quot;IF&quot;</code></pre>
 </div>
 <div id="count-values-per-level" class="section level3">
 <h3><span class="header-section-number">5.2.2</span> Count values per level</h3>
 <p>Now we repeat the analysis of the distribution within our dataset using the created factor with the levels in correct order. The function <code>fct_count()</code> returns the frequency of a categorical value within a factor. The order of the levels remains unchanged.</p>
-<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb168-1" title="1"><span class="kw">fct_count</span>(factor_clarity) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb168-2" title="2"><span class="st">  </span><span class="co"># The definition of aesthetic mapping in this line is only used to label the axes.</span></a>
-<a class="sourceLine" id="cb168-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> clarity)) <span class="op">+</span><span class="st">          </span></a>
-<a class="sourceLine" id="cb168-4" title="4"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
+<div class="sourceCode" id="cb279"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb279-1" title="1"><span class="kw">fct_count</span>(factor_clarity) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb279-2" title="2"><span class="st">  </span><span class="co"># The definition of aesthetic mapping in this line is only used to label the axes.</span></a>
+<a class="sourceLine" id="cb279-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> clarity)) <span class="op">+</span><span class="st">          </span></a>
+<a class="sourceLine" id="cb279-4" title="4"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
 <p><img src="forcats_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>It becomes obvious that the distribution can now be displayed in the desired order (by order of levels). Functions of the package forcats always start with the prefix <code>fct_</code>.</p>
 </div>
 <div id="Inspect-and-set-levels" class="section level3">
 <h3><span class="header-section-number">5.2.3</span> Inspect and set levels</h3>
 <p>With the function <code>levels()</code> the levels of a factor can be both read and renamed. <strong>But be aware:</strong> this can only be used to change the names, not the order of the levels. The base-R function <code>unclass()</code> gives information about the internal memory structure of a factor.</p>
-<div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb169-1" title="1"><span class="co"># Shows the original levels of our factor.</span></a>
-<a class="sourceLine" id="cb169-2" title="2">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb169-3" title="3"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb280-1" title="1"><span class="co"># Shows the original levels of our factor.</span></a>
+<a class="sourceLine" id="cb280-2" title="2">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb280-3" title="3"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
 <pre><code>## [1] &quot;I1&quot;   &quot;SI2&quot;  &quot;SI1&quot;  &quot;VS2&quot;  &quot;VS1&quot;  &quot;VVS2&quot; &quot;VVS1&quot; &quot;IF&quot;</code></pre>
-<div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb171-1" title="1"><span class="co"># Shows the internal structure.</span></a>
-<a class="sourceLine" id="cb171-2" title="2">factor_clarity[<span class="dv">1</span><span class="op">:</span><span class="dv">25</span>] <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb171-3" title="3"><span class="st">  </span><span class="kw">unclass</span>()               </a></code></pre></div>
+<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb282-1" title="1"><span class="co"># Shows the internal structure.</span></a>
+<a class="sourceLine" id="cb282-2" title="2">factor_clarity[<span class="dv">1</span><span class="op">:</span><span class="dv">25</span>] <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb282-3" title="3"><span class="st">  </span><span class="kw">unclass</span>()               </a></code></pre></div>
 <pre><code>##  [1] 2 3 5 4 2 6 7 3 4 5 3 5 3 2 2 1 2 3 3 3 2 4 5 3 3
 ## attr(,&quot;levels&quot;)
 ## [1] &quot;I1&quot;   &quot;SI2&quot;  &quot;SI1&quot;  &quot;VS2&quot;  &quot;VS1&quot;  &quot;VVS2&quot; &quot;VVS1&quot; &quot;IF&quot;</code></pre>
-<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb173-1" title="1"><span class="co"># Keep the order of levels,</span></a>
-<a class="sourceLine" id="cb173-2" title="2"><span class="co"># but replace the technical GIA jargon with something more understandable.</span></a>
-<a class="sourceLine" id="cb173-3" title="3">levels_clarity_c &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;c8&quot;</span>, <span class="st">&quot;c7&quot;</span>, <span class="st">&quot;c6&quot;</span>, <span class="st">&quot;c5&quot;</span>, <span class="st">&quot;c4&quot;</span>, <span class="st">&quot;c3&quot;</span>, <span class="st">&quot;c2&quot;</span>, <span class="st">&quot;c1&quot;</span>)</a>
-<a class="sourceLine" id="cb173-4" title="4"><span class="kw">levels</span>(factor_clarity) &lt;-<span class="st"> </span>levels_clarity_c</a>
-<a class="sourceLine" id="cb173-5" title="5"></a>
-<a class="sourceLine" id="cb173-6" title="6">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb173-7" title="7"><span class="st">  </span><span class="kw">head</span>(<span class="dv">25</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb284-1" title="1"><span class="co"># Keep the order of levels,</span></a>
+<a class="sourceLine" id="cb284-2" title="2"><span class="co"># but replace the technical GIA jargon with something more understandable.</span></a>
+<a class="sourceLine" id="cb284-3" title="3">levels_clarity_c &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;c8&quot;</span>, <span class="st">&quot;c7&quot;</span>, <span class="st">&quot;c6&quot;</span>, <span class="st">&quot;c5&quot;</span>, <span class="st">&quot;c4&quot;</span>, <span class="st">&quot;c3&quot;</span>, <span class="st">&quot;c2&quot;</span>, <span class="st">&quot;c1&quot;</span>)</a>
+<a class="sourceLine" id="cb284-4" title="4"><span class="kw">levels</span>(factor_clarity) &lt;-<span class="st"> </span>levels_clarity_c</a>
+<a class="sourceLine" id="cb284-5" title="5"></a>
+<a class="sourceLine" id="cb284-6" title="6">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb284-7" title="7"><span class="st">  </span><span class="kw">head</span>(<span class="dv">25</span>)</a></code></pre></div>
 <pre><code>##  [1] c7 c6 c4 c5 c7 c3 c2 c6 c5 c4 c6 c4 c6 c7 c7 c8 c7 c6 c6 c6 c7 c5 c4 c6 c6
 ## Levels: c8 c7 c6 c5 c4 c3 c2 c1</code></pre>
 </div>
 <div id="inspect-unique-values" class="section level3">
 <h3><span class="header-section-number">5.2.4</span> Inspect unique values</h3>
 <p>The function <code>fct_unique()</code> can be used to output unique values of a factor. In contrast to the base-R function <code>unique()</code> the values are returned in the order of the levels and not in the order of their appearance.</p>
-<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb175-1" title="1">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb175-2" title="2"><span class="st">  </span><span class="kw">fct_unique</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb286"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb286-1" title="1">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb286-2" title="2"><span class="st">  </span><span class="kw">fct_unique</span>()</a></code></pre></div>
 <pre><code>## [1] c8 c7 c6 c5 c4 c3 c2 c1
 ## Levels: c8 c7 c6 c5 c4 c3 c2 c1</code></pre>
-<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb177-1" title="1">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb177-2" title="2"><span class="st">  </span><span class="kw">unique</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb288"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb288-1" title="1">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb288-2" title="2"><span class="st">  </span><span class="kw">unique</span>()</a></code></pre></div>
 <pre><code>## [1] c7 c6 c4 c5 c3 c2 c8 c1
 ## Levels: c8 c7 c6 c5 c4 c3 c2 c1</code></pre>
 </div>
@@ -433,53 +434,53 @@ It is a categorical evaluation of the clarity of a diamond and a subset of the g
 <div id="combine-factors-with-different-levels" class="section level3">
 <h3><span class="header-section-number">5.3.1</span> Combine factors with different levels</h3>
 <p>With the function <code>fct_c()</code> factors with different levels can be combined to one factor covering all levels. First we create two factors. The first one shows the amount of contested disciplines by several countries during the Summer Olympic Games 1896. The second one shows the amount of contested disciplines by countries during the Winter Olympic Games 1924.</p>
-<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb179-1" title="1">olympic_<span class="dv">1896</span> &lt;-<span class="st"> </span>olympic <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb179-2" title="2"><span class="st">  </span><span class="kw">filter</span>(game <span class="op">==</span><span class="st"> &quot;1896 Summer&quot;</span>)</a>
-<a class="sourceLine" id="cb179-3" title="3"></a>
-<a class="sourceLine" id="cb179-4" title="4"><span class="co"># Create a factor using the default for the `levels` argument in `factor()`.</span></a>
-<a class="sourceLine" id="cb179-5" title="5">countries_in_<span class="dv">1896</span> &lt;-<span class="st"> </span><span class="kw">factor</span>(olympic_<span class="dv">1896</span><span class="op">$</span>country)</a>
-<a class="sourceLine" id="cb179-6" title="6"></a>
-<a class="sourceLine" id="cb179-7" title="7">olympic_<span class="dv">1924</span> &lt;-<span class="st"> </span>olympic <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb179-8" title="8"><span class="st">  </span><span class="kw">filter</span>(game <span class="op">==</span><span class="st"> &quot;1924 Winter&quot;</span>)</a>
-<a class="sourceLine" id="cb179-9" title="9"></a>
-<a class="sourceLine" id="cb179-10" title="10"><span class="co"># Create a factor using the default for the `levels` argument in `factor()`.</span></a>
-<a class="sourceLine" id="cb179-11" title="11">countries_in_<span class="dv">1924</span> &lt;-<span class="st"> </span><span class="kw">factor</span>(olympic_<span class="dv">1924</span><span class="op">$</span>country)</a></code></pre></div>
+<div class="sourceCode" id="cb290"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb290-1" title="1">olympic_<span class="dv">1896</span> &lt;-<span class="st"> </span>olympic <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb290-2" title="2"><span class="st">  </span><span class="kw">filter</span>(game <span class="op">==</span><span class="st"> &quot;1896 Summer&quot;</span>)</a>
+<a class="sourceLine" id="cb290-3" title="3"></a>
+<a class="sourceLine" id="cb290-4" title="4"><span class="co"># Create a factor using the default for the `levels` argument in `factor()`.</span></a>
+<a class="sourceLine" id="cb290-5" title="5">countries_in_<span class="dv">1896</span> &lt;-<span class="st"> </span><span class="kw">factor</span>(olympic_<span class="dv">1896</span><span class="op">$</span>country)</a>
+<a class="sourceLine" id="cb290-6" title="6"></a>
+<a class="sourceLine" id="cb290-7" title="7">olympic_<span class="dv">1924</span> &lt;-<span class="st"> </span>olympic <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb290-8" title="8"><span class="st">  </span><span class="kw">filter</span>(game <span class="op">==</span><span class="st"> &quot;1924 Winter&quot;</span>)</a>
+<a class="sourceLine" id="cb290-9" title="9"></a>
+<a class="sourceLine" id="cb290-10" title="10"><span class="co"># Create a factor using the default for the `levels` argument in `factor()`.</span></a>
+<a class="sourceLine" id="cb290-11" title="11">countries_in_<span class="dv">1924</span> &lt;-<span class="st"> </span><span class="kw">factor</span>(olympic_<span class="dv">1924</span><span class="op">$</span>country)</a></code></pre></div>
 <p>Note that the default option for the <code>levels</code> argument in <code>factor()</code> is a sorted set of the given values. As R sorts characters lexicographically, the corresponding levels are the countries sorted alphabetically <em>from A to Z</em>.
 The factors differ both in their stored values and in their levels. A plot makes this clear:</p>
-<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb180-1" title="1">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb180-2" title="2"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb180-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country))<span class="op">+</span></a>
-<a class="sourceLine" id="cb180-4" title="4"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
+<div class="sourceCode" id="cb291"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb291-1" title="1">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb291-2" title="2"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb291-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country))<span class="op">+</span></a>
+<a class="sourceLine" id="cb291-4" title="4"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
 <p><img src="forcats_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb181-1" title="1">countries_in_<span class="dv">1924</span> <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb181-2" title="2"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb181-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country))<span class="op">+</span></a>
-<a class="sourceLine" id="cb181-4" title="4"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
+<div class="sourceCode" id="cb292"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb292-1" title="1">countries_in_<span class="dv">1924</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb292-2" title="2"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb292-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country))<span class="op">+</span></a>
+<a class="sourceLine" id="cb292-4" title="4"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
 <p><img src="forcats_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
 <p>Now we combine the factors with <code>fct_c()</code> and plot it:</p>
-<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb182-1" title="1"><span class="kw">fct_c</span>(countries_in_<span class="dv">1896</span>, countries_in_<span class="dv">1924</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb182-2" title="2"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb182-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country))<span class="op">+</span></a>
-<a class="sourceLine" id="cb182-4" title="4"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
+<div class="sourceCode" id="cb293"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb293-1" title="1"><span class="kw">fct_c</span>(countries_in_<span class="dv">1896</span>, countries_in_<span class="dv">1924</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb293-2" title="2"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb293-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country))<span class="op">+</span></a>
+<a class="sourceLine" id="cb293-4" title="4"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
 <p><img src="forcats_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Both the underlying values and the levels were combined into one factor.</p>
 </div>
 <div id="standardise-levels-of-various-factors" class="section level3">
 <h3><span class="header-section-number">5.3.2</span> Standardise levels of various factors</h3>
 <p>With the function <code>fct_unify()</code> the levels of different factors can be standardised. The resulting output factors will retain their values, but all will have the same levels. Please note, both input and output are in list form.</p>
-<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb183-1" title="1">factor_list &lt;-<span class="st"> </span><span class="kw">fct_unify</span>(<span class="kw">list</span>(countries_in_<span class="dv">1896</span>, countries_in_<span class="dv">1924</span>))</a>
-<a class="sourceLine" id="cb183-2" title="2"></a>
-<a class="sourceLine" id="cb183-3" title="3"><span class="co"># Plot the first output factor.</span></a>
-<a class="sourceLine" id="cb183-4" title="4">factor_list[[<span class="dv">1</span>]] <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb183-5" title="5"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb183-6" title="6"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb183-7" title="7"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
+<div class="sourceCode" id="cb294"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb294-1" title="1">factor_list &lt;-<span class="st"> </span><span class="kw">fct_unify</span>(<span class="kw">list</span>(countries_in_<span class="dv">1896</span>, countries_in_<span class="dv">1924</span>))</a>
+<a class="sourceLine" id="cb294-2" title="2"></a>
+<a class="sourceLine" id="cb294-3" title="3"><span class="co"># Plot the first output factor.</span></a>
+<a class="sourceLine" id="cb294-4" title="4">factor_list[[<span class="dv">1</span>]] <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb294-5" title="5"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb294-6" title="6"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb294-7" title="7"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
 <p><img src="forcats_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb184-1" title="1"><span class="co"># Plot the second output factor.</span></a>
-<a class="sourceLine" id="cb184-2" title="2">factor_list[[<span class="dv">2</span>]] <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb184-3" title="3"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb184-4" title="4"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb184-5" title="5"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
+<div class="sourceCode" id="cb295"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb295-1" title="1"><span class="co"># Plot the second output factor.</span></a>
+<a class="sourceLine" id="cb295-2" title="2">factor_list[[<span class="dv">2</span>]] <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb295-3" title="3"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb295-4" title="4"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb295-5" title="5"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
 <p><img src="forcats_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
 <p>In this case, the underlying values were left unchanged for both factors, but the levels were standardised. This is especially useful when comparing the values of two different factors.</p>
 </div>
@@ -489,9 +490,9 @@ The factors differ both in their stored values and in their levels. A plot makes
 <div id="manual-reordering" class="section level3">
 <h3><span class="header-section-number">5.4.1</span> Manual reordering of levels</h3>
 <p>With the function <code>fct_relevel()</code> the levels of a factor can be manually reordered. In contrast to the function <code>levels()</code>, which only allows the renaming of factor levels, <code>fct_relevel()</code> also adjusts the order of the levels themselves, that is the way they are stored internally. An example should clarify this.</p>
-<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb185-1" title="1"><span class="co"># Have a look at the original levels.</span></a>
-<a class="sourceLine" id="cb185-2" title="2">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb185-3" title="3"><span class="st">  </span><span class="kw">fct_count</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb296"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb296-1" title="1"><span class="co"># Have a look at the original levels.</span></a>
+<a class="sourceLine" id="cb296-2" title="2">factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb296-3" title="3"><span class="st">  </span><span class="kw">fct_count</span>()</a></code></pre></div>
 <pre><code>## # A tibble: 8 x 2
 ##   f         n
 ##   &lt;fct&gt; &lt;int&gt;
@@ -503,12 +504,12 @@ The factors differ both in their stored values and in their levels. A plot makes
 ## 6 c3     5066
 ## 7 c2     3655
 ## 8 c1     1790</code></pre>
-<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb187-1" title="1"><span class="co"># Reorder levels according to `new_oder`.</span></a>
-<a class="sourceLine" id="cb187-2" title="2">new_order &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;c1&quot;</span>,<span class="st">&quot;c3&quot;</span>,<span class="st">&quot;c5&quot;</span>,<span class="st">&quot;c7&quot;</span>,<span class="st">&quot;c2&quot;</span>,<span class="st">&quot;c4&quot;</span>,<span class="st">&quot;c6&quot;</span>,<span class="st">&quot;c8&quot;</span>)</a>
-<a class="sourceLine" id="cb187-3" title="3"></a>
-<a class="sourceLine" id="cb187-4" title="4">factor_clarity <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb187-5" title="5"><span class="st">  </span><span class="kw">fct_relevel</span>(new_order) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb187-6" title="6"><span class="st">  </span><span class="kw">fct_count</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb298"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb298-1" title="1"><span class="co"># Reorder levels according to `new_oder`.</span></a>
+<a class="sourceLine" id="cb298-2" title="2">new_order &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;c1&quot;</span>,<span class="st">&quot;c3&quot;</span>,<span class="st">&quot;c5&quot;</span>,<span class="st">&quot;c7&quot;</span>,<span class="st">&quot;c2&quot;</span>,<span class="st">&quot;c4&quot;</span>,<span class="st">&quot;c6&quot;</span>,<span class="st">&quot;c8&quot;</span>)</a>
+<a class="sourceLine" id="cb298-3" title="3"></a>
+<a class="sourceLine" id="cb298-4" title="4">factor_clarity <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb298-5" title="5"><span class="st">  </span><span class="kw">fct_relevel</span>(new_order) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb298-6" title="6"><span class="st">  </span><span class="kw">fct_count</span>()</a></code></pre></div>
 <pre><code>## # A tibble: 8 x 2
 ##   f         n
 ##   &lt;fct&gt; &lt;int&gt;
@@ -525,33 +526,33 @@ The factors differ both in their stored values and in their levels. A plot makes
 <div id="reordering-by-frequency" class="section level3">
 <h3><span class="header-section-number">5.4.2</span> Reordering by frequency</h3>
 <p>Especially for plots it is often useful to orient the order of the levels on the frequency of the corresponding values. The function <code>fct_infreq()</code> allows exactly this. Plotting the unsorted factor leads to a difficult readability.</p>
-<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb189-1" title="1">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb189-2" title="2"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb189-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb189-4" title="4"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
+<div class="sourceCode" id="cb300"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb300-1" title="1">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb300-2" title="2"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb300-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb300-4" title="4"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
 <p><img src="forcats_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>The better approach is to sort the data before plotting.</p>
-<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb190-1" title="1"><span class="co"># Insert `fct_infreq()` to get the data ordered.</span></a>
-<a class="sourceLine" id="cb190-2" title="2">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb190-3" title="3"><span class="st">  </span><span class="kw">fct_infreq</span>() <span class="op">%&gt;%</span><span class="st">    </span></a>
-<a class="sourceLine" id="cb190-4" title="4"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb190-5" title="5"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb190-6" title="6"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
+<div class="sourceCode" id="cb301"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb301-1" title="1"><span class="co"># Insert `fct_infreq()` to get the data ordered.</span></a>
+<a class="sourceLine" id="cb301-2" title="2">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb301-3" title="3"><span class="st">  </span><span class="kw">fct_infreq</span>() <span class="op">%&gt;%</span><span class="st">    </span></a>
+<a class="sourceLine" id="cb301-4" title="4"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb301-5" title="5"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb301-6" title="6"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
 <p><img src="forcats_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
 <div id="reordering-by-appearance" class="section level3">
 <h3><span class="header-section-number">5.4.3</span> Reordering by appearance</h3>
 <p>The package forcats offers with the function <code>fct_inorder()</code> the possibility to orientate the order of the levels of a factor to the occurence of the corresponding values in the data set. To make this clear, we take a look at the first 15 entries in the corresponding data set:</p>
-<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb191-1" title="1">olympic_<span class="dv">1896</span><span class="op">$</span>country <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb191-2" title="2"><span class="st">  </span><span class="kw">head</span>(<span class="dv">15</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb302"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb302-1" title="1">olympic_<span class="dv">1896</span><span class="op">$</span>country <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb302-2" title="2"><span class="st">  </span><span class="kw">head</span>(<span class="dv">15</span>)</a></code></pre></div>
 <pre><code>##  [1] &quot;Greece&quot;        &quot;Greece&quot;        &quot;Greece&quot;        &quot;Greece&quot;       
 ##  [5] &quot;Greece&quot;        &quot;Greece&quot;        &quot;Greece&quot;        &quot;Greece&quot;       
 ##  [9] &quot;Greece&quot;        &quot;Greece&quot;        &quot;Great Britain&quot; &quot;Great Britain&quot;
 ## [13] &quot;Great Britain&quot; &quot;Switzerland&quot;   &quot;Greece&quot;</code></pre>
 <p>Create a factor with levels in the order of the appearance shown above:</p>
-<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb193-1" title="1">olympic_<span class="dv">1896</span><span class="op">$</span>country <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb193-2" title="2"><span class="st">  </span><span class="kw">fct_inorder</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb193-3" title="3"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb304"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb304-1" title="1">olympic_<span class="dv">1896</span><span class="op">$</span>country <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb304-2" title="2"><span class="st">  </span><span class="kw">fct_inorder</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb304-3" title="3"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
 <pre><code>##  [1] &quot;Greece&quot;        &quot;Great Britain&quot; &quot;Switzerland&quot;   &quot;United States&quot;
 ##  [5] &quot;Germany&quot;       &quot;France&quot;        &quot;Hungary&quot;       &quot;Australia&quot;    
 ##  [9] &quot;Austria&quot;       &quot;Denmark&quot;       &quot;Italy&quot;         &quot;Sweden&quot;</code></pre>
@@ -560,54 +561,54 @@ The factors differ both in their stored values and in their levels. A plot makes
 <div id="reverse-level-order" class="section level3">
 <h3><span class="header-section-number">5.4.4</span> Reverse level order</h3>
 <p>The function <code>fct_rev()</code> reverses the existing order of the levels of a factor. First have a look at the original order:</p>
-<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb195-1" title="1"><span class="co"># Insert `fct_infreq()` to get the data ordered.</span></a>
-<a class="sourceLine" id="cb195-2" title="2">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb195-3" title="3"><span class="st">  </span><span class="kw">fct_infreq</span>() <span class="op">%&gt;%</span><span class="st">        </span></a>
-<a class="sourceLine" id="cb195-4" title="4"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb195-5" title="5"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb195-6" title="6"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
+<div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb306-1" title="1"><span class="co"># Insert `fct_infreq()` to get the data ordered.</span></a>
+<a class="sourceLine" id="cb306-2" title="2">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb306-3" title="3"><span class="st">  </span><span class="kw">fct_infreq</span>() <span class="op">%&gt;%</span><span class="st">        </span></a>
+<a class="sourceLine" id="cb306-4" title="4"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb306-5" title="5"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb306-6" title="6"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
 <p><img src="forcats_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <p>Now we reverse the order:</p>
-<div class="sourceCode" id="cb196"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb196-1" title="1"><span class="co"># Insert `fct_infreq()` to get the data ordered.</span></a>
-<a class="sourceLine" id="cb196-2" title="2">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb196-3" title="3"><span class="st">  </span><span class="kw">fct_infreq</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb196-4" title="4"><span class="co"># Insert `fct_rev()` to reverse this order.</span></a>
-<a class="sourceLine" id="cb196-5" title="5"><span class="st">  </span><span class="kw">fct_rev</span>() <span class="op">%&gt;%</span><span class="st">           </span></a>
-<a class="sourceLine" id="cb196-6" title="6"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb196-7" title="7"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb196-8" title="8"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
+<div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb307-1" title="1"><span class="co"># Insert `fct_infreq()` to get the data ordered.</span></a>
+<a class="sourceLine" id="cb307-2" title="2">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb307-3" title="3"><span class="st">  </span><span class="kw">fct_infreq</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb307-4" title="4"><span class="co"># Insert `fct_rev()` to reverse this order.</span></a>
+<a class="sourceLine" id="cb307-5" title="5"><span class="st">  </span><span class="kw">fct_rev</span>() <span class="op">%&gt;%</span><span class="st">           </span></a>
+<a class="sourceLine" id="cb307-6" title="6"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb307-7" title="7"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb307-8" title="8"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
 <p><img src="forcats_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 </div>
 <div id="shift-levels" class="section level3">
 <h3><span class="header-section-number">5.4.5</span> Shift levels</h3>
 <p>The argument <code>n</code> in the function <code>fct_shift()</code> allows to shift the levels to the left (right) for negative (positive) integer values of <code>n</code>, wrapping around end.
 Thus a value of <code>n = 1L</code> (<code>n = -1L</code>) would shift the order of the levels to the right (left) by one location.</p>
-<div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb197-1" title="1"><span class="co"># Insert `fct_infreq()` to get the data ordered.</span></a>
-<a class="sourceLine" id="cb197-2" title="2">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb197-3" title="3"><span class="st">  </span><span class="kw">fct_infreq</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb197-4" title="4"><span class="co"># Insert `fct_shift()` to shift levels.</span></a>
-<a class="sourceLine" id="cb197-5" title="5"><span class="st">  </span><span class="kw">fct_shift</span>(<span class="dt">n =</span> <span class="op">-</span>1L) <span class="op">%&gt;%</span><span class="st">  </span></a>
-<a class="sourceLine" id="cb197-6" title="6"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb197-7" title="7"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb197-8" title="8"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
+<div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb308-1" title="1"><span class="co"># Insert `fct_infreq()` to get the data ordered.</span></a>
+<a class="sourceLine" id="cb308-2" title="2">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb308-3" title="3"><span class="st">  </span><span class="kw">fct_infreq</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb308-4" title="4"><span class="co"># Insert `fct_shift()` to shift levels.</span></a>
+<a class="sourceLine" id="cb308-5" title="5"><span class="st">  </span><span class="kw">fct_shift</span>(<span class="dt">n =</span> <span class="op">-</span>1L) <span class="op">%&gt;%</span><span class="st">  </span></a>
+<a class="sourceLine" id="cb308-6" title="6"><span class="st">  </span><span class="kw">fct_count</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb308-7" title="7"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">amount of disciplines</span><span class="st">`</span>, <span class="dt">y =</span> country)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb308-8" title="8"><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> f))</a></code></pre></div>
 <p><img src="forcats_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 </div>
 <div id="randomly-shuffle-levels" class="section level3">
 <h3><span class="header-section-number">5.4.6</span> Randomly shuffle levels</h3>
 <p>The level of a factor can also be randomly shuffled using <code>fct_shuffle()</code>. The input argument can be either a factor or a character vector, whereas the output will be a factor. By way of example, this is demonstrated using the factor <code>countries_in_1896</code>:</p>
-<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb198-1" title="1"><span class="co"># The original levels are sorted alphabetically.</span></a>
-<a class="sourceLine" id="cb198-2" title="2">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb198-3" title="3"><span class="st">  </span><span class="kw">levels</span>() </a></code></pre></div>
+<div class="sourceCode" id="cb309"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb309-1" title="1"><span class="co"># The original levels are sorted alphabetically.</span></a>
+<a class="sourceLine" id="cb309-2" title="2">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb309-3" title="3"><span class="st">  </span><span class="kw">levels</span>() </a></code></pre></div>
 <pre><code>##  [1] &quot;Australia&quot;     &quot;Austria&quot;       &quot;Denmark&quot;       &quot;France&quot;       
 ##  [5] &quot;Germany&quot;       &quot;Great Britain&quot; &quot;Greece&quot;        &quot;Hungary&quot;      
 ##  [9] &quot;Italy&quot;         &quot;Sweden&quot;        &quot;Switzerland&quot;   &quot;United States&quot;</code></pre>
-<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb200-1" title="1"><span class="co"># The shuffled levels are randomly sorted.</span></a>
-<a class="sourceLine" id="cb200-2" title="2">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb200-3" title="3"><span class="st">  </span><span class="kw">fct_shuffle</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb200-4" title="4"><span class="st">  </span><span class="kw">levels</span>()  </a></code></pre></div>
-<pre><code>##  [1] &quot;United States&quot; &quot;Greece&quot;        &quot;Hungary&quot;       &quot;Switzerland&quot;  
-##  [5] &quot;Italy&quot;         &quot;Germany&quot;       &quot;Australia&quot;     &quot;Sweden&quot;       
-##  [9] &quot;Denmark&quot;       &quot;Great Britain&quot; &quot;Austria&quot;       &quot;France&quot;</code></pre>
+<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb311-1" title="1"><span class="co"># The shuffled levels are randomly sorted.</span></a>
+<a class="sourceLine" id="cb311-2" title="2">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb311-3" title="3"><span class="st">  </span><span class="kw">fct_shuffle</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb311-4" title="4"><span class="st">  </span><span class="kw">levels</span>()  </a></code></pre></div>
+<pre><code>##  [1] &quot;Denmark&quot;       &quot;France&quot;        &quot;United States&quot; &quot;Sweden&quot;       
+##  [5] &quot;Greece&quot;        &quot;Austria&quot;       &quot;Great Britain&quot; &quot;Australia&quot;    
+##  [9] &quot;Hungary&quot;       &quot;Switzerland&quot;   &quot;Italy&quot;         &quot;Germany&quot;</code></pre>
 </div>
 <div id="reordering-levels-by-other-variables" class="section level3">
 <h3><span class="header-section-number">5.4.7</span> Reordering levels by other variables</h3>
@@ -624,12 +625,12 @@ That is an error will be provoked, if <code>length(f) != length(x)</code> or <co
 </dd>
 </dl>
 <p>The example below is intended to unravel this behavior for <code>fct_reorder()</code>. We count the occurences of countries in the <code>olympic_1896</code> dataset and create a factor where the levels are sorted based on the number of occurences.</p>
-<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb202-1" title="1">disciplines_per_country_in_<span class="dv">1896</span> &lt;-<span class="st"> </span>olympic_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb202-2" title="2"><span class="st">  </span><span class="kw">count</span>(country)</a>
-<a class="sourceLine" id="cb202-3" title="3"></a>
-<a class="sourceLine" id="cb202-4" title="4"><span class="co"># Reorder the countries according to the number of disciplines.</span></a>
-<a class="sourceLine" id="cb202-5" title="5">disciplines_per_country_in_<span class="dv">1896</span><span class="op">$</span>country <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb202-6" title="6"><span class="st">  </span><span class="kw">fct_reorder</span>(disciplines_per_country_in_<span class="dv">1896</span><span class="op">$</span>n, <span class="dt">.desc =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb313"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb313-1" title="1">disciplines_per_country_in_<span class="dv">1896</span> &lt;-<span class="st"> </span>olympic_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb313-2" title="2"><span class="st">  </span><span class="kw">count</span>(country)</a>
+<a class="sourceLine" id="cb313-3" title="3"></a>
+<a class="sourceLine" id="cb313-4" title="4"><span class="co"># Reorder the countries according to the number of disciplines.</span></a>
+<a class="sourceLine" id="cb313-5" title="5">disciplines_per_country_in_<span class="dv">1896</span><span class="op">$</span>country <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb313-6" title="6"><span class="st">  </span><span class="kw">fct_reorder</span>(disciplines_per_country_in_<span class="dv">1896</span><span class="op">$</span>n, <span class="dt">.desc =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>##  [1] Australia     Austria       Denmark       France        Germany      
 ##  [6] Great Britain Greece        Hungary       Italy         Sweden       
 ## [11] Switzerland   United States
@@ -642,62 +643,62 @@ That is an error will be provoked, if <code>length(f) != length(x)</code> or <co
 <h3><span class="header-section-number">5.5.1</span> Renaming the levels</h3>
 <p>Let’s say you want to change the name of the levels (which also impies changing the corresponding value elements) because you are unhappy with the current naming. <code>fct_recode()</code> allows to manually assign new names to certain levels, without affecting the order of the levels or having an impact on levels that are not included in the function call.
 The <code>diamonds$clarity</code> column is an ideal example for the use of <code>fct_recode()</code>. For you conviniece we repeat some of the steps made in the beginning of this chapter:</p>
-<div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb204-1" title="1"><span class="co"># Define the correct order of the levels in ascending order.</span></a>
-<a class="sourceLine" id="cb204-2" title="2">levels_clarity &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;I1&quot;</span>, <span class="st">&quot;SI2&quot;</span>, <span class="st">&quot;SI1&quot;</span>, <span class="st">&quot;VS2&quot;</span>, <span class="st">&quot;VS1&quot;</span>, <span class="st">&quot;VVS2&quot;</span>, <span class="st">&quot;VVS1&quot;</span>, <span class="st">&quot;IF&quot;</span>)</a>
-<a class="sourceLine" id="cb204-3" title="3"><span class="co"># Make `diamonds$clarity` a factor and assign the correctly ordered levels.</span></a>
-<a class="sourceLine" id="cb204-4" title="4">factor_clarity &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="dt">x =</span> diamonds<span class="op">$</span>clarity, <span class="dt">levels =</span> levels_clarity)</a>
-<a class="sourceLine" id="cb204-5" title="5"></a>
-<a class="sourceLine" id="cb204-6" title="6"><span class="co"># Since the level notation is somewhat cryptic, we want to change it.</span></a>
-<a class="sourceLine" id="cb204-7" title="7">renamed_factor_clarity &lt;-<span class="st"> </span>factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb204-8" title="8"><span class="st">  </span><span class="kw">fct_recode</span>(<span class="st">`</span><span class="dt">Included 1 (worst)</span><span class="st">`</span>=<span class="st">&quot;I1&quot;</span>,</a>
-<a class="sourceLine" id="cb204-9" title="9">             <span class="st">`</span><span class="dt">Slightly Included 2</span><span class="st">`</span>=<span class="st">&quot;SI2&quot;</span>,</a>
-<a class="sourceLine" id="cb204-10" title="10">             <span class="st">`</span><span class="dt">Slightly Included 1</span><span class="st">`</span>=<span class="st">&quot;SI1&quot;</span>,</a>
-<a class="sourceLine" id="cb204-11" title="11">             <span class="st">`</span><span class="dt">Very Slightly Included 2</span><span class="st">`</span>=<span class="st">&quot;VS2&quot;</span>,</a>
-<a class="sourceLine" id="cb204-12" title="12">             <span class="st">`</span><span class="dt">Very Slightly Included 1</span><span class="st">`</span>=<span class="st">&quot;VS1&quot;</span>,</a>
-<a class="sourceLine" id="cb204-13" title="13">             <span class="st">`</span><span class="dt">Very Very Slightly Included 2</span><span class="st">`</span>=<span class="st">&quot;VVS2&quot;</span>,</a>
-<a class="sourceLine" id="cb204-14" title="14">             <span class="st">`</span><span class="dt">Very Very Slightly Included 1</span><span class="st">`</span>=<span class="st">&quot;VVS1&quot;</span>,</a>
-<a class="sourceLine" id="cb204-15" title="15">             <span class="st">`</span><span class="dt">Internally Flawless (best)</span><span class="st">`</span>=<span class="st">&quot;IF&quot;</span>)</a>
-<a class="sourceLine" id="cb204-16" title="16"></a>
-<a class="sourceLine" id="cb204-17" title="17"><span class="co"># Show the renamed levels.</span></a>
-<a class="sourceLine" id="cb204-18" title="18">renamed_factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb204-19" title="19"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb315"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb315-1" title="1"><span class="co"># Define the correct order of the levels in ascending order.</span></a>
+<a class="sourceLine" id="cb315-2" title="2">levels_clarity &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;I1&quot;</span>, <span class="st">&quot;SI2&quot;</span>, <span class="st">&quot;SI1&quot;</span>, <span class="st">&quot;VS2&quot;</span>, <span class="st">&quot;VS1&quot;</span>, <span class="st">&quot;VVS2&quot;</span>, <span class="st">&quot;VVS1&quot;</span>, <span class="st">&quot;IF&quot;</span>)</a>
+<a class="sourceLine" id="cb315-3" title="3"><span class="co"># Make `diamonds$clarity` a factor and assign the correctly ordered levels.</span></a>
+<a class="sourceLine" id="cb315-4" title="4">factor_clarity &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="dt">x =</span> diamonds<span class="op">$</span>clarity, <span class="dt">levels =</span> levels_clarity)</a>
+<a class="sourceLine" id="cb315-5" title="5"></a>
+<a class="sourceLine" id="cb315-6" title="6"><span class="co"># Since the level notation is somewhat cryptic, we want to change it.</span></a>
+<a class="sourceLine" id="cb315-7" title="7">renamed_factor_clarity &lt;-<span class="st"> </span>factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb315-8" title="8"><span class="st">  </span><span class="kw">fct_recode</span>(<span class="st">`</span><span class="dt">Included 1 (worst)</span><span class="st">`</span>=<span class="st">&quot;I1&quot;</span>,</a>
+<a class="sourceLine" id="cb315-9" title="9">             <span class="st">`</span><span class="dt">Slightly Included 2</span><span class="st">`</span>=<span class="st">&quot;SI2&quot;</span>,</a>
+<a class="sourceLine" id="cb315-10" title="10">             <span class="st">`</span><span class="dt">Slightly Included 1</span><span class="st">`</span>=<span class="st">&quot;SI1&quot;</span>,</a>
+<a class="sourceLine" id="cb315-11" title="11">             <span class="st">`</span><span class="dt">Very Slightly Included 2</span><span class="st">`</span>=<span class="st">&quot;VS2&quot;</span>,</a>
+<a class="sourceLine" id="cb315-12" title="12">             <span class="st">`</span><span class="dt">Very Slightly Included 1</span><span class="st">`</span>=<span class="st">&quot;VS1&quot;</span>,</a>
+<a class="sourceLine" id="cb315-13" title="13">             <span class="st">`</span><span class="dt">Very Very Slightly Included 2</span><span class="st">`</span>=<span class="st">&quot;VVS2&quot;</span>,</a>
+<a class="sourceLine" id="cb315-14" title="14">             <span class="st">`</span><span class="dt">Very Very Slightly Included 1</span><span class="st">`</span>=<span class="st">&quot;VVS1&quot;</span>,</a>
+<a class="sourceLine" id="cb315-15" title="15">             <span class="st">`</span><span class="dt">Internally Flawless (best)</span><span class="st">`</span>=<span class="st">&quot;IF&quot;</span>)</a>
+<a class="sourceLine" id="cb315-16" title="16"></a>
+<a class="sourceLine" id="cb315-17" title="17"><span class="co"># Show the renamed levels.</span></a>
+<a class="sourceLine" id="cb315-18" title="18">renamed_factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb315-19" title="19"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
 <pre><code>## [1] &quot;Included 1 (worst)&quot;            &quot;Slightly Included 2&quot;          
 ## [3] &quot;Slightly Included 1&quot;           &quot;Very Slightly Included 2&quot;     
 ## [5] &quot;Very Slightly Included 1&quot;      &quot;Very Very Slightly Included 2&quot;
 ## [7] &quot;Very Very Slightly Included 1&quot; &quot;Internally Flawless (best)&quot;</code></pre>
 <p>Note, that this approach is in fact similar to the steps described in <a href="forcats.html#Inspect-and-set-levels">5.2.3 Inspect and set levels</a>.</p>
 <p><a name="recode-2"></a>One could also combine multiple levels into one using <code>fct_recode()</code> as shown in the example below, where the numerical distinction within the GIA categories is dropped, that is <em>Slightly Included 2</em> and <em>Slightly Included 1</em> will be combined into the level <em>Slightly Included</em>, etc.</p>
-<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb206-1" title="1"><span class="co"># Since the level notation is somewhat cryptic, we want to change it</span></a>
-<a class="sourceLine" id="cb206-2" title="2"><span class="co"># and drop the numerical distinction within each category.</span></a>
-<a class="sourceLine" id="cb206-3" title="3">renamed_factor_clarity_<span class="dv">2</span> &lt;-<span class="st"> </span>factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb206-4" title="4"><span class="st">  </span><span class="kw">fct_recode</span>(<span class="st">`</span><span class="dt">Included (worst)</span><span class="st">`</span>=<span class="st">&quot;I1&quot;</span>,</a>
-<a class="sourceLine" id="cb206-5" title="5">             <span class="st">`</span><span class="dt">Slightly Included</span><span class="st">`</span>=<span class="st">&quot;SI2&quot;</span>,</a>
-<a class="sourceLine" id="cb206-6" title="6">             <span class="st">`</span><span class="dt">Slightly Included</span><span class="st">`</span>=<span class="st">&quot;SI1&quot;</span>,</a>
-<a class="sourceLine" id="cb206-7" title="7">             <span class="st">`</span><span class="dt">Very Slightly Included</span><span class="st">`</span>=<span class="st">&quot;VS2&quot;</span>,</a>
-<a class="sourceLine" id="cb206-8" title="8">             <span class="st">`</span><span class="dt">Very Slightly Included</span><span class="st">`</span>=<span class="st">&quot;VS1&quot;</span>,</a>
-<a class="sourceLine" id="cb206-9" title="9">             <span class="st">`</span><span class="dt">Very Very Slightly Included</span><span class="st">`</span>=<span class="st">&quot;VVS2&quot;</span>,</a>
-<a class="sourceLine" id="cb206-10" title="10">             <span class="st">`</span><span class="dt">Very Very Slightly Included</span><span class="st">`</span>=<span class="st">&quot;VVS1&quot;</span>,</a>
-<a class="sourceLine" id="cb206-11" title="11">             <span class="st">`</span><span class="dt">Internally Flawless (best)</span><span class="st">`</span>=<span class="st">&quot;IF&quot;</span>)</a>
-<a class="sourceLine" id="cb206-12" title="12"></a>
-<a class="sourceLine" id="cb206-13" title="13"><span class="co"># Show the combined levels.</span></a>
-<a class="sourceLine" id="cb206-14" title="14">renamed_factor_clarity_<span class="dv">2</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb206-15" title="15"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb317"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb317-1" title="1"><span class="co"># Since the level notation is somewhat cryptic, we want to change it</span></a>
+<a class="sourceLine" id="cb317-2" title="2"><span class="co"># and drop the numerical distinction within each category.</span></a>
+<a class="sourceLine" id="cb317-3" title="3">renamed_factor_clarity_<span class="dv">2</span> &lt;-<span class="st"> </span>factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb317-4" title="4"><span class="st">  </span><span class="kw">fct_recode</span>(<span class="st">`</span><span class="dt">Included (worst)</span><span class="st">`</span>=<span class="st">&quot;I1&quot;</span>,</a>
+<a class="sourceLine" id="cb317-5" title="5">             <span class="st">`</span><span class="dt">Slightly Included</span><span class="st">`</span>=<span class="st">&quot;SI2&quot;</span>,</a>
+<a class="sourceLine" id="cb317-6" title="6">             <span class="st">`</span><span class="dt">Slightly Included</span><span class="st">`</span>=<span class="st">&quot;SI1&quot;</span>,</a>
+<a class="sourceLine" id="cb317-7" title="7">             <span class="st">`</span><span class="dt">Very Slightly Included</span><span class="st">`</span>=<span class="st">&quot;VS2&quot;</span>,</a>
+<a class="sourceLine" id="cb317-8" title="8">             <span class="st">`</span><span class="dt">Very Slightly Included</span><span class="st">`</span>=<span class="st">&quot;VS1&quot;</span>,</a>
+<a class="sourceLine" id="cb317-9" title="9">             <span class="st">`</span><span class="dt">Very Very Slightly Included</span><span class="st">`</span>=<span class="st">&quot;VVS2&quot;</span>,</a>
+<a class="sourceLine" id="cb317-10" title="10">             <span class="st">`</span><span class="dt">Very Very Slightly Included</span><span class="st">`</span>=<span class="st">&quot;VVS1&quot;</span>,</a>
+<a class="sourceLine" id="cb317-11" title="11">             <span class="st">`</span><span class="dt">Internally Flawless (best)</span><span class="st">`</span>=<span class="st">&quot;IF&quot;</span>)</a>
+<a class="sourceLine" id="cb317-12" title="12"></a>
+<a class="sourceLine" id="cb317-13" title="13"><span class="co"># Show the combined levels.</span></a>
+<a class="sourceLine" id="cb317-14" title="14">renamed_factor_clarity_<span class="dv">2</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb317-15" title="15"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
 <pre><code>## [1] &quot;Included (worst)&quot;            &quot;Slightly Included&quot;          
 ## [3] &quot;Very Slightly Included&quot;      &quot;Very Very Slightly Included&quot;
 ## [5] &quot;Internally Flawless (best)&quot;</code></pre>
 <p>The resulting <code>renamed_factor_clarity_2</code> now has only five distinct levels as compared to eight distinct levels in <code>renamed_factor_clarity</code>.</p>
 <p>Another scenario might be that we want to add either a pre- or a suffix or both to the current level or change the levels in some other general manner. To this end, the forcats package provides the <code>fct_relabel()</code> function. Its second argument (or its first argument in case of piping) is a function that has to return a character vector. The <code>countries_in_1896</code> factor variable is used to showcase how <code>fct_relabel()</code> works.</p>
-<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb208-1" title="1">add_prefix &lt;-<span class="st"> </span><span class="cf">function</span>(input_char) {</a>
-<a class="sourceLine" id="cb208-2" title="2">  <span class="kw">paste</span>(<span class="st">&quot;Country:&quot;</span>, input_char)</a>
-<a class="sourceLine" id="cb208-3" title="3">}</a>
-<a class="sourceLine" id="cb208-4" title="4"><span class="co"># The `add_prefix()` function is applied to each level </span></a>
-<a class="sourceLine" id="cb208-5" title="5"><span class="co"># returning a character vector of the new labels. </span></a>
-<a class="sourceLine" id="cb208-6" title="6">prefixed_countries_in_<span class="dv">1896</span> &lt;-<span class="st"> </span>countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb208-7" title="7"><span class="st">  </span><span class="kw">fct_relabel</span>(add_prefix)</a>
-<a class="sourceLine" id="cb208-8" title="8"></a>
-<a class="sourceLine" id="cb208-9" title="9"><span class="co"># Show the combined levels.</span></a>
-<a class="sourceLine" id="cb208-10" title="10">prefixed_countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb208-11" title="11"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb319"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb319-1" title="1">add_prefix &lt;-<span class="st"> </span><span class="cf">function</span>(input_char) {</a>
+<a class="sourceLine" id="cb319-2" title="2">  <span class="kw">paste</span>(<span class="st">&quot;Country:&quot;</span>, input_char)</a>
+<a class="sourceLine" id="cb319-3" title="3">}</a>
+<a class="sourceLine" id="cb319-4" title="4"><span class="co"># The `add_prefix()` function is applied to each level </span></a>
+<a class="sourceLine" id="cb319-5" title="5"><span class="co"># returning a character vector of the new labels. </span></a>
+<a class="sourceLine" id="cb319-6" title="6">prefixed_countries_in_<span class="dv">1896</span> &lt;-<span class="st"> </span>countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb319-7" title="7"><span class="st">  </span><span class="kw">fct_relabel</span>(add_prefix)</a>
+<a class="sourceLine" id="cb319-8" title="8"></a>
+<a class="sourceLine" id="cb319-9" title="9"><span class="co"># Show the combined levels.</span></a>
+<a class="sourceLine" id="cb319-10" title="10">prefixed_countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb319-11" title="11"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
 <pre><code>##  [1] &quot;Country: Australia&quot;     &quot;Country: Austria&quot;       &quot;Country: Denmark&quot;      
 ##  [4] &quot;Country: France&quot;        &quot;Country: Germany&quot;       &quot;Country: Great Britain&quot;
 ##  [7] &quot;Country: Greece&quot;        &quot;Country: Hungary&quot;       &quot;Country: Italy&quot;        
@@ -706,25 +707,25 @@ The <code>diamonds$clarity</code> column is an ideal example for the use of <cod
 <div id="anonymize-levels" class="section level3">
 <h3><span class="header-section-number">5.5.2</span> Anonymize levels</h3>
 <p>There might be situations, especially in the context of data privacy, where you want or have to anonymize your factor data. Assigning numeric IDs is a good way to do this and <code>fct_anon()</code> does exactly this. It randomly assigns integer values (converted to characters) starting from <code>1</code> to the levels of a factor variable. The largest integer value to be assigned depends on the number of distict levels in the variable. In the following example the <code>countries_in_1896</code> factor variable with 12 distinct levels is randomly anonymized.</p>
-<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb210-1" title="1"><span class="co"># The function `fct_anon()` additionally allows to</span></a>
-<a class="sourceLine" id="cb210-2" title="2"><span class="co"># define a prefix for the new random integer levels.</span></a>
-<a class="sourceLine" id="cb210-3" title="3">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb210-4" title="4"><span class="st">  </span><span class="kw">fct_anon</span>(<span class="dt">prefix=</span><span class="st">&quot;id&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb210-5" title="5"><span class="st">  </span><span class="kw">head</span>(<span class="dv">25</span>)</a></code></pre></div>
-<pre><code>##  [1] id02 id02 id02 id02 id02 id02 id02 id02 id02 id02 id11 id11 id11 id03 id02
-## [16] id06 id06 id07 id07 id07 id07 id07 id07 id07 id11
+<div class="sourceCode" id="cb321"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb321-1" title="1"><span class="co"># The function `fct_anon()` additionally allows to</span></a>
+<a class="sourceLine" id="cb321-2" title="2"><span class="co"># define a prefix for the new random integer levels.</span></a>
+<a class="sourceLine" id="cb321-3" title="3">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb321-4" title="4"><span class="st">  </span><span class="kw">fct_anon</span>(<span class="dt">prefix=</span><span class="st">&quot;id&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb321-5" title="5"><span class="st">  </span><span class="kw">head</span>(<span class="dv">25</span>)</a></code></pre></div>
+<pre><code>##  [1] id07 id07 id07 id07 id07 id07 id07 id07 id07 id07 id08 id08 id08 id10 id07
+## [16] id02 id02 id12 id12 id12 id12 id12 id12 id12 id08
 ## Levels: id01 id02 id03 id04 id05 id06 id07 id08 id09 id10 id11 id12</code></pre>
 </div>
 <div id="collapse-multiple-levels-into-one" class="section level3">
 <h3><span class="header-section-number">5.5.3</span> Collapse multiple levels into one</h3>
 <p>The <code>fct_collapse()</code> function provides essentially the same functionality as displayed in the <a href="#recode-2">2nd example for <code>fct_recode()</code></a>.
 The syntax however is slightly different as the levels to be combined are specified in a single vector as shown in the example below.</p>
-<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb212-1" title="1">renamed_factor_clarity_<span class="dv">3</span> &lt;-<span class="st"> </span>factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb212-2" title="2"><span class="st">  </span><span class="kw">fct_collapse</span>(<span class="st">`</span><span class="dt">Included (worst)</span><span class="st">`</span>=<span class="st">&quot;I1&quot;</span>,</a>
-<a class="sourceLine" id="cb212-3" title="3">               <span class="st">`</span><span class="dt">Slightly Included</span><span class="st">`</span>=<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;SI2&quot;</span>, <span class="st">&quot;SI1&quot;</span>),</a>
-<a class="sourceLine" id="cb212-4" title="4">               <span class="st">`</span><span class="dt">Very Slightly Included</span><span class="st">`</span>=<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;VS2&quot;</span>,<span class="st">&quot;VS1&quot;</span>),</a>
-<a class="sourceLine" id="cb212-5" title="5">               <span class="st">`</span><span class="dt">Very Very Slightly Included</span><span class="st">`</span>=<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;VVS2&quot;</span>, <span class="st">&quot;VVS1&quot;</span>),</a>
-<a class="sourceLine" id="cb212-6" title="6">               <span class="st">`</span><span class="dt">Internally Flawless (best)</span><span class="st">`</span>=<span class="st">&quot;IF&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb323"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb323-1" title="1">renamed_factor_clarity_<span class="dv">3</span> &lt;-<span class="st"> </span>factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb323-2" title="2"><span class="st">  </span><span class="kw">fct_collapse</span>(<span class="st">`</span><span class="dt">Included (worst)</span><span class="st">`</span>=<span class="st">&quot;I1&quot;</span>,</a>
+<a class="sourceLine" id="cb323-3" title="3">               <span class="st">`</span><span class="dt">Slightly Included</span><span class="st">`</span>=<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;SI2&quot;</span>, <span class="st">&quot;SI1&quot;</span>),</a>
+<a class="sourceLine" id="cb323-4" title="4">               <span class="st">`</span><span class="dt">Very Slightly Included</span><span class="st">`</span>=<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;VS2&quot;</span>,<span class="st">&quot;VS1&quot;</span>),</a>
+<a class="sourceLine" id="cb323-5" title="5">               <span class="st">`</span><span class="dt">Very Very Slightly Included</span><span class="st">`</span>=<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;VVS2&quot;</span>, <span class="st">&quot;VVS1&quot;</span>),</a>
+<a class="sourceLine" id="cb323-6" title="6">               <span class="st">`</span><span class="dt">Internally Flawless (best)</span><span class="st">`</span>=<span class="st">&quot;IF&quot;</span>)</a></code></pre></div>
 <p>It should be noted, that <code>fct_recode()</code> could be easily replaced with <code>fct_collapse()</code> in the <a href="#recode-2">2nd example for <code>fct_recode()</code></a> as <code>fct_collapse()</code> also works with single element character vectors. Replacing <code>fct_collapse()</code> with <code>fct_recode()</code> in the example above on the other hand is not possible, because <code>fct_recode()</code> cannot work with multiple element vectors such as <code>c("SI2", "SI1")</code>. In this regard, we rather recommend using <code>fct_collapse()</code> than <code>fct_recode()</code> for combining different levels.</p>
 </div>
 <div id="aggregate-levels-into-a-lump" class="section level3">
@@ -733,46 +734,46 @@ The syntax however is slightly different as the levels to be combined are specif
 The functions which is probably easiest to grasp is <code>fct_lump_n()</code> which takes an integer value <code>n</code> as the second (or the first argument in case of piping).
 It allows to preserve the <code>n</code> most (least) frequent levels for <code>n&gt;0</code> (<code>n&lt;0</code>). All other levels will be lumped together into one level that has the lowest order and referred to as <code>Other</code> by default.
 Once again, we use data from the Summer Olympic Games in 1896 to give an example.</p>
-<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb213-1" title="1"><span class="co"># Only keep the three most frequent countries </span></a>
-<a class="sourceLine" id="cb213-2" title="2"><span class="co"># and lump all other countries into `Other`.</span></a>
-<a class="sourceLine" id="cb213-3" title="3">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb213-4" title="4"><span class="st">  </span><span class="kw">fct_lump_n</span>(<span class="dv">3</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb213-5" title="5"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb324"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb324-1" title="1"><span class="co"># Only keep the three most frequent countries </span></a>
+<a class="sourceLine" id="cb324-2" title="2"><span class="co"># and lump all other countries into `Other`.</span></a>
+<a class="sourceLine" id="cb324-3" title="3">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb324-4" title="4"><span class="st">  </span><span class="kw">fct_lump_n</span>(<span class="dv">3</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb324-5" title="5"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
 <pre><code>## [1] &quot;Germany&quot;       &quot;Greece&quot;        &quot;United States&quot; &quot;Other&quot;</code></pre>
 <p>We just discovered that Germany was one of the countries competing in the most disciplines during the Summer Olympic Games 1896 albeit quite laboriously.
 Note that we can however not conclude that most disciplines were competed by German athletes in 1896 as the levels are ordered alphabetically (except for <code>Other</code> which will always be last) and not by the number of disciplines per country. In fact, with 148 disciplines competed by Greek athletes, 94 by German and 27 by athletes from the US, Germany ranks second.</p>
 <p>Let’s go one step further and assume we are only interested in the countries whose athletes competed in at least 10 disciplines in the Summer Olympic Games 1896.
 For that purpose we call the <code>fct_lump_min()</code> function specifying the threshold of 10.</p>
-<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb215-1" title="1"><span class="co"># Only keep the countries whose athletes competed in at least 10 disciplines </span></a>
-<a class="sourceLine" id="cb215-2" title="2"><span class="co"># and lump all other countries.</span></a>
-<a class="sourceLine" id="cb215-3" title="3">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb215-4" title="4"><span class="st">  </span><span class="kw">fct_lump_min</span>(<span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb215-5" title="5"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb326-1" title="1"><span class="co"># Only keep the countries whose athletes competed in at least 10 disciplines </span></a>
+<a class="sourceLine" id="cb326-2" title="2"><span class="co"># and lump all other countries.</span></a>
+<a class="sourceLine" id="cb326-3" title="3">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb326-4" title="4"><span class="st">  </span><span class="kw">fct_lump_min</span>(<span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb326-5" title="5"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
 <pre><code>## [1] &quot;Denmark&quot;       &quot;France&quot;        &quot;Germany&quot;       &quot;Great Britain&quot;
 ## [5] &quot;Greece&quot;        &quot;Hungary&quot;       &quot;United States&quot; &quot;Other&quot;</code></pre>
 <p>Now we know that there were only eight countries whose athletes competed in at least 10 disciplines.</p>
 <p>We could also be interested in relative rather than absolute number, say countries that provide at least a 10% share of the total number of competed disciplines which corresponds to 38 competed disciplines in 1896 (see above). To figure this out, we lump proportionally using <code>fcr_lump_prop()</code>.</p>
-<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb217-1" title="1"><span class="co"># Only keep the countries whose athletes are responsible for </span></a>
-<a class="sourceLine" id="cb217-2" title="2"><span class="co"># at least 10% of all competition records</span></a>
-<a class="sourceLine" id="cb217-3" title="3"><span class="co"># and lump all other countries.</span></a>
-<a class="sourceLine" id="cb217-4" title="4">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb217-5" title="5"><span class="st">  </span><span class="kw">fct_lump_prop</span>(<span class="fl">0.1</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb217-6" title="6"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb328-1" title="1"><span class="co"># Only keep the countries whose athletes are responsible for </span></a>
+<a class="sourceLine" id="cb328-2" title="2"><span class="co"># at least 10% of all competition records</span></a>
+<a class="sourceLine" id="cb328-3" title="3"><span class="co"># and lump all other countries.</span></a>
+<a class="sourceLine" id="cb328-4" title="4">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb328-5" title="5"><span class="st">  </span><span class="kw">fct_lump_prop</span>(<span class="fl">0.1</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb328-6" title="6"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
 <pre><code>## [1] &quot;Germany&quot; &quot;Greece&quot;  &quot;Other&quot;</code></pre>
 </div>
 <div id="manually-lump-levels" class="section level3">
 <h3><span class="header-section-number">5.5.5</span> Manually lump levels</h3>
 <p>In the previous section, we have combined levels into a lump called <code>Other</code> based on numerical criteria. In addition to this, we can also create our own lump using <code>fct_other()</code>.In this function, we specify the levels we want to keep (drop) as a vector to the <code>keep</code> (<code>drop</code>) keyword argument.
 The following code demonstrates how to only keep the levels <code>Denmark</code> and <code>Australia</code> in the <code>countries_in_1896</code> factor variable.</p>
-<div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb219-1" title="1"><span class="co"># Only keep the levels `Denmark` and `Australia`.</span></a>
-<a class="sourceLine" id="cb219-2" title="2">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb219-3" title="3"><span class="st">  </span><span class="kw">fct_other</span>(<span class="dt">keep=</span><span class="kw">c</span>(<span class="st">&quot;Denmark&quot;</span>, <span class="st">&quot;Australia&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb219-4" title="4"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb330-1" title="1"><span class="co"># Only keep the levels `Denmark` and `Australia`.</span></a>
+<a class="sourceLine" id="cb330-2" title="2">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb330-3" title="3"><span class="st">  </span><span class="kw">fct_other</span>(<span class="dt">keep=</span><span class="kw">c</span>(<span class="st">&quot;Denmark&quot;</span>, <span class="st">&quot;Australia&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb330-4" title="4"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
 <pre><code>## [1] &quot;Australia&quot; &quot;Denmark&quot;   &quot;Other&quot;</code></pre>
-<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb221-1" title="1"><span class="co"># Keep all levels except for `Denmark` and `Australia`.</span></a>
-<a class="sourceLine" id="cb221-2" title="2">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb221-3" title="3"><span class="st">  </span><span class="kw">fct_other</span>(<span class="dt">drop=</span><span class="kw">c</span>(<span class="st">&quot;Denmark&quot;</span>, <span class="st">&quot;Australia&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb221-4" title="4"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb332"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb332-1" title="1"><span class="co"># Keep all levels except for `Denmark` and `Australia`.</span></a>
+<a class="sourceLine" id="cb332-2" title="2">countries_in_<span class="dv">1896</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb332-3" title="3"><span class="st">  </span><span class="kw">fct_other</span>(<span class="dt">drop=</span><span class="kw">c</span>(<span class="st">&quot;Denmark&quot;</span>, <span class="st">&quot;Australia&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb332-4" title="4"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
 <pre><code>##  [1] &quot;Austria&quot;       &quot;France&quot;        &quot;Germany&quot;       &quot;Great Britain&quot;
 ##  [5] &quot;Greece&quot;        &quot;Hungary&quot;       &quot;Italy&quot;         &quot;Sweden&quot;       
 ##  [9] &quot;Switzerland&quot;   &quot;United States&quot; &quot;Other&quot;</code></pre>
@@ -784,57 +785,57 @@ The following code demonstrates how to only keep the levels <code>Denmark</code>
 <div id="add-levels" class="section level3">
 <h3><span class="header-section-number">5.6.1</span> Add levels</h3>
 <p>In order to add levels to a factor variable we can use the <code>fct_expand()</code> function, which takes the level as an argument. Let’s switch to the <code>diamonds</code> dataset one more time as we want to use all GIA grades as levels now.</p>
-<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb223-1" title="1"><span class="co"># The additional GIA grades which do not exist in the diamonds dataset.</span></a>
-<a class="sourceLine" id="cb223-2" title="2">additional_GIA_grades &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;FL&quot;</span>, <span class="st">&quot;I2&quot;</span>, <span class="st">&quot;I3&quot;</span>)</a>
-<a class="sourceLine" id="cb223-3" title="3"></a>
-<a class="sourceLine" id="cb223-4" title="4"><span class="co"># Expand the original factor by the additional levels.</span></a>
-<a class="sourceLine" id="cb223-5" title="5">expanded_factor_clarity &lt;-<span class="st"> </span>factor_clarity <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb223-6" title="6"><span class="st">  </span><span class="kw">fct_expand</span>(additional_GIA_grades)</a>
-<a class="sourceLine" id="cb223-7" title="7"></a>
-<a class="sourceLine" id="cb223-8" title="8"><span class="co"># Note that the new levels are appended.</span></a>
-<a class="sourceLine" id="cb223-9" title="9">expanded_factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb223-10" title="10"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb334-1" title="1"><span class="co"># The additional GIA grades which do not exist in the diamonds dataset.</span></a>
+<a class="sourceLine" id="cb334-2" title="2">additional_GIA_grades &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;FL&quot;</span>, <span class="st">&quot;I2&quot;</span>, <span class="st">&quot;I3&quot;</span>)</a>
+<a class="sourceLine" id="cb334-3" title="3"></a>
+<a class="sourceLine" id="cb334-4" title="4"><span class="co"># Expand the original factor by the additional levels.</span></a>
+<a class="sourceLine" id="cb334-5" title="5">expanded_factor_clarity &lt;-<span class="st"> </span>factor_clarity <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb334-6" title="6"><span class="st">  </span><span class="kw">fct_expand</span>(additional_GIA_grades)</a>
+<a class="sourceLine" id="cb334-7" title="7"></a>
+<a class="sourceLine" id="cb334-8" title="8"><span class="co"># Note that the new levels are appended.</span></a>
+<a class="sourceLine" id="cb334-9" title="9">expanded_factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb334-10" title="10"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
 <pre><code>##  [1] &quot;I1&quot;   &quot;SI2&quot;  &quot;SI1&quot;  &quot;VS2&quot;  &quot;VS1&quot;  &quot;VVS2&quot; &quot;VVS1&quot; &quot;IF&quot;   &quot;FL&quot;   &quot;I2&quot;  
 ## [11] &quot;I3&quot;</code></pre>
 <p>Note that the additional levels get appended which is not necessarily what we want. Thus an additional manual reordering of the levels as describe in <a href="forcats.html#manual-reordering">5.4.1 Manual reordering of levels</a> is required here:</p>
-<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb225-1" title="1"><span class="co"># All GIA grades in the correct order.</span></a>
-<a class="sourceLine" id="cb225-2" title="2">all_GIA_grades &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;FL&quot;</span>, <span class="st">&quot;IF&quot;</span>, <span class="st">&quot;VVS1&quot;</span>, <span class="st">&quot;VVS2&quot;</span>, <span class="st">&quot;VS1&quot;</span>, <span class="st">&quot;VS2&quot;</span>, <span class="st">&quot;SI1&quot;</span>, <span class="st">&quot;SI2&quot;</span>, <span class="st">&quot;I1&quot;</span>, <span class="st">&quot;I2&quot;</span>, <span class="st">&quot;I3&quot;</span>)</a>
-<a class="sourceLine" id="cb225-3" title="3"></a>
-<a class="sourceLine" id="cb225-4" title="4"><span class="co"># Reorder the levels of the expanded factor.</span></a>
-<a class="sourceLine" id="cb225-5" title="5">reordered_expanded_factor_clarity &lt;-<span class="st"> </span>expanded_factor_clarity <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb225-6" title="6"><span class="st">  </span><span class="kw">fct_relevel</span>(all_GIA_grades) </a>
-<a class="sourceLine" id="cb225-7" title="7"></a>
-<a class="sourceLine" id="cb225-8" title="8">reordered_expanded_factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb225-9" title="9"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb336-1" title="1"><span class="co"># All GIA grades in the correct order.</span></a>
+<a class="sourceLine" id="cb336-2" title="2">all_GIA_grades &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;FL&quot;</span>, <span class="st">&quot;IF&quot;</span>, <span class="st">&quot;VVS1&quot;</span>, <span class="st">&quot;VVS2&quot;</span>, <span class="st">&quot;VS1&quot;</span>, <span class="st">&quot;VS2&quot;</span>, <span class="st">&quot;SI1&quot;</span>, <span class="st">&quot;SI2&quot;</span>, <span class="st">&quot;I1&quot;</span>, <span class="st">&quot;I2&quot;</span>, <span class="st">&quot;I3&quot;</span>)</a>
+<a class="sourceLine" id="cb336-3" title="3"></a>
+<a class="sourceLine" id="cb336-4" title="4"><span class="co"># Reorder the levels of the expanded factor.</span></a>
+<a class="sourceLine" id="cb336-5" title="5">reordered_expanded_factor_clarity &lt;-<span class="st"> </span>expanded_factor_clarity <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb336-6" title="6"><span class="st">  </span><span class="kw">fct_relevel</span>(all_GIA_grades) </a>
+<a class="sourceLine" id="cb336-7" title="7"></a>
+<a class="sourceLine" id="cb336-8" title="8">reordered_expanded_factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb336-9" title="9"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
 <pre><code>##  [1] &quot;FL&quot;   &quot;IF&quot;   &quot;VVS1&quot; &quot;VVS2&quot; &quot;VS1&quot;  &quot;VS2&quot;  &quot;SI1&quot;  &quot;SI2&quot;  &quot;I1&quot;   &quot;I2&quot;  
 ## [11] &quot;I3&quot;</code></pre>
 <p>A less tedious approach would be to include the additional levels already in the definition of the factor variable using <code>factor()</code> as shown in the following.</p>
-<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb227-1" title="1"><span class="kw">factor</span>(<span class="dt">x =</span> diamonds<span class="op">$</span>clarity, <span class="dt">levels=</span>all_GIA_grades) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb227-2" title="2"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb338-1" title="1"><span class="kw">factor</span>(<span class="dt">x =</span> diamonds<span class="op">$</span>clarity, <span class="dt">levels=</span>all_GIA_grades) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb338-2" title="2"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
 <pre><code>##  [1] &quot;FL&quot;   &quot;IF&quot;   &quot;VVS1&quot; &quot;VVS2&quot; &quot;VS1&quot;  &quot;VS2&quot;  &quot;SI1&quot;  &quot;SI2&quot;  &quot;I1&quot;   &quot;I2&quot;  
 ## [11] &quot;I3&quot;</code></pre>
 </div>
 <div id="drop-levels" class="section level3">
 <h3><span class="header-section-number">5.6.2</span> Drop levels</h3>
 <p>Unfortunately, we haven’t found any flawless diamond, so the level <code>FL</code> isn’t used. To drop unused levels, the forcats package provides a funtion called <code>fct_drop()</code>.</p>
-<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb229-1" title="1"><span class="co"># Only drop the unused &quot;FL&quot; level.</span></a>
-<a class="sourceLine" id="cb229-2" title="2">reordered_expanded_factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb229-3" title="3"><span class="st">  </span><span class="kw">fct_drop</span>(<span class="st">&quot;FL&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb229-4" title="4"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb340-1" title="1"><span class="co"># Only drop the unused &quot;FL&quot; level.</span></a>
+<a class="sourceLine" id="cb340-2" title="2">reordered_expanded_factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb340-3" title="3"><span class="st">  </span><span class="kw">fct_drop</span>(<span class="st">&quot;FL&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb340-4" title="4"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
 <pre><code>##  [1] &quot;IF&quot;   &quot;VVS1&quot; &quot;VVS2&quot; &quot;VS1&quot;  &quot;VS2&quot;  &quot;SI1&quot;  &quot;SI2&quot;  &quot;I1&quot;   &quot;I2&quot;   &quot;I3&quot;</code></pre>
-<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb231-1" title="1"><span class="co"># Drop all unused levels when no argument is used.</span></a>
-<a class="sourceLine" id="cb231-2" title="2">reordered_expanded_factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb231-3" title="3"><span class="st">  </span><span class="kw">fct_drop</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb231-4" title="4"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb342-1" title="1"><span class="co"># Drop all unused levels when no argument is used.</span></a>
+<a class="sourceLine" id="cb342-2" title="2">reordered_expanded_factor_clarity <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb342-3" title="3"><span class="st">  </span><span class="kw">fct_drop</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb342-4" title="4"><span class="st">  </span><span class="kw">levels</span>()</a></code></pre></div>
 <pre><code>## [1] &quot;IF&quot;   &quot;VVS1&quot; &quot;VVS2&quot; &quot;VS1&quot;  &quot;VS2&quot;  &quot;SI1&quot;  &quot;SI2&quot;  &quot;I1&quot;</code></pre>
 </div>
 <div id="assign-a-level-to-nas" class="section level3">
 <h3><span class="header-section-number">5.6.3</span> Assign a level to <code>NAs</code></h3>
 <p>Usually when a vector contains <code>NAs</code> they are omitted in the conversion to a factor variable. The forcats package allows to explicitly assign a level to these values using the <code>fct_explicit_na()</code> function. To give an example, we return to the <code>olympic_1896</code> dataset but we focus on the <code>city</code> column this time.</p>
-<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb233-1" title="1"><span class="co"># Convert the `medal` column into a factor.</span></a>
-<a class="sourceLine" id="cb233-2" title="2">olympic_<span class="dv">1896</span><span class="op">$</span>medal <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb233-3" title="3"><span class="st">  </span><span class="kw">factor</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb233-4" title="4"><span class="st">  </span><span class="kw">fct_count</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb344-1" title="1"><span class="co"># Convert the `medal` column into a factor.</span></a>
+<a class="sourceLine" id="cb344-2" title="2">olympic_<span class="dv">1896</span><span class="op">$</span>medal <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb344-3" title="3"><span class="st">  </span><span class="kw">factor</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb344-4" title="4"><span class="st">  </span><span class="kw">fct_count</span>()</a></code></pre></div>
 <pre><code>## # A tibble: 4 x 2
 ##   f          n
 ##   &lt;fct&gt;  &lt;int&gt;
@@ -842,10 +843,10 @@ The following code demonstrates how to only keep the levels <code>Denmark</code>
 ## 2 Gold      62
 ## 3 Silver    43
 ## 4 &lt;NA&gt;     237</code></pre>
-<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb235-1" title="1"><span class="co"># Convert the `medal` column into a factor, replacing the NA values.</span></a>
-<a class="sourceLine" id="cb235-2" title="2">olympic_<span class="dv">1896</span><span class="op">$</span>medal <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb235-3" title="3"><span class="st">  </span><span class="kw">fct_explicit_na</span>(<span class="st">&quot;No medal&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb235-4" title="4"><span class="st">  </span><span class="kw">fct_count</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb346-1" title="1"><span class="co"># Convert the `medal` column into a factor, replacing the NA values.</span></a>
+<a class="sourceLine" id="cb346-2" title="2">olympic_<span class="dv">1896</span><span class="op">$</span>medal <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb346-3" title="3"><span class="st">  </span><span class="kw">fct_explicit_na</span>(<span class="st">&quot;No medal&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb346-4" title="4"><span class="st">  </span><span class="kw">fct_count</span>()</a></code></pre></div>
 <pre><code>## # A tibble: 4 x 2
 ##   f            n
 ##   &lt;fct&gt;    &lt;int&gt;
