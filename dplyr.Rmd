@@ -21,11 +21,13 @@ The first workflow returns an ordered list of the 5 tracks with the highest numb
 ```{r workflow1}
 df %>%                                              # data
   select(Streams, date, Artist, Track.Name) %>%     # select columns by name
-  arrange(-Streams) %>%                             # order rows by some variable 
+  arrange(-Streams) %>%                             # order rows by some variable in descending order
   slice(1:5)                                        # select rows by position
 
 ```
-The second workflow returns the average number of streams per day of week since the beginning of the year 2020. For this operation, the day of week is derived from the date and added as an additional variable via the `mutate` function. 
+
+The second workflow returns the average number of streams per day of week since the beginning of the year 2020. 
+For this operation, the day of week is derived from the date and added as an additional variable via the `mutate` function. 
 
 ```{r workflow2}
 df %>%                                 # data              
@@ -48,15 +50,16 @@ df %>%
 
 ## Manipulating rows
 ### Extract rows
-The `filter` function is the most frequently used function to extract a subset of rows. The command extracts all rows where the filter condition(s) evaluate to TRUE. The `distinct` function returns distinct rows by removing duplicates (either for the whole data or the specified variables).
+The `filter` function is the most frequently used function to extract a subset of rows. 
+The command extracts all rows where the filter condition(s) evaluate to TRUE. The `distinct` function returns distinct rows by removing duplicates (either for the whole data or the specified variables).
 
 ```{r filter}
 df %>% 
-  filter(stringr::str_detect(Track.Name, "Santa")) %>% # extract rows where condition is TRUE
-  distinct(Artist, Track.Name)          # extract distinct combinations of the two variables
+  filter(stringr::str_detect(Track.Name, "Santa")) %>%  # extract rows where condition is TRUE
+  distinct(Artist, Track.Name)                          # extract distinct combinations of the two variables
 ```
 
-We can select rows by position via `slice`. If we want to display the first or last n rows, we can also use the base R functions `head` and `tail`. The functions `top_n` of `top_fraq` allow us to extract the  specified number/fraction of rows, according to the ordering of a specified variable. In addition, `top_n` and `top_frac` also operate also on grouped data
+We can select rows by position via `slice`. If we want to display the first or last n rows, we can also use the base R functions `head` and `tail`. The functions `top_n` of `top_fraq` allow us to extract the  specified number/fraction of rows, according to the ordering of a specified variable. In addition, `top_n` and `top_frac` also operate on grouped data.
 
 ```{r slice}
 df %>% slice(c(1,3,5))   # selects rows by position (in the given order)
@@ -91,7 +94,7 @@ df %>%
 
 ## Manipulating columns
 ### Extract and rename columns
-Subset of columns can be extracted via the `select` function. Selection is possible by name or position. Reversely, one can exclude specific columns via negative selection (using `-`). Noteworthy are are the many  helper functions, which are convenient for rapid exploration, but not recommendable for stable software: `start_with`, `last_col`, `everything`, `contains`, etc. One can rename columns while selecting them. If we want to rename a column while preserving the other columns we use the `rename` function.
+Subset of columns can be extracted via the `select` function. Selection is possible by name or position. Reversely, one can exclude specific columns via negative selection (using `-`). Noteworthy are the many helper functions, which are convenient for rapid exploration, but not recommendable for stable software: `start_with`, `last_col`, `everything`, `contains`, etc. One can rename columns while selecting them. If we want to rename a column while preserving the other columns we use the `rename` function.
 ```{r select, eval=FALSE}
 df %>% select(Position, Track.Name)       # select via column name
 df %>% select(1, 2)                       # select via column position
@@ -134,7 +137,7 @@ df %>%
 If there is no predefined function, one can define an anonymous function (which cannot be used outside this context) on the fly:
 ```{r anonymous_function}
 df %>% 
-  mutate_at(vars(danceability, valence), function(x) x*100) %>% # Here we define a custom function in-line
+  mutate_at(vars(danceability, valence), function(x) x*100) %>% # Here we define a custom function in-line that multiplies dancebility and valence by 100
   select(Track.Name,danceability, valence) %>%
   head(5)
 ```
@@ -153,7 +156,6 @@ df %>%
   select(Position, Top10, Track.Name) %>%
   slice(8:12)
 ```
-
 
 ## Aggregate
 The `summarise` function is the generic way of calculating summary stats for specific variables. Within the function we can apply base R summary functions (`sum`, `mean` or `max`), one of dplyr's specific summary functions (`n`, `n_distinct`) or a user defined summary function. In the standard case the `summarise` function returns one row.
