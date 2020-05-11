@@ -617,7 +617,7 @@ With indicator and renamed column
 ```{r sum NIEDERSCHLAGSDAUER - condition - Tag/Stunde on an interval of a day}
 df_sum2 <- df_group %>% 
   summarise(MENGE = sum(NIEDERSCHLAGSDAUER[NIEDERSCHLAGSINDIKATOR==1])) %>% 
-  filter(MENGE> 0)
+  filter(MENGE> 0) %>%
   arrange( STATIONS_ID , TAG, STUNDE)
 head(df_sum2, 24) 
 ```
