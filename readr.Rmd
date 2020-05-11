@@ -1,0 +1,63 @@
+# Reading data: readr {#readr}
+
+
+```{r message=FALSE, warning=FALSE}
+library(readr)  # reading data (we could also load it via package tidyverse)
+library(dplyr)  # wrangling data (we could also load it via package tidyverse) 
+```
+
+We are working with crudly formatted contract data (_vertragsdaten.csv_), to demonstrate the functionalites of the `readr` package. This is how the data looks like:
+
+```{r}
+readr::read_lines(file = "data/vertragsdaten.csv", n_max = 5)
+```
+
+The Challenges are:
+
+- Add column names
+- Deal with leading and trailing blanks (which can have a meaning in some columns)
+- Correctly specify the column types (numbers, date, character, ...)
+- To correctly identify numbers, we need to set the German locale. Itherwise, the decimal mark won't be correctly identified.
+- In order to create readible reports, it is sometimes helpful to display Euro amounts not as a number, but as a character that includes the Euro symbol (€) and comma/big mark signs
+
+```{r}
+df <- readr::read_delim(file = "data/vertragsdaten.csv", 
+                 
+                 # Specify semicolon as separator
+                 delim = ";", 
+                 
+                 # Set the missing column names
+                 col_names = c("VVT_NR", "Gebiet", "Abt", "Zw", "FK", "Beitr_Neu", "EDV_Dat", 
+                               "Merkmal", "Kz_MB", "Sparte", "Bedingung", "leere_Spalte"),
+                 
+                 # Change data types which are not correctly imported by default
+                 # We skip the last column, which turns out to be empty
+                 col_types = cols(EDV_Dat = col_date(format = "%d%m%Y"), leere_Spalte = col_skip()), 
+                 
+                 # We set the German locale in order to get numbers and dates right
+                 locale = locale(date_names = "de", decimal_mark = ",", grouping_mark = "."), 
+                 
+                 # White spaces are sometimes important, so we don't want to trim them
+                 trim_ws = FALSE)
+
+head(df)
+```
+
+
+The column `Beitr_Neu` is not yet correctly recognized as numeric, due to the fact that we did not trim white spaces. Hence, we need to correct this column in a separate step.
+
+```{r}
+df <- df %>% 
+  mutate(Beitr_Neu = readr::parse_number(Beitr_Neu, 
+                                  
+                                  # We trim White psaces
+                                  trim_ws = TRUE,
+                                  
+                                  # Set the German number separator marks
+                                  locale = locale(decimal_mark = ",", grouping_mark = "."), 
+                                  
+                                  ))
+
+head(df)
+```
+
