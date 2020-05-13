@@ -12,13 +12,13 @@ Suggested data set: weather-kiel-holtenau
 ## What is Lubridate?
 Lubridate is an R-Package designed to ease working with date/time variables. These can be challenging in baseR and lubridate allows for frictionless working with dates and times, hence the name.
 
-Lubridate ist part of the tidyverse package, but can be installed seperately as well. It probably reveals most of its usefullness in collaboration with other tidyverse packages. A useful extension, depending on your data, might be the time-series package which is not part of tidyverse.
+Lubridate ist part of the tidyverse package, but can be installed seperately as well. It probably reveals most of its usefulness in collaboration with other tidyverse packages. A useful extension, depending on your data, might be the time-series package which is not part of tidyverse.
 
-All mentioned packages can be optained with the following commands in the RStudio console. 
+All mentioned packages can be optained with the following commands in the RStudio console: 
 
-install.packages("lubridate")
-install.packages("tidyverse")
-install.packages("testit")
+* install.packages("lubridate")
+* install.packages("tidyverse")
+* install.packages("testit")
 
 If they have been installed previously in your environment, they might have to be called upon by using library(tidyverse) and so forth - see code chunks below.
 
@@ -30,63 +30,89 @@ How people talk about dates and times often differs from the notation. Depending
 
 Flight schedules will most likely be exact to the minute, while some sensordata will probably need to be exact to the second. So there will be differing granularity in date and time data. 
 
-Even if this would not be challenging, we still would have to deal with different notations of date and time. People in Germany will write a day-date like: dd.mm.yyyy or short dd.mm.yy, while the anglo-saxon realm will use mm.dd.yyyy frequently and the most chronologically sound way would be to use yyyy.mm.dd, but this doesn't seem to stick with humans. 
+Even if this would not be challenging, we still would have to deal with different notations of date and time. People in Germany will write a day-date like: dd.mm.yyyy or short dd.mm.yy, while the anglo-saxon realm will use mm.dd.yyyy frequently. For data analysis the most sound way would be to use yyyy.mm.dd. But since language originates in spoken language and to tell the date beginning with the year is impractical, most dates will be written in a custom way. 
 
-On top of these issues there's the fact that time itself does not make the impression of being the most exact parameter out there. Physical time might appear linear, but the way our planet revolves within our galaxy has made it neccessary to adjust date and times every now and then, so our calendar stays in tune with defined periods and seasons. This creates leap years, skipped seconds, daylight-savings time and last, but not least time-zones, which can mess things up even further. After defining date-time data as distinct "places in time" often the need for calculation with them arises.
+On top of these issues there's the fact that time itself does not make the impression of being the most exact parameter out there. Physical time might appear linear, but the way our planet revolves within our galaxy has made it neccessary to adjust date and times every now and then, so our calendar stays in tune with defined periods and seasons. This creates leap years, skipped seconds, daylight-savings time and last, but not least time-zones, which have to be considered as well. Defining date-time data as distinct "places in time" provides a necessary foundation for the subsequent calculation.
+
+In this chapter of the R Data Science Book, we want to lead you as a reader through a whole analysis on time series data, including data cleaning and exploration. This will make it easier for you to mimik some of our code and conduct an analysis on your own.
 
 ## Import data, clean date-time
+
+<u>The Dataset</u>
+
 We will apply the lubridate package to Weather data from on stationary sensor in northern Germany, the weather station in Kiel-Holtenau to be more exact.
 
+<u>Loading the needed libraries</u>
+
 Before we introduce the library, the technical prerequisites must be created.
-```{r libararies, echo=FALSE}
-library(readr)          # part of the tidyverse
-library(lubridate)      # the mentioned lubrication for date-time wrangling
-library(tidyverse)      # the tidyverse with its dplyr functions for data wrangling
-library(ggplot2)        # data visualisation package (is actually part of tidyverse, but still)
-library(testit)         # testing data selections
+```{r libraries, echo=TRUE, results = 'hide'}
+
+#Benjamin: In the introduction it is announced, these lines shall be seen in the book? This generates warning messages in the print though. Neither quietly = TRUE nor warn.conflicts = FALSE Works.
+
+
+library(readr, warn.conflicts = FALSE, quietly = TRUE)          # part of the tidyverse
+library(lubridate, warn.conflicts = FALSE, quietly = TRUE)      # the mentioned lubrication for date-time wrangling
+library(tidyverse, warn.conflicts = FALSE, quietly = TRUE)      # the tidyverse with its dplyr functions for data wrangling
+library(ggplot2, warn.conflicts = FALSE, quietly = TRUE)        # data visualisation package (is actually part of tidyverse, but still)
+library(testit, warn.conflicts = FALSE, quietly = TRUE)         # testing data selections
 ```
-With the lubridate package activated, we can now call some simple functions to check where we are in time:
-```{r current date-time, echo=FALSE}
-                        # Lubridate
+With the lubridate package activated, we have now different operations in lubridate and base R to show the current time. Keep in mind that these dates are retrieved from the operating system and might not be actually true.
+
+<u>Get the date of today</u>
+
+The today() function is from the lubridate package, Sys.Date() from Base R.
+```{r current date, echo=TRUE}
+#echo set to true, because elsewise you cannot say, which date says what. It's maybe better to block the functions from Lubridate and base R in this way.
+
 today()                 # date like YYYY-mm-dd
-now()                   # timestamp like YYYY-mm-dd HH:MM:SS TZ
-                        # Base R
-Sys.Date()              # date like YYYY-mm-dd
-Sys.time()              # timestamp like YYYY-mm-dd HH:MM:SS TZ
-Sys.timezone()          # actual timezone "Europe/Berlin"
+Sys.Date()              
 ```
-The first function delivers a date, while the second delivers a date-time (a date + a time).
-The third is a baseR function that produces the date, the operating system sees as current, while the fourth displays the systems full current timestamp. The third and fourth functions are both baseR and therefore case sensitive, while the first and second are lubridate functions which behave just nicer and allow for fluent calculations.
 
-Now let's have a look at some real world data and the challenges of date-time formatting.
+<u>Get the date and time of today</u>
 
-A first step is to import the data, which is given in a csv-format. 
-We will use the tidyverse version of read_csv to accomplish this step.
+The now() function is from the lubridate package, Sys.time() from Base R.
+```{r current date-time, echo=TRUE}
+now()                   # timestamp like YYYY-mm-dd HH:MM:SS TZ
+Sys.time()              
+```
 
-The data will be called df (data.frame) in order to make reference in code an writing more efficient further down.
+<u>Get the time zone (Base R)</u>
 
-This is the simple approach to read a file with suffix csv.
+For retrieving the time zone, there seems to be just a Base R function. Functions on time zones however are also part of lubridate.
+
+```{r current timezone, echo=TRUE}
+Sys.timezone()          # actual timezone "Europe/Berlin"
+
+```
+
+
+Now let's have a look at some real world data to show the challenges of date-time formatting. 
+
+The first step in analyzing data is to import the data. Since the data exists in a csv-format, we use "read_csv" from the tidyverse to accomplish this step. We call the resulting data.frame object here "df" in order to make reference in code and writing more efficient in the following code.
+
 ```{r read_csv simple, echo=FALSE}
 df <- read_csv("data/weather_kiel_holtenau.csv")
 head(df,5)
 ```
-All columns are recognized as double values.
+All variables are written in the format double values.
 
-By looking at the "MESS_DATUM" column it becomes apparent that this represents a timestamp that was created every 10 minutes. The standard column type definition of the import tool has not sufficed to format this appropriately, which is why the column will be defined as a double for now.
+By looking at the "MESS_DATUM" column it becomes apparent that the variable was generated by a timestamp that was created every 10 minutes. The standard column type definition of the import tool has not sufficed to format this appropriately, which is why the column will be defined as a double for now.
 
-Using the code generator of the data import tool it is possible to format the variables in the appropriate classes. The code snippet is automatically generated by the import tool of RStudio. For our concern of the timestamp variable please note the part where the column MESS_DATUM = col_datetime(format = "%Y%m%d%H%M") which will reach our present goal to format the timestamp and class as a POSIXct.
+By using the the data import tool readR in RStudio, we can have a first look at the data before importing. By tweaking the variable classes in the preview window, we can directly import the data in the correct format. The code snippet for formatting is generated automatically by the tool. For the timestamp variable this code is for example "MESS_DATUM = col_datetime(format = "%Y%m%d%H%M")" in the following lines. This fullfills our goal to format the timestamp and class as a POSIXct.  We left the locale portion of the import tool untouched.
 
-```{r read_csv ideal, echo=FALSE}
+
+```{r read_csv ideal, echo=TRUE}
 df <- read_csv("data/weather_kiel_holtenau.csv", 
-          col_types = cols(MESS_DATUM = col_datetime(format = "%Y%m%d%H%M"), 
-                                                   NIEDERSCHLAGSDAUER = col_integer(), 
-                                                   NIEDERSCHLAGSINDIKATOR = col_integer(), 
-                                                   STATIONS_ID = col_integer()))
+        col_types = cols(MESS_DATUM = col_datetime(format = "%Y%m%d%H%M"), 
+                         NIEDERSCHLAGSDAUER = col_integer(), 
+                         NIEDERSCHLAGSINDIKATOR = col_integer(), 
+                         STATIONS_ID = col_integer()))
 head(df,5)
 ```
-We will examine the data further down below. At this point it should be mentioned again that we generated the code to import the data by using the import readr tool of RStudio. This allows a first look at the raw csv data before import and some tweaking of the variables and their classes. We left the locale portion of the import tool untouched.
 
-The following lines of code import the same data in the MESS_DATUM column as a string of characters again and then call a specific lubridate function (ymd = year-month-day) which basically recognizes the time format in the column given only very little information. In our case we only specify the order in which the date-time information is given, which is Year-Month-Day-Hour-Minute. The ymd_hm function delivers the desired result however, only if it is applied to a character string, which is why we chose to overwrite the dataset df with a new import procedure that makes sure that the column MESS_DATUM is given as a character after import in order to be then transformed to a date-time.
+In the following lines of code, we first import the same data again. Afterwards we format the MESS_DATUM variable with a specific lubridate function. We could use "ymd", where y=year, m = month, d=day. By entering this function, we tell R that the order of the date-time information here is year, month and day. We don't tell R the symbols in between the numbers. The function is able to detect these separators itself. If the data also contain the hours and seconds information, We would rather use ymd_hm (Year-Month-Day-Hour-Minute). The ymd_hm function delivers the desired result however, only if it is applied to a character string, which is why we chose to overwrite the dataset df with a new import procedure that makes sure that the column MESS_DATUM is given as a character after import in order to be then transformed to a date-time.
+
+
 ```{r read_csv alternative 1, echo=FALSE}
 df1 <- read_csv("data/weather_kiel_holtenau.csv", 
           col_types = cols(
@@ -96,32 +122,33 @@ df1 <- read_csv("data/weather_kiel_holtenau.csv",
 df1$MESS_DATUM <- ymd_hm(df1$MESS_DATUM)
 head(df1,5)
 ```
-As can be seen above, the MESS_DATUM is now in a POSIXct format again, which is what will be needed for further calculations and analysis of the data set.
+As can be seen from above, the MESS_DATUM is now in a POSIXct format again, which is what will be needed for further calculations and analysis of the data set.
 
-Alternatively you could use the following parsing function to achieve the same result. Note that the parse_date_time function of lubridate also needs the timestamp to be in character format in order to work.
-```{r read_csv alternative 2, echo=FALSE}
+Alternatively we could use the function "parse_date_time" to achieve the same result. Note that this lubridate function also needs the timestamp to be in character format in order to work.
+```{r read_csv alternative 2, echo=TRUE}
 df2 <- read_csv("data/weather_kiel_holtenau.csv", 
     col_types = cols(MESS_DATUM = col_character()))
 df2$MESS_DATUM <- parse_date_time(df2$MESS_DATUM, orders ="Ymd HM")
 head(df2,5)
 ```
-OK, we have successfully formated the time-stamp data into a productive date-time (dttm) format using three different aproaches.
+OK, we have successfully formatted the time-stamp data into a productive date-time (dttm) format using three different aproaches.
+
 
 ## Check and modify data
-The next steps are a check and elimination procedure to eliminate missing values (NAs) from the dataset,
-if some observations might have failed to generate a timestamp.
-```{r is NA in MESS_DATUM, echo=FALSE}
+
+In the next step we search for missing values (NAs) and try to eliminate those from the dataset. We eliminate also those observations, where the generation of a timestamp has failed.
+```{r is NA in MESS_DATUM, echo=TRUE}
 df %>% 
   filter(is.na(MESS_DATUM)) %>%                   # Checking if there are observations with a missing MESS_DATUM
   head()
 ```
 We don't encounter any NAs in the MESS_DATUM column. Eliminating NAs from the MESS_DATUM Column including the other variables of that specific observations from the data frame would have been possible with: 
-```{r is no NA in MESS_DATUM, echo=FALSE}
+```{r is no NA in MESS_DATUM, echo=TRUE}
 df <- df %>% 
   filter(!is.na(MESS_DATUM))                      # missing MESS_DATUM observations (NAs) would/will be excluded from the data frame
 ```
 Now it is time to have a first explorative look at the data set.
-```{r max/min/range MESS_DATUM, echo=FALSE}
+```{r max/min/range MESS_DATUM, echo=TRUE}
 max(df$MESS_DATUM)                                # The latest observation is dated 10 minutes before midnight on the 13th of April 2020
 min(df$MESS_DATUM)                                # The earliest observation is dated 14th of April 2019
 range(df$MESS_DATUM)                              # Another way to get the same information
@@ -129,7 +156,7 @@ range(df$MESS_DATUM)                              # Another way to get the same 
 We are dealing with data over the course of one year starting on midnight 14th April 2019 until 10 minutes to midnight on 13th April 2020.
 
 To gather some information on the other variables we can use the range function again.
-```{r range of other columns, echo=FALSE}
+```{r range of other columns, echo=TRUE}
 range(df$STATIONS_ID)                             # This confirms: We are only dealing with data from one and only one weather sensor in the whole data set.
 range(df$TEMPERATUR)                              # We have a range of temperatures between -2.5 and +32.1 degrees  celius, which sounds about plausible.
 range(df$RELATIVE_FEUCHTE)                        # Delivers an unexpected range, where the minimum is -999 and the maximum is +100. Both values are either not possible (-999) or only of theoretic value (+100)
@@ -142,15 +169,15 @@ Theoretically, the following columns are only relevant if the NIEDERSCHLAGSINDIK
 - NIEDERSCHLAGSDAUER
 - NIEDERSCHLAGSHOEHE
 
-Getting an idea about the extent of weird/failed observations can be accomplished with the following code snippet:
-```{r correct NIEDERSCHLAGSINDIKATOR - before, echo=FALSE}
+To get an idea about the extent of weird/failed observations which can be accomplished, we want to show the following code snippet:
+```{r correct NIEDERSCHLAGSINDIKATOR - before, echo=TRUE}
 values_of_ind <- df %>% 
   group_by(NIEDERSCHLAGSINDIKATOR) %>%
   tally()
 head(values_of_ind)
 ```
 So 127 observations of rainfall are faulty. To modify the NIEDERSCHLAGSINDIKATOR for upcoming analysis we do the following in order to set the -999 Values to a more neutral Zero:
-```{r correct NIEDERSCHLAGSINDIKATOR - action and check, echo=FALSE}
+```{r correct NIEDERSCHLAGSINDIKATOR - action and check, echo=TRUE}
 df$NIEDERSCHLAGSINDIKATOR <- ifelse(df$NIEDERSCHLAGSINDIKATOR == -999, 0, df$NIEDERSCHLAGSINDIKATOR)
 value_of_ind_n <- df %>% 
   group_by(NIEDERSCHLAGSINDIKATOR) %>%
@@ -159,8 +186,9 @@ head(value_of_ind_n)
 ```
 We now have a binary indicator of rainfall. Over the course of the observed year it rained 9287/43417*100 = 21.4% of the time frames observed.
 
+
 The column RELATIVE_FEUCHTE must also be adjusted in the same way.
-```{r correct RELATIVE_FEUCHTE - before, echo=FALSE}
+```{r correct RELATIVE_FEUCHTE - before, echo=TRUE}
 values_of_rel <- df %>% 
   group_by(RELATIVE_FEUCHTE) %>%
   filter(RELATIVE_FEUCHTE < 0) %>%
@@ -168,16 +196,17 @@ values_of_rel <- df %>%
 head(values_of_rel)
 ```
 The negative values are set to 0 again.
-```{r correct RELATIVE_FEUCHTE - action and check, echo=FALSE}
+```{r correct RELATIVE_FEUCHTE - action and check, echo=TRUE}
 df$RELATIVE_FEUCHTE <- ifelse(df$RELATIVE_FEUCHTE == -999, 0, df$RELATIVE_FEUCHTE)
 values_of_rel_n <- df %>% 
   group_by(RELATIVE_FEUCHTE) %>%
   tally()
 head(values_of_rel_n)
 ```
-The column NIEDERSCHLAGSHOEHE can also be tested and adjusted in the same way.
-This is not strictly necessary since the negative values could be hidden from further analysis using the NIEDERSCHLAGSINDIKATOR = 1.
-```{r correct NIEDERSCHLAGSHOEHE - before, echo=FALSE}
+
+
+The column NIEDERSCHLAGSHOEHE can also be tested and adjusted in the same way. This is not strictly necessary since the negative values could be hidden from further analysis using the NIEDERSCHLAGSINDIKATOR = 1.
+```{r correct NIEDERSCHLAGSHOEHE - before, echo=TRUE}
 values_of_ARN <- df %>% 
   group_by(NIEDERSCHLAGSHOEHE) %>%
   filter(NIEDERSCHLAGSHOEHE < 0) %>%
@@ -185,27 +214,26 @@ values_of_ARN <- df %>%
 head(values_of_ARN)
 ```
 The negative values are set to 0 again.
-```{r correct NIEDERSCHLAGSHOEHE - action and check, echo=FALSE}
+```{r correct NIEDERSCHLAGSHOEHE - action and check, echo=TRUE}
 df$NIEDERSCHLAGSHOEHE <- ifelse(df$NIEDERSCHLAGSHOEHE == -999, 0, df$NIEDERSCHLAGSHOEHE)
 values_of_RFH <- df %>% 
   group_by(NIEDERSCHLAGSHOEHE) %>%
   tally()
 head(values_of_RFH)
 ```
-We have set Variable NIEDERSCHLAGSHOEHE to 0 in these 129 oberservations. In a total of 47,753 observations with 0 as a value the distortion this might cause can be called negligible.
+We have set Variable NIEDERSCHLAGSHOEHE to 0 in these 129 oberservations. In a total of 47,753 observations with 0 as a value the bias this might cause, can be called negligible.
 
 ## Before exploration
 We now have clean and tidy data and can begin with general exploration, analysis and interpretation.
 
-The "TEMPERATUR" is given in degrees Celsius, the "RELATIVE-FEUCHTE" is a percentage Value for humidity which refers to the degree of water saturation that is prevalent in the air at a given temperature. As temperature increases, the air can absorb larger amounts of water, hence the relativity of this variable.
+### Check the definition of the variables in the dataset
+First we have a look how the variables in the data set are defined. The "TEMPERATUR" is given in degrees Celsius, the "RELATIVE-FEUCHTE" is a percentage Value for humidity which refers to the degree of water saturation that is prevalent in the air at a given temperature. As temperature increases, the air can absorb larger amounts of water, hence the relativity of this variable. The next variable is "NIEDERSCHLAGSDAUER" which is given as an integer smaller or equal to 10. Therefore it gives the time it has rained during the timestamp interval of 10 Minutes. The variable "NIEDERSCHLAGSHOEHE" is a measure of rainfall intensity. 
 
-The next variable is "NIEDERSCHLAGSDAUER" which is given as an integer smaller or equal to 10. Therefore it gives the time it has rained during the timestamp interval of 10 Minutes.
-
-The variable "NIEDERSCHLAGSHOEHE" is a measure of rainfall intensity. Its maximum value can also be checked by the following command:
-```{r max NIEDERSCHLAGSHOEHE NA, echo=FALSE}
+The maximum value of NIEDERSCHLAGSHOEHE can also be checked by the following command:
+```{r max NIEDERSCHLAGSHOEHE NA, echo=TRUE}
 max(df$NIEDERSCHLAGSHOEHE, na.rm = FALSE)
 ```
-We can assume that this number gives us the amount of rainfall in milimeters, which is a common definiton and is equivalent as liters of rainfall per squaremeter in a given time interval. A strong rainfall in central Europe can be expected to generate around 30mm/h of rainfall, i.e. 30 liters per squaremeter per hour. The maximum value is therefore an indicator of a very heavy downpour as a continuation for a whole hour would have yielded 6 x 7.85 = 47.1 litres per hour.
+We can assume that this number gives us the amount of rainfall in milimeters, which is a common definition and is equivalent to liters of rainfall per squaremeter in a given time interval. A strong rainfall in central Europe can be expected to generate around 30mm/h of rainfall, i.e. 30 liters per squaremeter per hour. The maximum value is therefore an indicator of a very heavy downpour as a continuation for a whole hour would have yielded 6 x 7.85 = 47.1 litres per hour.
 
 The next variable is simply a binary expression of rainfall (1) or no rainfall (0) in the given interval. This is relevant to measure as some types of rainfall seem to not generate enough water to messure an actual amount of water. The dreaded Northgerman "drizzle" comes to mind.
 
@@ -214,25 +242,19 @@ Again: Since the sensor has taken a snapshot every 10 minutes, we have six obser
 ### Intervals
 Lubridate allows for the definition of an interval object with the "interval" class. The interval is simply defined as the time elapsed between two points on the date-time line.
 
-e.g. The interval of a single day - from the first of March to the second of March can be defined as follows:
-```{r interval TAG, echo=FALSE}
+E.g. the interval of a single day - from the first of March to the second of March can be defined as follows:
+```{r interval TAG, echo=TRUE}
 tag_int <- interval(ymd("2020-03-01"), ymd("2020-03-02"))
 class(tag_int)
 range(int_start(tag_int),int_end(tag_int))
 ```
-This small interval of one day turned out to be good for further analysis.
-This makes it easier to check results at a glance without having to query the whole dataset.
-
-When the desired results can be achieved for a small interval we could consider the next largest period, e.g. Week, month, quarter and year.
+Storing date information in an interval might facilitate further analysis, since you don't have to query the whole dataset. When the desired results can be achieved for a small interval we could consider the next largest period, e.g. Week, month, quarter and year.
 
 #### Durations and periods
-For any weather data, an analysis of seasonal differences is a natural (excuse the pun) objective.
-The beginning of each years seasons align with the solar incidences, i.e. the spring and autumnal equinoxes and the days of most and least sunlight hours in summer and winter, respectively.
-
-The following code snippets define the starting points of the different seasons as points on the POSIXct timeline and use these points to calculate new points by later adding durations and periods to them.
+For any weather data, an analysis of seasonal differences is a natural (excuse the pun) objective. The beginning of each years seasons align with the solar incidences, i.e. the spring and autumnal equinoxes and the days of most and least sunlight hours in summer and winter, respectively. The following code snippets define the starting points of the different seasons as points on the POSIXct timeline and use these points to calculate new points by later adding durations and periods to them.
 
 For a seasons view, we create the appropriate points in time, where each season begins.
-```{r create durations}
+```{r create durations, echo = TRUE, results ='hide'}
 season_19_spring <- ymd_hm("2019-03-20 22:58", tz="CET")
 season_19_summer <- ymd_hm("2019-06-21 17:54", tz="CET")
 season_19_autumn <- ymd_hm("2019-09-23 09:50", tz="CET")
@@ -242,20 +264,14 @@ season_20_summer <- ymd_hm("2020-06-20 23:43", tz="CET")
 ```
 Source re: starts of seasons [from](https://www.timeanddate.de/astronomie/jahreszeiten "timeanddate.de")
 
-Our goal shall be to create an interval for the spring season.
-The following information is available to determine the end point of spring:
-**Frühling** 2020
-Beginn (Tag-und-Nachtgleiche März)
-20. März 04:49
-Dauer 92 Tage, 17 Std, 54 Min
-**Sommer** 2020
-Beginn (Sonnenwende Juni)
-20. Juni 23:43
-Dauer 93 Tage, 15 Std, 46 Min
+Our goal shall be to create an interval for the spring season.The following information is necessary to determine the limits of the intervall for spring:
+
+* **Spring** 2020: Starting from (Equinox in March) 20. March 04:49; duration 92 days, 17 hours, 54 minutes
+* **Summer** 2020: Starting from (Solstice in June) 20. June 23:43; duration 93 days, 15 hours, 46 minutes
 
 ##### Durations
-First approach is with the object DURATIONS of lubridate:
-```{r create a DURATION object, echo=FALSE}
+Now we want to see, if we get the beginning of summer, when we add the length of spring to the beginning of spring (both given above). For the first approach we use the function DURATIONS of lubridate:
+```{r create a DURATION object, echo=TRUE}
 print(paste("spring 2020 - start: ",season_20_spring))
 print(ddays(92))                             # create a DURATION object using lubridate function ddays()
 class(ddays(92))
@@ -269,9 +285,13 @@ class(season_20_spring_dur)
 typeof(season_20_spring_dur)
 print(paste("spring 2020-end of DURATIONS:",season_20_spring_dur, "expected:", season_20_summer, "is failure:", season_20_spring_dur!=season_20_summer))
 ```
+As you can see from the last entry of the output, that is "failure: FALSE", our operation was a success.
+
+[comment]: <> (Benjamin: Why is it necessary to print the other information?)
+
 
 ##### Periods
-Second approach is with the object PERIODS of lubridate:
+The second approach is with the object PERIODS of lubridate:
 ```{r create a PERIOD object, echo=FALSE}
 print(days(92))                              # create a PERIOD object using lubridate function days()
 class(days(92))
@@ -285,8 +305,7 @@ class(season_20_spring_p)
 typeof(season_20_spring_p)
 print(paste("spring 2020-end of PERIODS:",season_20_spring_p, "expected:", season_20_summer , "is failure:", season_20_spring_p!=season_20_summer))
 ```
-This example shows that the use of PERIODS or DURATIONS must be weighed up and balanced depending on what are you looking for. 
-The periods-example has a difference of one hour to the durations-example, because its clock-time takes daylight savings time shift.
+The result is here a failure. This example demonstartes that the use of PERIODS or DURATIONS must be weighed up and balanced depending on what are you looking for. The periods-example has a difference of one hour to the durations-example, because its clock-time takes daylight savings time shift into account.
 
 #### Math with periods
 Using starting points of seasons summer, autumn and winter to create intervals for our data frame.
@@ -296,19 +315,22 @@ int_season_autumn <- interval(season_19_autumn, season_19_winter - minutes(1))
 int_season_winter <- season_19_winter %--% (season_20_spring - minutes(1))
 ```
 
+[comment]: <> (Benjamin: If an interval of time spans from one year to the other, do we have to use %--% then?)
+[comment]: <> (Benjamin: Why - minutes(1)? Can the end point of one season not be equivalent to the start point of the next season?)
+
 ### Groupings
 What follows is preliminary step working with group_bys and renames in order to then apply the findings to seasons again. 
 
 The following GROUP_BY command creates a unique grouping per hour and then calculates the average temperature for every hour, then pastes this value into each observation per hour.
-```{r create df_group of TAG for STUNDE/TAG - simple, echo=FALSE}
+```{r create df_group of TAG for STUNDE/TAG - simple, echo=TRUE}
 df_sel <- df %>%
-  filter(MESS_DATUM >= int_start(tag_int) & MESS_DATUM <= int_end(tag_int))
+  filter(MESS_DATUM >= int_start(tag_int) & MESS_DATUM <= int_end(tag_int)) # Take just the days from 2020-03-01 to 2020-03-02
 df_group <- df_sel %>% 
-  group_by(STATIONS_ID , hour(MESS_DATUM) , day(MESS_DATUM) ) 
+  group_by(STATIONS_ID , hour(MESS_DATUM) , day(MESS_DATUM) ) #just a single day, but also 0:00 hours from the next day, so we need day also
 head(df_group, 10)
 ```
-For better readability, the columns can be renamed after a Group-By with rename function.
-```{r create df_group of TAG for STUNDE/TAG - rename, echo=FALSE}
+The result is a dataframe containing all data in 10 minute time steps for the 1st March 2020, ordered by hour. For better readability, the columns can be renamed after a Group-By with rename function.
+```{r create df_group of TAG for STUNDE/TAG - rename, echo=TRUE}
 df_group <- df_sel %>% 
   group_by(STATIONS_ID , hour(MESS_DATUM) , day(MESS_DATUM) ) %>% 
   rename( "STUNDE" = 'hour(MESS_DATUM)', "TAG" = 'day(MESS_DATUM)' ) 
@@ -316,7 +338,7 @@ head(df_group, 10)
 
 ```
 Or the columns can be named directly in the Group-By command:
-```{r create df_group of TAG for STUNDE/TAG - rename - ideal, echo=FALSE}
+```{r create df_group of TAG for STUNDE/TAG - rename - ideal, echo=TRUE}
 df_group <- df_sel %>% 
   group_by(STATIONS_ID , STUNDE = hour(MESS_DATUM) , TAG = day(MESS_DATUM) ) 
 head(df_group, 5)
@@ -326,19 +348,21 @@ Now we can filter the data by year, month, week, day and hour of the day. This s
 #### Seasons
 Now we create data frames for analysing seasons.
 
+[comment]: <> (Benjamin: I'm not quite sure, what is the aim here. Do we want to take the season of one time zone and transform the interval of this time zone into the interval of a season in another time zone? If yes, it would be good to state this explicitly.)
+
+
 ##### Spring
-We do not consider spring as our data frame is not complete for this period.
+We do not consider the spring period since the observations for this period are not complete.
 
 ##### Summer
 The challenge when selecting summer dates is the time zone.
 ```{r select data of summer 1 - suboptimal, echo=FALSE}
 df_summer_attempt_1 <- 
   df %>%
-    filter(MESS_DATUM >= int_start(int_season_summer) & MESS_DATUM <= int_end(int_season_summer)) 
+    filter(MESS_DATUM >= int_start(int_season_summer) & MESS_DATUM <= int_end(int_season_summer)) #the number of observations are 13.487
 range(df_summer_attempt_1$MESS_DATUM)
 ```
-If the expected number of data records does not match the currently determined number, the further analysis should not be continued or repeated.
-With the help of assurances(assert) logical errors in programs or analysis can be identified and ended in a controlled manner, if necessary.
+If the expected number of data records does not match the currently determined number, the further analysis should not be continued or repeated. With the help of assurances(assert) logical errors in programs or analysis can be identified and ended in a controlled manner, if necessary.
 ```{r assert selection of summer data 1, echo=FALSE}
 rows_sum <- count(df_summer_attempt_1)           # or count(df_select_summer, n())
 expected_rows_sum <- 13487                    # determined with e.g. excel or SQL
@@ -347,31 +371,39 @@ assert("expected rows sum" , expected_rows_sum == rows_sum)
 expected_summer_start <- ymd_hm("201906211800", tz="UTC")
 expected_summer_end <- ymd_hm("201909230940", tz="UTC")
 # TODO TZ Umstellung!!!
-print(paste("summer min and max", min(df_summer_attempt_1$MESS_DATUM), max(df_summer_attempt_1$MESS_DATUM)))
+
+print(as.double(rows_sum)) #This should be added, since the next phrase refers to this.
+print(paste("summer start and end points:", min(df_summer_attempt_1$MESS_DATUM), max(df_summer_attempt_1$MESS_DATUM)))
 #assert("expected summer-start" , expected_summer_start == min(df_summer_attempt_1$MESS_DATUM))
 #assert("expected summer-end" , expected_summer_end == max(df_summer_attempt_1$MESS_DATUM))
 ```
 Our first approach gets the correct number of records, but not the expected record with the first interval value '2019-06-21 18:00'.
 
-To find For the analysis of start and end time points we use the stamp function of lubridate.
-```{r show start and end of summer interval, echo=FALSE}
-sf <- stamp("set to 24 Jun 2019 3:34")
+For the analysis of start and end time points we use the stamp function of lubridate. The stamp() takes strings of short time information like "set to 24 Jun 2019 3:34" and extracts the relevant information. Since there is always ambiguity with time in a natural language, stamp() tries to match several pattern with the string given.
+```{r show start and end of summer interval, echo=TRUE}
+
+
+sf <- stamp("set to 24 Jun 2019 3:34", quiet = TRUE)
 print(sf(int_start(int_season_summer)))
 print(sf(int_end(int_season_summer)))
-sf <- stamp("set to Monday, 24.06.2019 3:34")
+sf <- stamp("set to Monday, 24.06.2019 3:34", quiet = TRUE)
 print(sf(int_start(int_season_summer)))
 print(sf(int_end(int_season_summer)))
-sf <- stamp("Created Sunday, Jan 17, 1999 3:34")
+sf <- stamp("Created Sunday, Jan 17, 1999 3:34", quiet = TRUE)
 print(sf(ymd("2010-04-05")))
 print(sf(int_start(int_season_summer)))
 print(sf(int_end(int_season_summer)))
-sf <- stamp("Created 01.01.1999 03:34")
+sf <- stamp("Created 01.01.1999 03:34", quiet = TRUE)
 print(sf(ymd("2010-04-05")))
 print(sf(int_start(int_season_summer)))
 print(sf(int_end(int_season_summer)))
+
+#The option quiet = TRUE in stamp() supresses the warnings.
 ```
-The function stamp could be a useful function of lubridate, in our opinion a little bit hard to configure.
-```{r show start and end of summer interval - favourite, echo=FALSE}
+As we can see the formatting was successful and a POSIXct object has been successfully created. The function stamp could be a useful function of lubridate, but in our opinion it is a little bit hard to configure.
+
+In the following, we use format, which does not check every pattern, but you have to state the format explicitly.
+```{r show start and end of summer interval - favourite, echo=TRUE}
 sft <- "%d.%m.%Y-%H:%M"
 print(format(int_start(int_season_summer), sft))
 print(format(int_end(int_season_summer), sft))
@@ -386,6 +418,7 @@ print(paste("Summer start/End"
 ```
 
 If we do not set the time zone correctly, we get the expected number of data records with our current data frame, but with a time delay.
+
 Select data with timezone format of the data frames first row.
 ```{r select data of summer - optimal, echo=FALSE}
 range(df$MESS_DATUM)                                               # check the whole data frame
@@ -394,7 +427,9 @@ df_tz <- tz(df$MESS_DATUM[[1]])                                    # timezone of
 df_summer_attempt_2 <- 
   df %>%
     filter(MESS_DATUM >= force_tz(int_start(int_season_summer))          # use the lubridate function force_tz
-           & MESS_DATUM <= force_tz(int_end(int_season_summer))) 
+           & MESS_DATUM <= force_tz(int_end(int_season_summer)))          #Benjamin: Why force_tz here without a given tz?
+
+
 range(df_summer_attempt_2$MESS_DATUM)
 
 df_summer_attempt_3 <- 
@@ -418,6 +453,8 @@ df_select_summer <-
 range(df_select_summer$MESS_DATUM)
 
 ```
+
+
 We check our data frame again. 
 ```{r assert selection of summer data, echo=FALSE}
 rows_sum <- count(df_summer_attempt_1)           # or count(df_select_summer, n())
@@ -427,7 +464,7 @@ assert("expected rows sum" , expected_rows_sum == rows_sum)
 expected_summer_start <- ymd_hm("201906211800", tz="UTC")
 expected_summer_end <- ymd_hm("201909230940", tz="UTC")
 # TODO TZ Umstellung!!!
-print(paste("summer min and max", min(df_select_summer$MESS_DATUM), max(df_select_summer$MESS_DATUM)))
+print(paste("summer start and end time:", min(df_select_summer$MESS_DATUM), max(df_select_summer$MESS_DATUM)))
 assert("expected summer-start" , expected_summer_start == min(df_select_summer$MESS_DATUM))
 assert("expected summer-end" , expected_summer_end == max(df_select_summer$MESS_DATUM))
 ```
@@ -435,7 +472,7 @@ assert("expected summer-end" , expected_summer_end == max(df_select_summer$MESS_
 
 ##### Autumn
 New attempt to set the start and end points of an interval with the lubridate functions floor_date() and round_date().
-```{r modify end before select data of autmn, echo=FALSE}
+```{r modify end before select data of autumn, echo=FALSE}
 print(paste("Autmn start/end", season_19_autumn, "/", season_19_winter))
 show_round_up_start <- round_date(season_19_autumn, unit = "hour")
 print(paste("Round hour",show_round_up_start))
@@ -478,7 +515,7 @@ range(df_select_winter$MESS_DATUM)
 
 ## Exploration - Analysis
 
-First we are going to calculate average temperatures for different standard intervalls like hours, days, weeks, months. We will visualise some data and eventually calculate new variables or aggregates for humdity, rainfall etc. as well, plus more insights, that might not be apparent at this stage.
+First we are going to calculate average temperatures for different standard intervalls like hours, days, weeks, months. We will visualise some data and eventually calculate new variables or aggregates for humidity, rainfall etc. as well, plus more insights, that might not be apparent at this stage.
 
 ### Temperatur
 The first variable of interest should be "TEMPERATUR". A quick visualisation delivers this picture:
@@ -486,37 +523,34 @@ The first variable of interest should be "TEMPERATUR". A quick visualisation del
 ggplot(df)+
   geom_point(aes(MESS_DATUM, TEMPERATUR), colour = "red", size = 0.1)
 ```
-This is a representation of all 52,704 observations of temperature and naturally appears quite crowded. 
-However, a typical course of the seasons during a year can already be interpreted from this plot.
-Please note that the chart starts at the start of the observations (April 2019) and stretches over a year from there.
+This is a representation of all 52,704 observations of temperature and naturally appears quite crowded. However, a typical course of the seasons during a year can already be interpreted from this plot. Please note that the chart starts at the start of the observations (April 2019) and stretches over a year from there.
 
-Let'S try to get a clearer picture of the temperature variable during the course of the observed year. 
-We need to form averages and aggregates to make visualisation more to the point and get less crowded pictures.
+We could now try to plot the trend here, to have a smooth line to show the temperature development here. But let'S try to get a clearer picture of the temperature variable during the course of the observed year by building larger groups of time. We need to form averages and aggregates to make visualisation more to the point and get less crowded pictures.
 
 New variables should represent other dimensions of date-time data. We can use lubridate functions to produce variables for hours, 24hdays, weeks, months and even possibly seasons.
 
 Assigning a year to every observation by creating a new column with lubridate function "year":
-```{r mutate MESS_DATUM - JAHR, echo=FALSE}
+```{r mutate MESS_DATUM - JAHR, echo=TRUE}
 df <- df %>% 
   mutate(JAHR = year(df$MESS_DATUM))
 ```
 Assigning the specific month (number) to every observation by creating a new column with lubridate function "month"
-```{r mutate MESS_DATUM - MONAT, echo=FALSE}
+```{r mutate MESS_DATUM - MONAT, echo=TRUE}
 df <- df %>% 
   mutate(MONAT = month(df$MESS_DATUM))
 ```
 Assigning an Epiweeknr (EKW = Epi Kalender Woche) to every observation through a column with the function "epiweek":
-```{r  mutate MESS_DATUM - EKW, echo=FALSE}
+```{r  mutate MESS_DATUM - EKW, echo=TRUE}
 df <- df %>% 
   mutate(EKW = epiweek(df$MESS_DATUM))
 ```
 Assigning a daynumber to every observation by creating a new column "JTAG" (Year day):
-```{r mutate MESS_DATUM - TAG im Jahr, echo=FALSE}
+```{r mutate MESS_DATUM - TAG im Jahr, echo=TRUE}
 df <- df %>%
   mutate(JTAG = yday(df$MESS_DATUM))
 ```
 Assigning an hour to every observation by creating a new column "STUNDE":
-```{r mutate MESS_DATUM - STUNDE, echo=FALSE}
+```{r mutate MESS_DATUM - STUNDE, echo=TRUE}
 df <- df %>%
   mutate(STUNDE = hour(df$MESS_DATUM))
 ```
@@ -537,11 +571,13 @@ Let's plot the data again as hourly temperature averages per day:
 ```{r ggplot avg TEMPERATUR STUNDE, echo=FALSE}
 ggplot(df_av_temp_Stunde)+
   geom_point(aes(JTAG, AVGTEMPH), colour = "red", size = 0.1)
+   #Benjamin: geom_line used in per day data, maybe here also better
+
 ```
-We can see that the data has become aggregated and that the temperature picture becomes somewhat more clear.
-Also the visualisation now stretches over the course of a whole calendar year from left to right.
-Let's go one step further and shorten the data down to daily averages by:
-```{r avg TEMPERATUR JTAG, echo=FALSE}
+We can see that the data has become aggregated and that the temperature picture becomes somewhat more clear. Also the visualisation now stretches over the course of a whole calendar year from left to right.
+
+Let's go one step further and shorten the data to daily averages by:
+```{r avg TEMPERATUR JTAG, echo=TRUE}
 df_group_JTAG <- df %>%
   group_by(STATIONS_ID, JAHR, MONAT, EKW, JTAG)
 
@@ -551,15 +587,16 @@ df_av_temp_JTAG  <- df_group_JTAG %>%
 head(df_av_temp_JTAG, 10)
 ```
 This newly created table has reduced the number of observations by the factor 24 to 366 (the number of days in a leap year) and reveals the average temperature per day.
+
 Let's plot the data again as dayly temperature averages over the whole period as a line:
 ```{r ggplot avg TEMPERATUR JTAG, echo=FALSE}
 ggplot(df_av_temp_JTAG)+
   geom_line(aes(JTAG, AVGTEMPD), colour = "red", size = 0.5)
 ```
-The data starts to make even more visual sense. The key take-aways from this plot, next to the rather trivial finding of higher summer temperatures, is the rather high volatility that appears to be attached to daily average temperature throughout the year. This could be interpreted as the changes between high and low pressure weather systems that cross northern Germany.
+By changing to per day data, it now easier to spot the temperature trend here. The key take-aways from this plot, next to the rather trivial finding of higher summer temperatures, is the rather high volatility that appears to be attached to daily average temperature throughout the year. This could be interpreted as the changes between high and low pressure weather systems that cross northern Germany. It should also be mentioned that the temperature cycle of day and night has been removed by grouping all data from one day, which contributes to the simpler graph.
 
 Let's boil the data down to weekly temperature averages:
-```{r avg TEMPERATUR WOCHE, echo=FALSE}
+```{r avg TEMPERATUR WOCHE, echo=TRUE}
 df_group_EKW <- df %>%
   group_by(STATIONS_ID, JAHR, MONAT, EKW)
 
@@ -573,7 +610,9 @@ and plot again:
 ggplot(df_av_temp_EKW)+
   geom_line(aes(EKW, AVGTEMPW), colour = "red", size = 0.5)
 ```
-Even in weekyl aggregates of temperature averages the resulting visualisation still tells a story of volatility.
+Even in weekly aggregates of temperature averages the resulting visualisation still contains high volatility.
+
+
 Let's look at monthly averages:
 ```{r avg TEMPERATUR MONAT, echo=FALSE}
 df_group_MONAT <- df %>%
@@ -603,18 +642,17 @@ head(df_avg1, 10)
 ```
 ### Rainfall
 #### Sum with condition
-The question here is, how long has ist rained during an hour/day?
-There are two different possible aproaches. One is without the binary indicator and the other uses it as a switch.
+The question here is, how long has it rained during an hour/day? There are two different possible aproaches. One is without the binary indicator and the other uses it as a switch.
 
-Without indicator
-```{r sum NIEDERSCHLAGSDAUER - Tag/Stunde on an interval of a day, echo=FALSE}
+<u>Without indicator</u>
+```{r sum NIEDERSCHLAGSDAUER - Tag/Stunde on an interval of a day, echo=TRUE}
 df_sum1 <- df_group %>% 
   summarise(sum(NIEDERSCHLAGSDAUER)) %>% 
   arrange( STATIONS_ID , TAG, STUNDE) 
 head(df_sum1, 24) 
 ```
-With indicator and renamed column
-```{r sum NIEDERSCHLAGSDAUER - condition - Tag/Stunde on an interval of a day, echo=FALSE}
+<u>With indicator and renamed column</u>
+```{r sum NIEDERSCHLAGSDAUER - condition - Tag/Stunde on an interval of a day, echo=TRUE}
 df_sum2 <- df_group %>% 
   summarise(MENGE = sum(NIEDERSCHLAGSDAUER[NIEDERSCHLAGSINDIKATOR==1])) %>% 
   arrange( STATIONS_ID , TAG, STUNDE)
@@ -626,8 +664,8 @@ What we can say at this point is that the temperatures in the city of Kiel have 
 
 Weather however is not just defined as temperature, but humidity and precipitation play a role regarding our sensation and definition of weather as well.
 
-Let's have one look at humidity the same way we looked at temperatures as hourly averages:
-```{r avg RELATIVE_FEUCHTE, echo=FALSE}
+Let's have a look at humidity in the same way we looked at temperatures, that is as hourly averages:
+```{r avg RELATIVE_FEUCHTE, echo=TRUE}
 df_av_humi_Stunde  <- df_group_Stunde %>%
   summarise(AVGHUMI = mean(RELATIVE_FEUCHTE)) %>%
   arrange(STATIONS_ID, JAHR, MONAT, EKW, JTAG, STUNDE)
@@ -637,8 +675,11 @@ Let's plot the data again as hourly humidity averages per day:
 ggplot(df_av_humi_Stunde)+
   geom_point(aes(JTAG, AVGHUMI), colour = "red", size = 0.1)
 ```
-This plot shows the dryer months during the summer as having a lot more hours with lower humidity values than the months that fall into autumn and winter. 
+This plot shows that the months during the summer have much more hours with lower humidity values than the months that fall into autumn and winter. 
 
 ## Wrap up
 It was our objective to show and explain some of the more important features of the lubridate package. We can definitely say that handling this dataset in Base R would have been a lot more labourious. Lubridate has made working with this time series if not easy, but possible.
+
+[comment]: <> (Benjamin: It's very likely that the work is easier with lubridate, but base R function have not been tried here at all, so a comparison might not be possible.)
+
 This statement goes for the other used packages in this exploration (dplyr, ggplot, etc.) without which the whole task would have been quite tedious.
