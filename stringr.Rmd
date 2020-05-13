@@ -16,57 +16,25 @@ Resources:
 Suggested data: recipes
 
 Advice: Many of the examples in the Vignettes just refer to vectors. How can we use stringr to create/modify character columns of a data frame?
+See chapter [Types of data](#types-Of-data)
 
-
-
-
-```{r, include=FALSE, results='hide'}
+Before we introduce the library, the technical prerequisites must be created.
+```{r libararies}
 #Loading of the libraries
 #install.packages("stringr")
 #install.packages("gutenbergr")
 #install.packages("tidytext")
 
-#Keep in mind that knitr doesn't work, if those commands are not commented out. The packages are necessary to run the script nonetheless.
-
-library(readr)
-library(stringr)
 library(dplyr)
 library(gutenbergr)
+library(readr)          # part of the tidyverse
+library(stringr)
 library(tidytext)
+```
 
-#---------------------------------------------------
+```{r hint, include=FALSE, results='hide'}
 
-#Loading of a fulltext example. The time machine from H.G. Wells from the Gutenberg Project.
-
-#//The access to the website is prohibited from a German adress, so the usage of the package might be a legal issue.
-
-tm_text <- gutenberg_download(35)
-
-
-#Loading and formatting of the data set
-
-recipes <- read_csv("data/recipes.csv")
-
-str(recipes)
-recipes.c <- recipes
-    
-
-#The ids of the recipe and of the contributor are de facto factors.
-
-recipes.c$id <- as.factor(recipes$id)
-#check str(recipes$id)
-
-recipes.c$contributor_id <- as.factor(recipes$contributor_id)
-#check str(recipes$contributor_id)
-
-# The nutrition values are num
-
-recipes_test <- str_sub(recipes.c$nutrition[1], 2, str_length(recipes.c$nutrition[1])-1)
-recipes_test <- strsplit(recipes$nutrition[1], ", ")
-recipes_test_1 <- as.numeric(recipes_test[[1]])
-
-#//[!!!] I'm aware this is not consequently done as it is, but I leave it as it is, to not cause any conflicts further down.
-
+#Keep in mind that knitr doesn't work, if those commands are not commented out. The packages are necessary to run the script nonetheless.
 ```
 
 
@@ -83,8 +51,7 @@ If you're interested in counting the words within a text, go to detect matches a
 
 Probably the use cases in real-life are rather technical, but hopefully the uses cases above provide some clarity of why stringR might be useful.
 
-
-### Types of data, which could be used with stringR
+### Types of data, which could be used with stringR{#types-Of-data}
 
 The way you use the functions of stringR is dependent on which kind of data you want to analyze. 
 
@@ -94,18 +61,35 @@ Regarding our example, there could also be more than one word per box, e.g. the 
 
 Researching the package, we were under the impression that stringR is mostly designed for the purpose of managing and analyzing full texts or longer strings.
 
-We want to point out that full text analysis as done in text mining, e.g. the novel The Time Machine by H.G. Wells, doesn't operate on a long text as a whole string. Instead, it'd rather tokenize the text first (Silge Robinson 2017). As a result every word is put in another row, as you can see here:
+We want to point out that full text analysis as done in text mining, e.g. the novel The Time Machine by H.G. Wells, doesn't operate on a long text as a whole string. Instead, it'd rather tokenize the text first (Silge Robinson 2017). Before we start our analysis, let's take a look at our data sets in the data frame.
+```{r loading gutenberg fulltext example }
+#//The access to the website is prohibited from a German adress, so the usage of the package might be a legal issue.
+# The tbl_df class is a subclass of data.frame
+tbl_df_text <- gutenberg_download(35)
+print(paste("data rows count", length(tbl_df_text$text)))
+glimpse(tbl_df_text)
 
+df_text <- as.data.frame(tbl_df_text)
+head(tbl_df_text$text, 10)
+```
 
-```{r echo=FALSE}
-#tm_text <- tibble(line = 1:4, text = tm_text)
+We use a small sample to check whether the data records supplied are filled.
+```{r look for word Mashine}
+sample_rows <- df_text %>% filter(grepl('Machine|Wells' , text))
+head(sample_rows$text, 10)
+```
 
-tm_text %>%
-  unnest_tokens(word, text)
+As a result every word is put in a vector of characters, as you can see here:
+```{r split gutenberg fulltext example into tokens}
+# splitting the table into one-token-per-row
+# 
+row <- tbl_df_text %>% unnest_tokens(word, text)
+char_vector_gut <- row$word
+print(paste("Words count",length(char_vector_gut)))
+head(row$word, 10)
 ```
 
 This format will set restrictions on your ability to use the stringR functions, because stringR seems to be designed to operate on full texts and not on single worded strings. However, some stringR methods like str_detect are used frequently in text mining.
-
 
 
 
@@ -156,8 +140,7 @@ This could be used to compare the length of two strings, especially if they have
 
 To show that punctuation marks and white spaces are also counted, we use here a simple example.
 
-```{r , echo=TRUE}
-
+```{r str_length, echo=TRUE}
 str_length("Hello, world!")
 
 ```
@@ -173,23 +156,64 @@ str_pad(string, width, side = c("left", "right","both"), pad = " ") adds charact
 
 The idea is to adjust strings of different length to the same length in order to match them in a subsequent step. E.g. when the comparison of the numbers 000247 with 247 should result in a match, we add 0s in front of the second number.
 
+```{r reading data recipes }
+#Loading and formatting of the data set
+recipes <- read_csv("data/recipes.csv",
+                    col_types = cols(
+                        name = col_character()
+                      , id = col_double()
+                      , minutes = col_double()
+                      , contributor_id = col_double()
+                      , submitted = col_date(format = "%Y-%m-%d")
+                      , tags = col_character()
+                      , nutrition = col_character()
+                      , n_steps = col_double()
+                      , steps = col_character()
+                      , description = col_character()
+                      , ingredients = col_character()
+                      , n_ingredients = col_double()
+                    )
+                    )
+#glimpse(recipes)
+print(paste("Rows count",count(recipes)))
+```
+
+```{r reading data recipes , include=FALSE, results='hide'}
+#Loading and formatting of the data set
+
+str(recipes)
+recipes.c <- recipes
+
+#The ids of the recipe and of the contributor are de facto factors.
+
+recipes.c$id <- as.factor(recipes$id)
+#check str(recipes$id)
+
+recipes.c$contributor_id <- as.factor(recipes$contributor_id)
+#check str(recipes$contributor_id)
+
+# The nutrition values are num
+
+recipes_test <- str_sub(recipes.c$nutrition[1], 2, str_length(recipes.c$nutrition[1])-1)
+recipes_test <- strsplit(recipes$nutrition[1], ", ")
+recipes_test_1 <- as.numeric(recipes_test[[1]])
+
+#//[!!!] I'm aware this is not consequently done as it is, but I leave it as it is, to not cause any conflicts further down.
+```
+
 
 <u>Example</u>
 
 In our dataset, the id consists sometimes of 5 or 6 digits, as you can see here:
 
-```{r, echo=FALSE}
-
+```{r show ids, echo=FALSE}
 head(recipes$id,10)
-
 ```
 
 We want to adjust all of the numbers to the same length. So, we add a zero in front to those 5-digit numbers.
 
-```{r, echo=FALSE}
-
+```{r str_pad, echo=FALSE}
 head(str_pad(recipes$id, width = 6, side = "left", pad = "0"),10)
-
 ```
 
 As we can see, some ids have now a 0 in front. These were 5-digit numbers before. 
@@ -206,7 +230,7 @@ str_trunc(string, width, side = c("right", "left",
 
 We could use the function to show more text from the description column than can be seen in the view(recipes) tab, to get a better impression, of what these texts are about. But we might not need the full text. We just want the first 50 characters, so we cut off to the right.
 
-```{r, echo=TRUE}
+```{r str_trunc, echo=TRUE}
 
 head(str_trunc(recipes$description, width = 50, side = "right"),5)
 recipes %>% mutate(description_short = str_trunc(description, width = 50, side = "right")) %>% select(name, description_short) %>% head()
@@ -221,10 +245,8 @@ str_trim(string, side = c("both", "left", "right")) trims whitespaces from the s
 
 <u>Example</u>
 
-```{r, echo=TRUE}
-
+```{r str_trim, echo=TRUE}
 str_trim("     Hello, world!        ", side = "left")
-
 ```
 As you can see, the whitespaces on the left are cut out, while the whitespaces on the right are still there.
 
@@ -243,7 +265,7 @@ str_sub(string, start=1L, end = -1L) can be used to extract substrings of a stri
 <u>Example</u>
 
 In our data we have the nutrition given as a character string in the following format
-```{r , echo=FALSE}
+```{r nutrition string, echo=FALSE}
 recipes$nutrition[1]
 ```
 This whole term is a string, which we want to split into a list. First, we have to delete the "[" in the beginning of the string and "]" at the end.
@@ -251,7 +273,7 @@ This whole term is a string, which we want to split into a list. First, we have 
 Here it is useful, that We can use the str_sub also to eliminate unwanted signs at the beginning and the end of a string.
 
 
-```{r , echo=TRUE }
+```{r str_sub, echo=TRUE }
 str_sub(recipes$nutrition[1], 2,str_length(recipes$nutrition[1])-1)
 
 ```
@@ -269,12 +291,12 @@ str_subset(string, pattern) gives back strings that contain a pattern match. The
 
 To give an example, we look at the description of a recipe, which looks like the following:
 
-```{r , echo=FALSE }
+```{r description , echo=FALSE }
 recipes$description[1]
 ```
 Some of the descriptions contain the source of the recipe. So in this case, we want all the recipes, which originate from oregonlive.com
 
-```{r , echo=TRUE }
+```{r str_subset, echo=TRUE }
 str_subset(recipes$description, "oregonlive.com")
 
 ```
@@ -298,7 +320,7 @@ If you don't simply want the first match, then you can use also str.extract.all(
 We look at the common words love and recipe in the description. The result shows, in which decriptions which word of these comes first or gives back NA if the pattern isn't found at all in the string. 
 
 
-```{r , echo=TRUE }
+```{r str_extract, echo=TRUE }
 head(str_extract(recipes$description, "(love\\w|recipe\\w)"),60)
 
 ```
@@ -310,7 +332,7 @@ This example also shows, that you have to be careful with regular expressions. T
 
 One could also look at the ingredients and check, which recipes contain milk and eggs. Since we want to show that both are present in the dish or just one of these ingredients, we use str_extract_all
 
-```{r , echo=TRUE }
+```{r str_extract_all, echo=TRUE }
 head(str_extract_all(recipes$ingredients, "milk|eggs"),5)
 
 
@@ -335,7 +357,7 @@ As with str_extract, here also exists a str_match_all function to get all the ma
 
 Here we want to match the regular expression (love\\w|recipe\\w).+(beef). This means "love" and "recipe" form one group and beef forms the other. The whole expression as such is also a group.
 
-```{r , echo=TRUE }
+```{r str_match, echo=TRUE }
 head(str_match(recipes$description, "(love\\w|recipe\\w).+(beef)"),5)
 
 ```
@@ -356,7 +378,7 @@ str_detect(string, pattern) detects the presence of a pattern match in a string.
 
 Here we search for love and recipe in the description of every recipe. 
 
-```{r , echo=TRUE }
+```{r str_detect in description, echo=TRUE }
 head(str_detect(recipes$description, "(love\\w|recipe\\w)"),100)
 
 ```
@@ -371,7 +393,7 @@ str_which(string, pattern) finds the indices of strings that contain a pattern m
 
 Again we search for "love" and "recipe" in the description column.
 
-```{r , echo=TRUE }
+```{r str_which, echo=TRUE }
 head(str_which(recipes$description, "(love\\w|recipe\\w)"),100)
 
 ```
@@ -386,7 +408,7 @@ str_count(string, pattern) counts the number of matches in a string.
 
 "i" occurs very often in the descriptions of the recipes. Let's see how often per description. As a regular expression we have chosen " i ", that is an i surrounded by white spaces. This means in sentences like "I ...." the i is not matched.
 
-```{r , echo=TRUE }
+```{r str_count, echo=TRUE }
 head(str_count(recipes$description, " i "),100)
 
 ```
@@ -395,15 +417,14 @@ head(str_count(recipes$description, " i "),100)
 
 str_locate(string, pattern) locates the positions of the first pattern match within a string.
 
-```{r , echo=TRUE }
+```{r str_locate, echo=TRUE }
 head(str_locate(recipes$description, " i "),10)
 
 ```
 If you look up the first description string
 
-```{r , echo=FALSE }
+```{r description, echo=FALSE }
 recipes$description[1]
-
 ```
 Then you can see, that the first " i " is indeed from position 22 to 24. The length of 3 (24-22+1) come from 2 whitespaces and the i.
 
@@ -412,8 +433,9 @@ Then you can see, that the first " i " is indeed from position 22 to 24. The len
 
 In this part we will use Italy, a subset of "recipes" that is exclusively containing recipes mentioning "pizza".
 
-``` {r, echo=FALSE}
-Italy <- recipes %>% filter(stringr::str_detect(name, "pizza"))
+``` {r str_detect in filter, echo=FALSE}
+Italy <- recipes %>% filter(str_detect(name, "pizza"))
+head(Italy, 10)
 ```
 
 #### str_replace (and replace_all) 
@@ -421,10 +443,10 @@ Italy <- recipes %>% filter(stringr::str_detect(name, "pizza"))
 The replace functions of stringr are used to match patterns and replace them with new strings. 
 
 <u>Example</u>
-```{r, echo=TRUE}
-
+```{r str_replace, echo=TRUE}
 Italy <- Italy %>% 
   mutate(name1 = str_replace(Italy$name, "pizza", "fluffy pizza"))
+head(Italy, 10)
 ```
 
 
@@ -432,9 +454,10 @@ For seo (search engine optimization) we will add the popular word "fluffy" to al
 In order to replace several matches, use str_replace_all and create a vector containing multiple conditions.
 
 
-``` {r, echo=TRUE}
+``` {r str_replace_all, echo=TRUE}
 Italy <- Italy %>% 
   mutate(name2 = str_replace_all(Italy$name, c("pizza" = "fluffy pizza", "easy" = "easy peasy")))
+head(Italy, 10)
 ```
 
 ##### str_to_lower
@@ -449,7 +472,7 @@ str_to_title will change first letter of a string into a capital letter.
 
 
 <u>Example</u>
-``` {r, echo=TRUE}
+``` {r str_to_upper, echo=TRUE}
 p <- c("i","like","pizza","and","i don't share pizzza")
 str_to_upper(p)
 str_to_sentence(p)
@@ -462,7 +485,7 @@ Attention: Locales will apply language conventions when changing the case. As yo
 Locales also come in handy for the str_order or str_sort fuction. 
 str_sort will sort a list of string vectors by alphabet (locale will determine wich alphabet is applied)
 
-```{r, echo=TRUE}
+```{r str_sort, echo=TRUE}
 str_sort(Italy$name1[1:10], decreasing = FALSE, na_last = TRUE, locale = "en", numeric = FALSE)
 ```
 
@@ -475,7 +498,7 @@ If you want to merge several strings into one, the str_c function is what you ne
 <u>Example</u>
 In our Pizza example you can first see the join of the first few names into one string separated by ", " and then a vector that is joint into one string using the words "and then" as a form of separation. 
 
-```{r, echo=TRUE}
+```{r str_c, echo=TRUE}
 str_c(Italy$name2[1],Italy$name2[2], Italy$name2[3], sep = ", ")
 str_c(Italy$name2[1:3], collapse = " and then ")
 ```
@@ -487,7 +510,7 @@ The str_split function will split a vector of strings into a list of substrings.
 <u>Example</u>
 In our example we will split the column step containing step by step instructions into single substrings. As the steps currently have the format of a list, we can use the comma as a pattern to separate the strings. 
 
-```{r, echo=TRUE}
+```{r str_split, echo=TRUE}
 Italy$steps %>% str_split("', '") %>% head(2)
 
 ```
@@ -497,7 +520,7 @@ If you'd rather have the subset of strings in a matrix, you can use str_split_fi
 
 
 <u>Example</u>
-```{r, echo=TRUE}
+```{r str_glue, echo=TRUE}
 pandas <- c("Carl","Jakob","Jakob","Markus","Robert")
 str_glue("Hey {pandas}! I'd recommend the recipe '{str_to_title(Italy$name2[1:5])}' for you." )
 
