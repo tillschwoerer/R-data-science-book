@@ -23,7 +23,6 @@ df %>%                                              # data
   select(Streams, date, Artist, Track.Name) %>%     # select columns by name
   arrange(-Streams) %>%                             # order rows by some variable in descending order
   slice(1:5)                                        # select rows by position
-
 ```
 
 The second workflow returns the average number of streams per day of week since the beginning of the year 2020. 
@@ -36,7 +35,6 @@ df %>%                                 # data
   mutate(day_of_week=lubridate::wday(date, label=TRUE, abbr=FALSE, week_start=1)) %>%
   group_by(day_of_week) %>%            # group the data 
   summarise(streams = mean(Streams))   # aggregate per group via functions such as mean, min, etc. 
-        
 ```
 
 Note that in this particular case, we can write the code more concise by generating the new variable `day_of_week` inside the `group_by` function.
