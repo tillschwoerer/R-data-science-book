@@ -57,7 +57,7 @@ today()                 # date like YYYY-mm-dd
 ```
 
 ```
-## [1] "2020-05-12"
+## [1] "2020-05-13"
 ```
 
 ```r
@@ -66,7 +66,7 @@ now()                   # timestamp like YYYY-mm-dd HH:MM:SS TZ
 ```
 
 ```
-## [1] "2020-05-12 22:18:09 CEST"
+## [1] "2020-05-13 19:26:36 CEST"
 ```
 
 ```r
@@ -75,7 +75,7 @@ Sys.Date()              # date like YYYY-mm-dd
 ```
 
 ```
-## [1] "2020-05-12"
+## [1] "2020-05-13"
 ```
 
 ```r
@@ -84,7 +84,7 @@ Sys.time()              # timestamp like YYYY-mm-dd HH:MM:SS TZ
 ```
 
 ```
-## [1] "2020-05-12 22:18:09 CEST"
+## [1] "2020-05-13 19:26:36 CEST"
 ```
 
 ```r
@@ -534,18 +534,16 @@ season_19_winter <- ymd_hm("2019-12-22 05:19", tz="CET")
 season_20_spring <- ymd_hm("2020-03-20 04:49", tz="CET")
 season_20_summer <- ymd_hm("2020-06-20 23:43", tz="CET")
 ```
-Source: Beginnings of seasons from [timeanddate.de](https://www.timeanddate.de/astronomie/jahreszeiten "timeanddate.de")
+Source: Beginnings of seasons from [timeanddate.de](https://www.timeanddate.de/astronomie/jahreszeiten)
 
 Our goal shall be to create an interval for the spring season.
 The following information is available to determine the end point of spring:
-**Frühling** 2020
-Beginn (Tag-und-Nachtgleiche März)
-20. März 04:49
-Dauer 92 Tage, 17 Std, 54 Min
-**Sommer** 2020
-Beginn (Sonnenwende Juni)
-20. Juni 23:43
-Dauer 93 Tage, 15 Std, 46 Min
+
+|            | Spring 2020                | Summer 2020                |
+|------------|:---------------------------|:---------------------------|
+|**Start**   | March 20, 04:49            | June 20, 23:43             |
+|**Duration**| 92 days, 17 hours, 54 min. | 93 days, 15 hours, 46 min. |
+
 
 ##### Durations
 First approach utilizing the `Duration` class of lubridate:
@@ -627,15 +625,19 @@ int_season_winter <- season_19_winter %--% (season_20_spring - minutes(1))
 Note that the `%--%` operator in the last line is similar to the calls of the `interval()` function in the lines above.
 
 ### Groupings
-What follows is preliminary step working with group_bys and renames in order to then apply the findings to seasons again. 
+What follows is an intermediate step working with `group_by()`s and `rename()`s. Subseqeuntly the findings towards seasons will be apllied again. 
 
-The following GROUP_BY command creates a unique grouping per hour and then calculates the average temperature for every hour, then pastes this value into each observation per hour.
+The following `group_by()` command creates a unique grouping per hour and then calculates the average temperature for every hour, then pastes this value into each observation per hour.
+Recall that `tag_int` ranges from `2020-03-01` to `2020-03-02`.
 
 ```r
 df_sel <- df %>%
-  filter(MESS_DATUM >= int_start(tag_int) & MESS_DATUM <= int_end(tag_int))
+  filter(MESS_DATUM >= int_start(tag_int) & 
+           MESS_DATUM <= int_end(tag_int))
+
 df_group <- df_sel %>% 
-  group_by(STATIONS_ID , hour(MESS_DATUM) , day(MESS_DATUM) ) 
+  group_by(STATIONS_ID, hour(MESS_DATUM), day(MESS_DATUM))
+
 head(df_group, 10)
 ```
 
@@ -658,12 +660,14 @@ head(df_group, 10)
 ## #   NIEDERSCHLAGSINDIKATOR <dbl>, `hour(MESS_DATUM)` <int>,
 ## #   `day(MESS_DATUM)` <int>
 ```
-For better readability, the columns can be renamed after a Group-By with rename function.
+
+For better readability, the columns can be renamed after grouping unsing the `rename()` function.
 
 ```r
 df_group <- df_sel %>% 
-  group_by(STATIONS_ID , hour(MESS_DATUM) , day(MESS_DATUM) ) %>% 
-  rename( "STUNDE" = 'hour(MESS_DATUM)', "TAG" = 'day(MESS_DATUM)' ) 
+  group_by(STATIONS_ID , hour(MESS_DATUM) , day(MESS_DATUM)) %>% 
+  rename("STUNDE" = 'hour(MESS_DATUM)', "TAG" = 'day(MESS_DATUM)')
+
 head(df_group, 10)
 ```
 
@@ -685,11 +689,13 @@ head(df_group, 10)
 ## # ... with 4 more variables: NIEDERSCHLAGSHOEHE <dbl>,
 ## #   NIEDERSCHLAGSINDIKATOR <dbl>, STUNDE <int>, TAG <int>
 ```
-Or the columns can be named directly in the Group-By command:
+
+Or the columns can be named directly in the `group_by()` command:
 
 ```r
 df_group <- df_sel %>% 
-  group_by(STATIONS_ID , STUNDE = hour(MESS_DATUM) , TAG = day(MESS_DATUM) ) 
+  group_by(STATIONS_ID , STUNDE = hour(MESS_DATUM), TAG = day(MESS_DATUM))
+
 head(df_group, 5)
 ```
 
@@ -706,55 +712,63 @@ head(df_group, 5)
 ## # ... with 4 more variables: NIEDERSCHLAGSHOEHE <dbl>,
 ## #   NIEDERSCHLAGSINDIKATOR <dbl>, STUNDE <int>, TAG <int>
 ```
+
 Now we can filter the data by year, month, week, day and hour of the day. This should give us possibilities to aggregate freely over any time specifications.
 
 #### Seasons
-Now we create data frames for analysing seasons.
+At this point we create data frames for analysing seasons.
 
 ##### Spring
-We do not consider spring as our data frame is not complete for this period.
+We do not consider the spring season as our data frame does not cover this completely.
 
 ##### Summer
 The challenge when selecting summer dates is the time zone.
+The default time zone in lubridate is UTC, as shown in the example below.
 
 ```r
-df_summer_attempt_1 <- 
-  df %>%
-    filter(MESS_DATUM >= int_start(int_season_summer) & MESS_DATUM <= int_end(int_season_summer)) 
+df_summer_attempt_1 <- df %>% filter(MESS_DATUM >= int_start(int_season_summer) &
+                                     MESS_DATUM <= int_end(int_season_summer))
+
 range(df_summer_attempt_1$MESS_DATUM)
 ```
 
 ```
 ## [1] "2019-06-21 16:00:00 UTC" "2019-09-23 07:40:00 UTC"
 ```
+
 If the expected number of data records does not match the currently determined number, the further analysis should not be continued or repeated.
-With the help of assurances(assert) logical errors in programs or analysis can be identified and ended in a controlled manner, if necessary.
+With the help of assertions (`assert()`) one can identify logical errors in programs or analyses and end them in a controlled manner, if necessary.
 
 ```r
-rows_sum <- count(df_summer_attempt_1)           # or count(df_select_summer, n())
+rows_sum <- count(df_summer_attempt_1)        # or count(df_select_summer, n())
 expected_rows_sum <- 13487                    # determined with e.g. excel or SQL
-assert("expected rows sum" , expected_rows_sum == rows_sum)
+
+# make sure, that the condition 'expected_rows_sum == rows_sum' holds
+assert("expected rows sum" , expected_rows_sum == rows_sum) 
 
 expected_summer_start <- ymd_hm("201906211800", tz="UTC")
 expected_summer_end <- ymd_hm("201909230940", tz="UTC")
 # TODO TZ Umstellung!!!
-print(paste("summer min and max", min(df_summer_attempt_1$MESS_DATUM), max(df_summer_attempt_1$MESS_DATUM)))
+cat(paste("Obtained initial value:", min(df_summer_attempt_1$MESS_DATUM), 
+            "\nobtained final value:  ", max(df_summer_attempt_1$MESS_DATUM)))
 ```
 
 ```
-## [1] "summer min and max 2019-06-21 16:00:00 2019-09-23 07:40:00"
+## Obtained initial value: 2019-06-21 16:00:00 
+## obtained final value:   2019-09-23 07:40:00
 ```
 
 ```r
 #assert("expected summer-start" , expected_summer_start == min(df_summer_attempt_1$MESS_DATUM))
 #assert("expected summer-end" , expected_summer_end == max(df_summer_attempt_1$MESS_DATUM))
 ```
-Our first approach gets the correct number of records, but not the expected record with the first interval value '2019-06-21 18:00'.
+While our first approach gets the correct number of records (13,487), the initial value of the interval appear to not be correct since the expected initial value would be `2019-06-21 18:00`. This expected initial value however is refers to the MESZ time zone's time, which is basically obtained by adding two hours to UTC time, i.e MESZ leads UTC be two hours.
 
-To find For the analysis of start and end time points we use the stamp function of lubridate.
+In order to print the start and end time points correctly we use the `stamp()` function of lubridate. 
+The `stamp()` function creates more human-readable time formats and internally also reads the system's time locale by calling `Sys.getlocale("LC_TIME")`.
 
 ```r
-sf <- stamp("set to 24 Jun 2019 3:34")
+sf <- stamp("set to 24 Jun 2019 3:34") # create a template format as a function
 ```
 
 ```
@@ -766,19 +780,13 @@ sf <- stamp("set to 24 Jun 2019 3:34")
 ```
 
 ```r
-print(sf(int_start(int_season_summer)))
+cat(paste0(sf(int_start(int_season_summer)), "\n",
+           sf(int_end(int_season_summer))))
 ```
 
 ```
-## [1] "set to 21 Jun 2019 17:54"
-```
-
-```r
-print(sf(int_end(int_season_summer)))
-```
-
-```
-## [1] "set to 23 Sep 2019 09:49"
+## set to 21 Jun 2019 17:54
+## set to 23 Sep 2019 09:49
 ```
 
 ```r
@@ -794,19 +802,13 @@ sf <- stamp("set to Monday, 24.06.2019 3:34")
 ```
 
 ```r
-print(sf(int_start(int_season_summer)))
+cat(paste0(sf(int_start(int_season_summer)), "\n",
+           sf(int_end(int_season_summer))))
 ```
 
 ```
-## [1] "set to Monday, 21.06.2019 17:54"
-```
-
-```r
-print(sf(int_end(int_season_summer)))
-```
-
-```
-## [1] "set to Monday, 23.09.2019 09:49"
+## set to Monday, 21.06.2019 17:54
+## set to Monday, 23.09.2019 09:49
 ```
 
 ```r
@@ -830,22 +832,9 @@ print(sf(ymd("2010-04-05")))
 ```
 
 ```r
-print(sf(int_start(int_season_summer)))
-```
+# print(sf(int_start(int_season_summer)))
+# print(sf(int_end(int_season_summer)))
 
-```
-## [1] "Created Sunday, Jun 21, 2019 17:54"
-```
-
-```r
-print(sf(int_end(int_season_summer)))
-```
-
-```
-## [1] "Created Sunday, Sep 23, 2019 09:49"
-```
-
-```r
 sf <- stamp("Created 01.01.1999 03:34")
 ```
 
@@ -866,21 +855,10 @@ print(sf(ymd("2010-04-05")))
 ```
 
 ```r
-print(sf(int_start(int_season_summer)))
+# print(sf(int_start(int_season_summer)))
+# print(sf(int_end(int_season_summer)))
 ```
-
-```
-## [1] "Created 06.21.2019 17:54"
-```
-
-```r
-print(sf(int_end(int_season_summer)))
-```
-
-```
-## [1] "Created 09.23.2019 09:49"
-```
-The function stamp could be a useful function of lubridate, in our opinion a little bit hard to configure.
+The function `stamp()` could be a useful function of lubridate, but is in our opinion a little bit hard to configure.
 
 ```r
 sft <- "%d.%m.%Y-%H:%M"
@@ -922,10 +900,10 @@ print(paste("Summer start/End"
 ```
 
 If we do not set the time zone correctly, we get the expected number of data records with our current data frame, but with a time delay.
-Select data with timezone format of the data frames first row.
+Select data with timezone format of the data frame's first row.
 
 ```r
-range(df$MESS_DATUM)                                               # check the whole data frame
+range(df$MESS_DATUM)    # check the range of the whole data frame
 ```
 
 ```
@@ -989,11 +967,14 @@ range(df_select_summer$MESS_DATUM)
 ```
 ## [1] "2019-06-21 18:00:00 UTC" "2019-09-23 09:40:00 UTC"
 ```
+
 We check our data frame again. 
 
 ```r
 rows_sum <- count(df_summer_attempt_1)           # or count(df_select_summer, n())
 expected_rows_sum <- 13487                    # determined with e.g. excel or SQL
+
+# make sure, that the condition 'expected_rows_sum == rows_sum' holds
 assert("expected rows sum" , expected_rows_sum == rows_sum)
 
 expected_summer_start <- ymd_hm("201906211800", tz="UTC")
@@ -1013,7 +994,7 @@ assert("expected summer-end" , expected_summer_end == max(df_select_summer$MESS_
 
 
 ##### Autumn
-New attempt to set the start and end points of an interval with the lubridate functions floor_date() and round_date().
+New attempt to set the start and end points of an interval with the lubridate functions `floor_date()` and `round_date()`.
 
 ```r
 print(paste("autumn start/end", season_19_autumn, "/", season_19_winter))
@@ -1049,12 +1030,13 @@ print(paste("autumn start/end", show_round_up_start, "/", show_round_down_end))
 ```
 ## [1] "autumn start/end 2019-09-23 10:00:00 / 2019-12-22 05:00:00"
 ```
+
 These results are not completly satisfying.
-So we use our aproach from summer selection of data.
+So we use our approach from summer selection of data.
 
 ```r
-a_start_f <- force_tz(int_start(int_season_autumn),df_tz)        
-a_end_f <- force_tz(int_end(int_season_autumn),df_tz)        
+a_start_f <- force_tz(int_start(int_season_autumn), df_tz)        
+a_end_f <- force_tz(int_end(int_season_autumn), df_tz)        
 print(paste("Force TZ start/end", a_start_f, "/", a_end_f))
 ```
 
@@ -1136,59 +1118,65 @@ range(df_select_winter$MESS_DATUM)
 
 ## Exploration - Analysis
 
-First we are going to calculate average temperatures for different standard intervalls like hours, days, weeks, months. We will visualise some data and eventually calculate new variables or aggregates for humdity, rainfall etc. as well, plus more insights, that might not be apparent at this stage.
+First we are going to calculate average temperatures for different standard intervals like hours, days, weeks, months. We will visualise some data and eventually calculate new variables or aggregates for humdity, precipitation etc.y as well, plus more insights, that might not be apparent at this stage.
 
 ### Temperatur
-The first variable of interest should be "TEMPERATUR". A quick visualisation delivers this picture:
+The first variable of interest should be `TEMPERATUR`. A quick visualisation delivers this picture:
 
 ```r
-ggplot(df)+
+ggplot(df) +
   geom_point(aes(MESS_DATUM, TEMPERATUR), colour = "red", size = 0.1)
 ```
 
 <img src="lubridate_files/figure-html/ggplot MESS_DATUM TEMPERATUR for JAHR-1.png" width="672" />
+
 This is a representation of all 52,704 observations of temperature and naturally appears quite crowded. 
 However, a typical course of the seasons during a year can already be interpreted from this plot.
 Please note that the chart starts at the start of the observations (April 2019) and stretches over a year from there.
 
-Let'S try to get a clearer picture of the temperature variable during the course of the observed year. 
+Let's try to get a clearer picture of the temperature variable during the course of the observed year. 
 We need to form averages and aggregates to make visualisation more to the point and get less crowded pictures.
 
-New variables should represent other dimensions of date-time data. We can use lubridate functions to produce variables for hours, 24hdays, weeks, months and even possibly seasons.
+New variables should represent other dimensions of date-time data. We can use lubridate functions to produce variables for hours, 24h-days, weeks, months and even possibly seasons.
 
-Assigning a year to every observation by creating a new column with lubridate function "year":
+Assigning a year to every observation by creating a new column with lubridate function `year()`:
 
 ```r
 df <- df %>% 
   mutate(JAHR = year(df$MESS_DATUM))
 ```
-Assigning the specific month (number) to every observation by creating a new column with lubridate function "month"
+
+Assigning the specific month (number) to every observation by creating a new column with lubridate function `month()`:
 
 ```r
 df <- df %>% 
   mutate(MONAT = month(df$MESS_DATUM))
 ```
-Assigning an Epiweeknr (EKW = Epi Kalender Woche) to every observation through a column with the function "epiweek":
+
+Assigning an epiweek number (`EKW` = Epi Kalender Woche) to every observation through a column with the function `epiweek()`:
 
 ```r
 df <- df %>% 
   mutate(EKW = epiweek(df$MESS_DATUM))
 ```
-Assigning a daynumber to every observation by creating a new column "JTAG" (Year day):
+
+Assigning a day number to every observation by creating a new column `JTAG` (Year day):
 
 ```r
 df <- df %>%
   mutate(JTAG = yday(df$MESS_DATUM))
 ```
-Assigning an hour to every observation by creating a new column "STUNDE":
+
+Assigning an hour to every observation by creating a new column `STUNDE`:
 
 ```r
 df <- df %>%
   mutate(STUNDE = hour(df$MESS_DATUM))
 ```
-Our data frame (df) has 12 variables now and thus we can filter the data by year, month, week, day and hour of the day. This gives us new possibilities to aggregate.
 
-The following GROUP_BY command creates a unique grouping per hour and then calculates the average temperature for every hour, then pastes this value into each observation per hour.
+Our data frame (`df`) has 12 variables now and thus we can filter the data by year, month, week, day and hour of the day. This gives us new possibilities to aggregate.
+
+The following `group_by()` command creates a unique grouping per hour and then calculates the average temperature for every hour, then pastes this value into each observation per hour.
 
 ```r
 df_group_Stunde <- df %>%
@@ -1198,6 +1186,7 @@ df_av_temp_Stunde  <- df_group_Stunde %>%
   summarise(AVGTEMPH = mean(TEMPERATUR)) %>%
   arrange(STATIONS_ID, JAHR, MONAT, EKW, JTAG, STUNDE)
 ```
+
 This newly created table has reduced the number of observations by the factor 6 to 8,784 and reveals the average temperature per hour.
 
 Let's plot the data again as hourly temperature averages per day:
@@ -1208,6 +1197,7 @@ ggplot(df_av_temp_Stunde)+
 ```
 
 <img src="lubridate_files/figure-html/ggplot avg TEMPERATUR STUNDE-1.png" width="672" />
+
 We can see that the data has become aggregated and that the temperature picture becomes somewhat more clear.
 Also the visualisation now stretches over the course of a whole calendar year from left to right.
 Let's go one step further and shorten the data down to daily averages by:
@@ -1219,6 +1209,7 @@ df_group_JTAG <- df %>%
 df_av_temp_JTAG  <- df_group_JTAG %>%
   summarise(AVGTEMPD = mean(TEMPERATUR)) %>%
   arrange(STATIONS_ID, JAHR, MONAT, EKW, JTAG) 
+
 head(df_av_temp_JTAG, 10)
 ```
 
@@ -1238,8 +1229,9 @@ head(df_av_temp_JTAG, 10)
 ##  9        2564  2019     4    17   112    12.2 
 ## 10        2564  2019     4    17   113    12.6
 ```
+
 This newly created table has reduced the number of observations by the factor 24 to 366 (the number of days in a leap year) and reveals the average temperature per day.
-Let's plot the data again as dayly temperature averages over the whole period as a line:
+Let's plot the data again as daily temperature averages over the whole period as a line:
 
 ```r
 ggplot(df_av_temp_JTAG)+
@@ -1247,9 +1239,10 @@ ggplot(df_av_temp_JTAG)+
 ```
 
 <img src="lubridate_files/figure-html/ggplot avg TEMPERATUR JTAG-1.png" width="672" />
+
 The data starts to make even more visual sense. The key take-aways from this plot, next to the rather trivial finding of higher summer temperatures, is the rather high volatility that appears to be attached to daily average temperature throughout the year. This could be interpreted as the changes between high and low pressure weather systems that cross northern Germany.
 
-Let's boil the data down to weekly temperature averages:
+Let's boil the data down to weekly temperature averages...
 
 ```r
 df_group_EKW <- df %>%
@@ -1257,7 +1250,8 @@ df_group_EKW <- df %>%
 
 df_av_temp_EKW  <- df_group_EKW %>%
   summarise(AVGTEMPW = mean(TEMPERATUR)) %>%
-  arrange(STATIONS_ID, JAHR, MONAT, EKW) 
+  arrange(STATIONS_ID, JAHR, MONAT, EKW)
+
 head(df_av_temp_EKW, 10)
 ```
 
@@ -1277,7 +1271,8 @@ head(df_av_temp_EKW, 10)
 ##  9        2564  2019     6    22    16.3 
 ## 10        2564  2019     6    23    17.7
 ```
-and plot again:
+
+... and plot the results again:
 
 ```r
 ggplot(df_av_temp_EKW)+
@@ -1285,8 +1280,10 @@ ggplot(df_av_temp_EKW)+
 ```
 
 <img src="lubridate_files/figure-html/ggplot avg TEMPERATUR WOCHE-1.png" width="672" />
-Even in weekyl aggregates of temperature averages the resulting visualisation still tells a story of volatility.
-Let's look at monthly averages:
+
+Even in weekly aggregates of temperature averages the resulting visualisation still tells a story of volatility.
+
+Let's look at monthly averages...
 
 ```r
 df_group_MONAT <- df %>%
@@ -1316,7 +1313,7 @@ head(df_av_temp_MONAT, 12)
 ## 11        2564  2020     2     5.74
 ## 12        2564  2020     3     5.58
 ```
-and plot again:
+... and plot again:
 
 ```r
 ggplot(df_av_temp_MONAT)+
@@ -1324,9 +1321,10 @@ ggplot(df_av_temp_MONAT)+
 ```
 
 <img src="lubridate_files/figure-html/ggplot avg TEMPERATUR MONAT-1.png" width="672" />
+
 Which is the kind of temperature curve we would expect to see in a north German location like Kiel with a clear pattern of 3 months of summer with higher average temperatures just below 20 degrees.
 
-It is interesting to note that (at least the first half of April 2020 is apparently much warmer on average than the second half of April in 2019. The dimension indicates a difference of about 2 degrees celsius, a significant difference.
+It is interesting to note that at least the first half of April 2020 is apparently much warmer on average than the second half of April in 2019. The dimension indicates a difference of about 2 degrees celsius, a significant difference.
 
 #### Average temperature for a day
 Generally, no separate variables would have to be created to determine the average temperatures. The values can be gleaned differently from the data frame.
@@ -1334,7 +1332,8 @@ Generally, no separate variables would have to be created to determine the avera
 ```r
 df_avg1 <- df_group %>% 
   summarise(avg = mean(TEMPERATUR)) %>% 
-  arrange( STATIONS_ID , TAG , STUNDE) 
+  arrange(STATIONS_ID , TAG , STUNDE) 
+
 head(df_avg1, 10) 
 ```
 
@@ -1354,17 +1353,23 @@ head(df_avg1, 10)
 ##  9        2564      8     1  6.18
 ## 10        2564      9     1  6.5
 ```
-### Rainfall
-#### Sum with condition
-The question here is, how long has ist rained during an hour/day?
-There are two different possible aproaches. One is without the binary indicator and the other uses it as a switch.
 
-Without indicator
+What we can say at this point is that the temperatures in the city of Kiel have a clear seasonal pattern, but remain highly volatile intra-day and inter-day.
+
+Weather however is not just defined as temperature, but humidity and precipitation play a role regarding our sensation and definition of weather as well.
+
+### Precipitation
+#### Sum with condition
+The question here is, how long did it rain during an hour/day?
+There are two different possible approaches. One is without the binary indicator and the other uses it as a switch.
+
+Without indicator:
 
 ```r
 df_sum1 <- df_group %>% 
   summarise(sum(NIEDERSCHLAGSDAUER)) %>% 
-  arrange( STATIONS_ID , TAG, STUNDE) 
+  arrange(STATIONS_ID, TAG, STUNDE)
+
 head(df_sum1, 24) 
 ```
 
@@ -1385,13 +1390,15 @@ head(df_sum1, 24)
 ## 10        2564      9     1                         0
 ## # ... with 14 more rows
 ```
-With indicator and renamed column
+
+With indicator and renamed column:
 
 ```r
 df_sum2 <- df_group %>% 
-  summarise(MENGE = sum(NIEDERSCHLAGSDAUER[NIEDERSCHLAGSINDIKATOR==1])) %>% 
-  filter(MENGE> 0) %>%
-  arrange( STATIONS_ID , TAG, STUNDE)
+  summarise(MENGE = sum(NIEDERSCHLAGSDAUER[NIEDERSCHLAGSINDIKATOR == 1])) %>% 
+  filter(MENGE > 0) %>%
+  arrange(STATIONS_ID, TAG, STUNDE)
+
 head(df_sum2, 24) 
 ```
 
@@ -1415,9 +1422,10 @@ First we examine the duration of rainfall in autumn.
 ```r
 df_sum_autumn_group <- df_group_autumn 
 df_sum_autumn <- df_sum_autumn_group %>% 
-              summarise(DAUER = sum(NIEDERSCHLAGSDAUER[NIEDERSCHLAGSINDIKATOR==1])) %>% 
-              filter(DAUER>0) %>%
-              arrange( STATIONS_ID , JAHR, MONAT, TAG)
+              summarise(DAUER = sum(NIEDERSCHLAGSDAUER[NIEDERSCHLAGSINDIKATOR == 1])) %>% 
+              filter(DAUER > 0) %>%
+              arrange(STATIONS_ID, JAHR, MONAT, TAG)
+
 head(df_sum_autumn, 10) 
 ```
 
@@ -1437,14 +1445,16 @@ head(df_sum_autumn, 10)
 ##  9        2564     2    10  2019   146
 ## 10        2564     3    10  2019     2
 ```
-Now we examine the milliliter of rainfall.
+
+Now we examine the milliliter of precipitation.
 
 ```r
 df_sum_autumn_liter_group <- df_group_autumn 
 df_sum_autumn_liter <- df_sum_autumn_liter_group %>%
             summarise(MENGE = sum(NIEDERSCHLAGSHOEHE[NIEDERSCHLAGSINDIKATOR==1])) %>% 
-            filter(MENGE>0) %>%
-            arrange( STATIONS_ID , JAHR, MONAT, TAG)
+            filter(MENGE > 0) %>%
+            arrange(STATIONS_ID, JAHR, MONAT, TAG)
+
 head(df_sum_autumn_liter, 10) 
 ```
 
@@ -1465,13 +1475,7 @@ head(df_sum_autumn_liter, 10)
 ## 10        2564     5    10  2019  0.94
 ```
 
-
-
 ### Humidity
-What we can say at this point is that the temperatures in the city of Kiel have a clear seasonal pattern, but remain highly volatile intra-day and inter-day.
-
-Weather however is not just defined as temperature, but humidity and precipitation play a role regarding our sensation and definition of weather as well.
-
 Let's have one look at humidity the same way we looked at temperatures as hourly averages:
 
 ```r
@@ -1479,6 +1483,7 @@ df_av_humi_Stunde  <- df_group_Stunde %>%
   summarise(AVGHUMI = mean(RELATIVE_FEUCHTE)) %>%
   arrange(STATIONS_ID, JAHR, MONAT, EKW, JTAG, STUNDE)
 ```
+
 Let's plot the data again as hourly humidity averages per day:
 
 ```r
@@ -1487,8 +1492,9 @@ ggplot(df_av_humi_Stunde)+
 ```
 
 <img src="lubridate_files/figure-html/ggplot avg RELATIVE_FEUCHTE-1.png" width="672" />
-This plot shows the dryer months during the summer as having a lot more hours with lower humidity values than the months that fall into autumn and winter. 
+
+This plot shows the drier months during the summer as having a lot more hours with lower humidity values than the months that fall into autumn and winter. 
 
 ## Wrap up
-It was our objective to show and explain some of the more important features of the lubridate package. We can definitely say that handling this dataset in Base R would have been a lot more labourious. Lubridate has made working with this time series if not easy, but possible.
-This statement goes for the other used packages in this exploration (dplyr, ggplot, etc.) without which the whole task would have been quite tedious.
+It was our objective to show and explain some of the more important features of the lubridate package. We can definitely say that handling this dataset in Base R would have been a lot more labourious. Working with time series in lubridate is not easy, but feasible.
+This statement also goes for the other used packages in this exploration (dplyr, ggplot, etc.) without which the whole task would have been quite tedious.
