@@ -242,7 +242,7 @@ olympic_1896$country[1:20] %>%
   fct_inorder() %>%
   levels()
 ```
-In this example the same result can be obtained using the function `as_factor()`. However, the function `fct_inorder()` can also be applied to already existing factors.
+In this example, the same result can be obtained using the function `as_factor()`. However, the function `fct_inorder()` can also be applied to already existing factors.
 
 ### Reverse level order
 The function `fct_rev()` reverses the existing order of the levels of a factor. First, have a look at the original order:
