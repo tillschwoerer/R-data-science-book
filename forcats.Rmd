@@ -82,12 +82,7 @@ fct_count(factor_clarity) %>%
   ggplot(aes(clarity, n)) +          #the definition of aes. mapping in this line is only used to label the axes
   geom_col(aes(f, n))
 ```
-If we want to order by the counts, we use the `fct_infreq` function.
-```{r}
-fct_count(factor_clarity) %>%
-  ggplot(aes(clarity, n)) +          #the definition of aes. mapping in this line is only used to label the axes
-  geom_col(aes(f, n))
-```
+
 
 
 
