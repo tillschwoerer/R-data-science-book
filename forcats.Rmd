@@ -473,7 +473,7 @@ expanded_factor_clarity <- factor_clarity %>%
 expanded_factor_clarity %>% 
   levels()
 ```
-Note that the additional levels get appended which is not necessarily what we want. Thus, an additional manual reordering of the levels as described in [5.4.1 Manual reordering of levels](#manual-reordering) is required here:
+Note, that the additional levels get appended which is not necessarily what we want. Thus, an additional manual reordering of the levels as described in [5.4.1 Manual reordering of levels](#manual-reordering) is required here:
 ```{r}
 # All GIA grades in the correct order.
 all_GIA_grades <- c("FL", "IF", "VVS1", "VVS2", "VS1", "VS2", "SI1", "SI2", "I1", "I2", "I3")
