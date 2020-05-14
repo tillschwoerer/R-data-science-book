@@ -23,7 +23,7 @@ The first workflow returns an ordered list of the 5 tracks with the highest numb
 ```r
 df %>%                                              # data
   select(Streams, date, Artist, Track.Name) %>%     # select columns by name
-  arrange(-Streams) %>%                             # order rows by some variable 
+  arrange(-Streams) %>%                             # order rows by some variable in descending order
   slice(1:5)                                        # select rows by position
 ```
 
@@ -37,7 +37,9 @@ df %>%                                              # data
 ## 4 1603796 2019-12-24 Chris Rea    Driving Home for Christmas - 2019 Remaster
 ## 5 1538169 2019-06-22 Capital Bra  Tilidin
 ```
-The second workflow returns the average number of streams per day of week since the beginning of the year 2020. For this operation, the day of week is derived from the date and added as an additional variable via the `mutate` function. 
+
+The second workflow returns the average number of streams per day of week since the beginning of the year 2020. 
+For this operation, the day of week is derived from the date and added as an additional variable via the `mutate` function. 
 
 
 ```r
@@ -74,13 +76,14 @@ df %>%
 
 ## Manipulating rows
 ### Extract rows
-The `filter` function is the most frequently used function to extract a subset of rows. The command extracts all rows where the filter condition(s) evaluate to TRUE. The `distinct` function returns distinct rows by removing duplicates (either for the whole data or the specified variables).
+The `filter` function is the most frequently used function to extract a subset of rows. 
+The command extracts all rows where the filter condition(s) evaluate to TRUE. The `distinct` function returns distinct rows by removing duplicates (either for the whole data or the specified variables).
 
 
 ```r
 df %>% 
-  filter(stringr::str_detect(Track.Name, "Santa")) %>% # extract rows where condition is TRUE
-  distinct(Artist, Track.Name)          # extract distinct combinations of the two variables
+  filter(stringr::str_detect(Track.Name, "Santa")) %>%  # extract rows where condition is TRUE
+  distinct(Artist, Track.Name)                          # extract distinct combinations of the two variables
 ```
 
 ```
@@ -102,7 +105,7 @@ df %>%
 ## 13 Mariah Carey    Oh Santa!
 ```
 
-We can select rows by position via `slice`. If we want to display the first or last n rows, we can also use the base R functions `head` and `tail`. The functions `top_n` of `top_fraq` allow us to extract the  specified number/fraction of rows, according to the ordering of a specified variable. In addition, `top_n` and `top_frac` also operate also on grouped data
+We can select rows by position via `slice`. If we want to display the first or last n rows, we can also use the base R functions `head` and `tail`. The functions `top_n` of `top_fraq` allow us to extract the  specified number/fraction of rows, according to the ordering of a specified variable. In addition, `top_n` and `top_frac` also operate on grouped data.
 
 
 ```r
@@ -205,7 +208,7 @@ df %>%
 
 ## Manipulating columns
 ### Extract and rename columns
-Subset of columns can be extracted via the `select` function. Selection is possible by name or position. Reversely, one can exclude specific columns via negative selection (using `-`). Noteworthy are are the many  helper functions, which are convenient for rapid exploration, but not recommendable for stable software: `start_with`, `last_col`, `everything`, `contains`, etc. One can rename columns while selecting them. If we want to rename a column while preserving the other columns we use the `rename` function.
+Subset of columns can be extracted via the `select` function. Selection is possible by name or position. Reversely, one can exclude specific columns via negative selection (using `-`). Noteworthy are the many helper functions, which are convenient for rapid exploration, but not recommendable for stable software: `start_with`, `last_col`, `everything`, `contains`, etc. One can rename columns while selecting them. If we want to rename a column while preserving the other columns we use the `rename` function.
 
 ```r
 df %>% select(Position, Track.Name)       # select via column name
@@ -289,7 +292,7 @@ If there is no predefined function, one can define an anonymous function (which 
 
 ```r
 df %>% 
-  mutate_at(vars(danceability, valence), function(x) x*100) %>% # Here we define a custom function in-line
+  mutate_at(vars(danceability, valence), function(x) x*100) %>% # Here we define a custom function in-line that multiplies dancebility and valence by 100
   select(Track.Name,danceability, valence) %>%
   head(5)
 ```
@@ -314,8 +317,8 @@ df %>%
 ```
 
 ```
-## Rows: 73,200
-## Columns: 15
+## Observations: 73,200
+## Variables: 15
 ## $ Position         <dbl> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,...
 ## $ Track.Name       <fct> Cherry Lady, Affalterbach, Blackberry Sky, Wolke 1...
 ## $ Artist           <fct> Capital Bra, Shindy, Eno, MERO, Fero47, Capital Br...
@@ -352,7 +355,6 @@ df %>%
 ## 4       11 Top 11-200 Gib Ihm    
 ## 5       12 Top 11-200 Jay Jay
 ```
-
 
 ## Aggregate
 The `summarise` function is the generic way of calculating summary stats for specific variables. Within the function we can apply base R summary functions (`sum`, `mean` or `max`), one of dplyr's specific summary functions (`n`, `n_distinct`) or a user defined summary function. In the standard case the `summarise` function returns one row.
@@ -476,7 +478,7 @@ The idea is to write regular dplyr code. The code is translated into SQL under t
 ### Set up
 First, we need to install a few things: 
 
-- **Database:** In a company setting, the database will already be there. If you want to install a database on your computer, popular choices are PostgreSQL or MySQL. Here is an [overview of possible choices](https://db.rstudio.com/databases/)S For this book we will use an in-memory SQLite database. The benefit is that everyone will be able to run the code without the need to set up a proper database.    
+- **Database:** In a company setting, the database will already be there. If you want to install a database on your computer, popular choices are PostgreSQL or MySQL. Here is an [overview of possible choices](https://db.rstudio.com/databases/) For this book we will use an in-memory SQLite database. The benefit is that everyone will be able to run the code without the need to set up a proper database.    
 - **DBI backend package:** DBI stands for database interface. We need a package that corresponds to our database. In our case we will use the package `RSQLite`. With many other databases, the package `odbc` would be proper choice.
 - **`dbplyr` package** This package needs to be installed, but we never need to load it explictly. Once installed, it is sufficient to load the regular `dplyr` package.
 
@@ -494,7 +496,7 @@ copy_to(con, df, "spotify-charts-germany")
 ```
 
 ### Querying the database
-First, we register the database table via the `tbl` function. 
+First, we register the database table via the `tbl` function, which creates a table from a data source.
 
 ```r
 spotify_db <- tbl(con, "spotify-charts-germany")
@@ -512,7 +514,7 @@ spotify_db %>%                                      # reference to the database 
 
 ```
 ## # Source:     lazy query [?? x 4]
-## # Database:   sqlite 3.29.0 [:memory:]
+## # Database:   sqlite 3.30.1 [:memory:]
 ## # Ordered by: -Streams
 ##   Streams  date Artist       Track.Name                                
 ##     <dbl> <dbl> <chr>        <chr>                                     
@@ -542,7 +544,7 @@ spotify_db %>%
 ## LIMIT 5
 ```
 
-Alternatively, we could achieve the same by writing the SQL query ourselves, and send the query to the database.
+Alternatively, we could achieve the same by writing the SQL query ourselves, and send the query to the database. You might need to install the packages 'RMySQL' before you are able to execute.
 
 ```r
 query <-  "SELECT Streams, date, Artist, `Track.Name` 

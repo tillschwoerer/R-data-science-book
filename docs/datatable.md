@@ -511,13 +511,6 @@ install.packages("microbenchmark")
 
 ```r
 library(microbenchmark)              # package for performance comparisons
-```
-
-```
-## Warning: Paket 'microbenchmark' wurde unter R Version 3.6.3 erstellt
-```
-
-```r
 olympics_tbl <- as_tibble(olympics)  # create a tibble to compare performance
 
 # Sorting
@@ -530,12 +523,12 @@ microbenchmark(
 
 ```
 ## Unit: milliseconds
-##                           expr     min      lq      mean   median       uq
-##  olympics_tbl %>% arrange(age) 96.7030 99.4314 117.22992 115.6790 135.1999
-##           olympics[order(age)] 34.6687 46.2439  54.21128  47.6448  49.4354
+##                           expr     min       lq      mean   median       uq
+##  olympics_tbl %>% arrange(age) 96.3809 104.7948 133.48596 107.9655 126.5487
+##           olympics[order(age)] 35.7042  43.1039  63.02072  43.2537  53.3242
 ##       max neval
-##  139.1363     5
-##   93.0636     5
+##  231.7399     5
+##  139.7176     5
 ```
 
 ```r
@@ -549,12 +542,12 @@ microbenchmark(
 
 ```
 ## Unit: milliseconds
-##                                   expr     min      lq     mean  median     uq
-##  olympics_tbl %>% filter(height > 160) 14.3292 15.7076 18.77070 17.0241 20.216
-##                 olympics[height > 160] 12.0343 22.4867 35.87588 22.5284 25.425
+##                                   expr     min      lq     mean  median      uq
+##  olympics_tbl %>% filter(height > 160) 14.8139 16.1564 19.60014 16.8633 18.0434
+##                 olympics[height > 160] 11.5326 12.5000 16.11734 13.8222 16.7287
 ##      max neval
-##  26.5766     5
-##  96.9050     5
+##  32.1237     5
+##  26.0032     5
 ```
 
 ```r
@@ -571,9 +564,9 @@ microbenchmark(
 ##                                                                            expr
 ##  olympics_tbl %>% group_by(athlete) %>% summarise(mean(height,      na.rm = T))
 ##                         olympics[, .(mean(height, na.rm = T)), keyby = athlete]
-##        min        lq     mean    median        uq       max neval
-##  2598.6271 2670.7910 3037.267 3115.6672 3120.4755 3680.7744     5
-##   418.4699  439.0937  463.506  445.1356  494.1703  520.6606     5
+##        min        lq      mean    median        uq       max neval
+##  2526.8202 2547.5901 2573.3637 2570.1466 2587.2232 2635.0385     5
+##   543.5562  549.2586  580.5558  565.2651  580.7441  663.9551     5
 ```
 
 

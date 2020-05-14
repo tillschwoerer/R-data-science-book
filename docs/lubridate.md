@@ -60,34 +60,18 @@ library(tidyverse)      # the tidyverse with its dplyr functions for data wrangl
 ```
 
 ```
-## -- Attaching packages ---------------
+## -- Attaching packages ----------------------- tidyverse 1.3.0 --
 ```
 
 ```
-## v ggplot2 3.3.0     v purrr   0.3.2
-## v tibble  3.0.0     v dplyr   0.8.5
-## v tidyr   1.0.0     v stringr 1.4.0
-## v ggplot2 3.3.0     v forcats 0.5.0
+## v ggplot2 3.3.0     v dplyr   0.8.5
+## v tibble  2.1.3     v stringr 1.4.0
+## v tidyr   1.0.2     v forcats 0.5.0
+## v purrr   0.3.3
 ```
 
 ```
-## Warning: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt
-```
-
-```
-## Warning: Paket 'tibble' wurde unter R Version 3.6.3 erstellt
-```
-
-```
-## Warning: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt
-```
-
-```
-## Warning: Paket 'forcats' wurde unter R Version 3.6.3 erstellt
-```
-
-```
-## -- Conflicts ------------------------
+## -- Conflicts -------------------------- tidyverse_conflicts() --
 ## x lubridate::as.difftime() masks base::as.difftime()
 ## x lubridate::date()        masks base::date()
 ## x dplyr::filter()          masks stats::filter()
@@ -101,10 +85,6 @@ library(tidyverse)      # the tidyverse with its dplyr functions for data wrangl
 library(ggplot2)        # data visualisation package (is actually part of tidyverse, but still)
 library(testit)         # testing data selections
 ```
-
-```
-## Warning: Paket 'testit' wurde unter R Version 3.6.3 erstellt
-```
 With the lubridate package activated, we can now call some simple functions to check where we are in time:
 
 ```r
@@ -113,7 +93,7 @@ today()                 # date like YYYY-mm-dd
 ```
 
 ```
-## [1] "2020-05-08"
+## [1] "2020-05-14"
 ```
 
 ```r
@@ -121,7 +101,7 @@ now()                   # timestamp like YYYY-mm-dd HH:MM:SS TZ
 ```
 
 ```
-## [1] "2020-05-08 07:42:46 CEST"
+## [1] "2020-05-14 21:47:35 CEST"
 ```
 
 ```r
@@ -130,7 +110,7 @@ Sys.Date()              # date like YYYY-mm-dd
 ```
 
 ```
-## [1] "2020-05-08"
+## [1] "2020-05-14"
 ```
 
 ```r
@@ -138,7 +118,7 @@ Sys.time()              # timestamp like YYYY-mm-dd HH:MM:SS TZ
 ```
 
 ```
-## [1] "2020-05-08 07:42:46 CEST"
+## [1] "2020-05-14 21:47:35 CEST"
 ```
 
 ```r
@@ -554,7 +534,7 @@ season_19_winter <- ymd_hm("2019-12-22 05:19", tz="CET")
 season_20_spring <- ymd_hm("2020-03-20 04:49", tz="CET")
 season_20_summer <- ymd_hm("2020-06-20 23:43", tz="CET")
 ```
-Source re: starts of seasons [from](https://www.timeanddate.de/astronomie/jahreszeiten "timeanddate.de")
+Source re: starts of seasons from [timeanddate.de](https://www.timeanddate.de/astronomie/jahreszeiten "timeanddate.de")
 
 Our goal shall be to create an interval for the spring season.
 The following information is available to determine the end point of spring:
@@ -1153,11 +1133,11 @@ print(paste("Force TZ start/end", a_start_f, "/", a_end_f))
 ```
 
 ```r
-df_select_autmn <- 
+df_select_autumn <- 
   df %>%
     filter(MESS_DATUM >= a_start_f 
            & MESS_DATUM <= a_end_f) 
-print(count(df_select_autmn))
+print(count(df_select_autumn))
 ```
 
 ```
@@ -1168,8 +1148,8 @@ print(count(df_select_autmn))
 ```
 
 ```r
-df_group_autmn <- df_select_autmn %>% group_by(STATIONS_ID , TAG=day(MESS_DATUM) , MONAT=month(MESS_DATUM) , JAHR=year(MESS_DATUM)) 
-head(df_group_autmn, 10)
+df_group_autumn <- df_select_autumn %>% group_by(STATIONS_ID , TAG=day(MESS_DATUM) , MONAT=month(MESS_DATUM) , JAHR=year(MESS_DATUM)) 
+head(df_group_autumn, 10)
 ```
 
 ```
@@ -1192,7 +1172,7 @@ head(df_group_autmn, 10)
 ```
 
 ```r
-range(df_select_autmn$MESS_DATUM)
+range(df_select_autumn$MESS_DATUM)
 ```
 
 ```
@@ -1480,36 +1460,35 @@ With indicator and renamed column
 ```r
 df_sum2 <- df_group %>% 
   summarise(MENGE = sum(NIEDERSCHLAGSDAUER[NIEDERSCHLAGSINDIKATOR==1])) %>% 
+  filter(MENGE> 0) %>%
   arrange( STATIONS_ID , TAG, STUNDE)
 head(df_sum2, 24) 
 ```
 
 ```
-## # A tibble: 24 x 4
-## # Groups:   STATIONS_ID, STUNDE [24]
-##    STATIONS_ID STUNDE   TAG MENGE
-##          <int>  <int> <int> <int>
-##  1        2564      0     1     0
-##  2        2564      1     1     0
-##  3        2564      2     1     0
-##  4        2564      3     1     0
-##  5        2564      4     1     0
-##  6        2564      5     1     0
-##  7        2564      6     1     0
-##  8        2564      7     1     0
-##  9        2564      8     1     0
-## 10        2564      9     1     0
-## # ... with 14 more rows
+## # A tibble: 7 x 4
+## # Groups:   STATIONS_ID, STUNDE [7]
+##   STATIONS_ID STUNDE   TAG MENGE
+##         <int>  <int> <int> <int>
+## 1        2564     11     1     2
+## 2        2564     12     1     3
+## 3        2564     13     1    23
+## 4        2564     14     1    14
+## 5        2564     15     1    10
+## 6        2564     18     1    16
+## 7        2564     23     1     1
 ```
 
 Now we apply the knowledge with the indicator to the selection of autumn.
-Now we examine the duration of rainfall in autumn.
+First we examine the duration of rainfall in autumn.
 
 ```r
-df_sum_autmn <- df_group_autmn %>% 
-  summarise(DAUER = sum(NIEDERSCHLAGSDAUER[NIEDERSCHLAGSINDIKATOR==1])) %>% 
-  arrange( STATIONS_ID , JAHR, MONAT, TAG)
-head(df_sum_autmn, 10) 
+df_sum_autumn_group <- df_group_autumn 
+df_sum_autumn <- df_sum_autumn_group %>% 
+              summarise(DAUER = sum(NIEDERSCHLAGSDAUER[NIEDERSCHLAGSINDIKATOR==1])) %>% 
+              filter(DAUER>0) %>%
+              arrange( STATIONS_ID , JAHR, MONAT, TAG)
+head(df_sum_autumn, 10) 
 ```
 
 ```
@@ -1517,17 +1496,46 @@ head(df_sum_autmn, 10)
 ## # Groups:   STATIONS_ID, TAG, MONAT [10]
 ##    STATIONS_ID   TAG MONAT  JAHR DAUER
 ##          <int> <int> <dbl> <dbl> <int>
-##  1        2564    23     9  2019     0
-##  2        2564    24     9  2019    11
-##  3        2564    25     9  2019   593
-##  4        2564    26     9  2019   181
-##  5        2564    27     9  2019   392
-##  6        2564    28     9  2019   228
-##  7        2564    29     9  2019  1008
-##  8        2564    30     9  2019   354
-##  9        2564     1    10  2019   752
-## 10        2564     2    10  2019   146
+##  1        2564    24     9  2019    11
+##  2        2564    25     9  2019   593
+##  3        2564    26     9  2019   181
+##  4        2564    27     9  2019   392
+##  5        2564    28     9  2019   228
+##  6        2564    29     9  2019  1008
+##  7        2564    30     9  2019   354
+##  8        2564     1    10  2019   752
+##  9        2564     2    10  2019   146
+## 10        2564     3    10  2019     2
 ```
+Now we examine the milliliter of rainfall.
+
+```r
+df_sum_autumn_liter_group <- df_group_autumn 
+df_sum_autumn_liter <- df_sum_autumn_liter_group %>%
+            summarise(MENGE = sum(NIEDERSCHLAGSHOEHE[NIEDERSCHLAGSINDIKATOR==1])) %>% 
+            filter(MENGE>0) %>%
+            arrange( STATIONS_ID , JAHR, MONAT, TAG)
+head(df_sum_autumn_liter, 10) 
+```
+
+```
+## # A tibble: 10 x 5
+## # Groups:   STATIONS_ID, TAG, MONAT [10]
+##    STATIONS_ID   TAG MONAT  JAHR MENGE
+##          <int> <int> <dbl> <dbl> <dbl>
+##  1        2564    25     9  2019  0.71
+##  2        2564    26     9  2019  1.18
+##  3        2564    27     9  2019 13.3 
+##  4        2564    28     9  2019  7.57
+##  5        2564    29     9  2019 14.6 
+##  6        2564    30     9  2019 11.8 
+##  7        2564     1    10  2019 15.4 
+##  8        2564     2    10  2019  0.36
+##  9        2564     4    10  2019  0.1 
+## 10        2564     5    10  2019  0.94
+```
+
+
 
 ### Humidity
 What we can say at this point is that the temperatures in the city of Kiel have a clear seasonal pattern, but remain highly volatile intra-day and inter-day.

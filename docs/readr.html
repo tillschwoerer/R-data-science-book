@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>3 Tidying data: tidyr | R Data Science Book</title>
-  <meta name="description" content="3 Tidying data: tidyr | R Data Science Book" />
+  <title>2 Reading data: readr | R Data Science Book</title>
+  <meta name="description" content="2 Reading data: readr | R Data Science Book" />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="3 Tidying data: tidyr | R Data Science Book" />
+  <meta property="og:title" content="2 Reading data: readr | R Data Science Book" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="tillschwoerer/R-data-science-book" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="3 Tidying data: tidyr | R Data Science Book" />
+  <meta name="twitter:title" content="2 Reading data: readr | R Data Science Book" />
   
   
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="readr.html"/>
-<link rel="next" href="dplyr.html"/>
+<link rel="prev" href="index.html"/>
+<link rel="next" href="tidyr.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -251,8 +251,76 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="tidyr" class="section level1">
-<h1><span class="header-section-number">3</span> Tidying data: tidyr</h1>
+<div id="readr" class="section level1">
+<h1><span class="header-section-number">2</span> Reading data: readr</h1>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">library</span>(readr)  <span class="co"># reading data (we could also load it via package tidyverse)</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="kw">library</span>(dplyr)  <span class="co"># wrangling data (we could also load it via package tidyverse) </span></a></code></pre></div>
+<p>We are working with crudly formatted contract data (<em>vertragsdaten.csv</em>), to demonstrate the functionalites of the <code>readr</code> package. This is how the data looks like:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">readr<span class="op">::</span><span class="kw">read_lines</span>(<span class="dt">file =</span> <span class="st">&quot;data/vertragsdaten.csv&quot;</span>, <span class="dt">n_max =</span> <span class="dv">5</span>)</a></code></pre></div>
+<pre><code>## [1] &quot;0135710150010017;01;3;1;01;         156,50 ;22022020;H      ;00 ;17D2;V709;&quot;
+## [2] &quot;0136300200006011;01;3;1;01;          60,40 ;22022020;H      ;00 ;17D2;V709;&quot;
+## [3] &quot;0136920590002028;01;3;1;01;           1,30 ;22022020;H      ;10 ;14H2;V113;&quot;
+## [4] &quot;0171400040019017;01;3;2;01;          61,00 ;22022020;H      ;00 ;17D2;V113;&quot;
+## [5] &quot;0272150100001011;07;3;1;01;       9.842,50 ;22022020;H      ;00 ; 662;V002;&quot;</code></pre>
+<p>The Challenges are:</p>
+<ul>
+<li>Add column names</li>
+<li>Deal with leading and trailing blanks (which can have a meaning in some columns)</li>
+<li>Correctly specify the column types (numbers, date, character, …)</li>
+<li>To correctly identify numbers, we need to set the German locale. Itherwise, the decimal mark won’t be correctly identified.</li>
+<li>In order to create readible reports, it is sometimes helpful to display Euro amounts not as a number, but as a character that includes the Euro symbol (€) and comma/big mark signs</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">df &lt;-<span class="st"> </span>readr<span class="op">::</span><span class="kw">read_delim</span>(<span class="dt">file =</span> <span class="st">&quot;data/vertragsdaten.csv&quot;</span>, </a>
+<a class="sourceLine" id="cb5-2" title="2">                 </a>
+<a class="sourceLine" id="cb5-3" title="3">                 <span class="co"># Specify semicolon as separator</span></a>
+<a class="sourceLine" id="cb5-4" title="4">                 <span class="dt">delim =</span> <span class="st">&quot;;&quot;</span>, </a>
+<a class="sourceLine" id="cb5-5" title="5">                 </a>
+<a class="sourceLine" id="cb5-6" title="6">                 <span class="co"># Set the missing column names</span></a>
+<a class="sourceLine" id="cb5-7" title="7">                 <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&quot;VVT_NR&quot;</span>, <span class="st">&quot;Gebiet&quot;</span>, <span class="st">&quot;Abt&quot;</span>, <span class="st">&quot;Zw&quot;</span>, <span class="st">&quot;FK&quot;</span>, <span class="st">&quot;Beitr_Neu&quot;</span>, <span class="st">&quot;EDV_Dat&quot;</span>, </a>
+<a class="sourceLine" id="cb5-8" title="8">                               <span class="st">&quot;Merkmal&quot;</span>, <span class="st">&quot;Kz_MB&quot;</span>, <span class="st">&quot;Sparte&quot;</span>, <span class="st">&quot;Bedingung&quot;</span>, <span class="st">&quot;leere_Spalte&quot;</span>),</a>
+<a class="sourceLine" id="cb5-9" title="9">                 </a>
+<a class="sourceLine" id="cb5-10" title="10">                 <span class="co"># Change data types which are not correctly imported by default</span></a>
+<a class="sourceLine" id="cb5-11" title="11">                 <span class="co"># We skip the last column, which turns out to be empty</span></a>
+<a class="sourceLine" id="cb5-12" title="12">                 <span class="dt">col_types =</span> <span class="kw">cols</span>(<span class="dt">EDV_Dat =</span> <span class="kw">col_date</span>(<span class="dt">format =</span> <span class="st">&quot;%d%m%Y&quot;</span>), <span class="dt">leere_Spalte =</span> <span class="kw">col_skip</span>()), </a>
+<a class="sourceLine" id="cb5-13" title="13">                 </a>
+<a class="sourceLine" id="cb5-14" title="14">                 <span class="co"># We set the German locale in order to get numbers and dates right</span></a>
+<a class="sourceLine" id="cb5-15" title="15">                 <span class="dt">locale =</span> <span class="kw">locale</span>(<span class="dt">date_names =</span> <span class="st">&quot;de&quot;</span>, <span class="dt">decimal_mark =</span> <span class="st">&quot;,&quot;</span>, <span class="dt">grouping_mark =</span> <span class="st">&quot;.&quot;</span>), </a>
+<a class="sourceLine" id="cb5-16" title="16">                 </a>
+<a class="sourceLine" id="cb5-17" title="17">                 <span class="co"># White spaces are sometimes important, so we don&#39;t want to trim them</span></a>
+<a class="sourceLine" id="cb5-18" title="18">                 <span class="dt">trim_ws =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb5-19" title="19"></a>
+<a class="sourceLine" id="cb5-20" title="20"><span class="kw">head</span>(df)</a></code></pre></div>
+<pre><code>## # A tibble: 5 x 11
+##   VVT_NR Gebiet   Abt    Zw FK    Beitr_Neu EDV_Dat    Merkmal Kz_MB Sparte
+##   &lt;chr&gt;  &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;     &lt;date&gt;     &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; 
+## 1 01357~ 01         3     1 01    &quot;       ~ 2020-02-22 &quot;H    ~ &quot;00 &quot; &quot;17D2&quot;
+## 2 01363~ 01         3     1 01    &quot;       ~ 2020-02-22 &quot;H    ~ &quot;00 &quot; &quot;17D2&quot;
+## 3 01369~ 01         3     1 01    &quot;       ~ 2020-02-22 &quot;H    ~ &quot;10 &quot; &quot;14H2&quot;
+## 4 01714~ 01         3     2 01    &quot;       ~ 2020-02-22 &quot;H    ~ &quot;00 &quot; &quot;17D2&quot;
+## 5 02721~ 07         3     1 01    &quot;       ~ 2020-02-22 &quot;H    ~ &quot;00 &quot; &quot; 662&quot;
+## # ... with 1 more variable: Bedingung &lt;chr&gt;</code></pre>
+<p>The column <code>Beitr_Neu</code> is not yet correctly recognized as numeric, due to the fact that we did not trim white spaces. Hence, we need to correct this column in a separate step.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">df &lt;-<span class="st"> </span>df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Beitr_Neu =</span> readr<span class="op">::</span><span class="kw">parse_number</span>(Beitr_Neu, </a>
+<a class="sourceLine" id="cb7-3" title="3">                                  </a>
+<a class="sourceLine" id="cb7-4" title="4">                                  <span class="co"># We trim White psaces</span></a>
+<a class="sourceLine" id="cb7-5" title="5">                                  <span class="dt">trim_ws =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb7-6" title="6">                                  </a>
+<a class="sourceLine" id="cb7-7" title="7">                                  <span class="co"># Set the German number separator marks</span></a>
+<a class="sourceLine" id="cb7-8" title="8">                                  <span class="dt">locale =</span> <span class="kw">locale</span>(<span class="dt">decimal_mark =</span> <span class="st">&quot;,&quot;</span>, <span class="dt">grouping_mark =</span> <span class="st">&quot;.&quot;</span>), </a>
+<a class="sourceLine" id="cb7-9" title="9">                                  </a>
+<a class="sourceLine" id="cb7-10" title="10">                                  ))</a>
+<a class="sourceLine" id="cb7-11" title="11"></a>
+<a class="sourceLine" id="cb7-12" title="12"><span class="kw">head</span>(df)</a></code></pre></div>
+<pre><code>## # A tibble: 5 x 11
+##   VVT_NR Gebiet   Abt    Zw FK    Beitr_Neu EDV_Dat    Merkmal Kz_MB Sparte
+##   &lt;chr&gt;  &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;date&gt;     &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; 
+## 1 01357~ 01         3     1 01        156.  2020-02-22 &quot;H    ~ &quot;00 &quot; &quot;17D2&quot;
+## 2 01363~ 01         3     1 01         60.4 2020-02-22 &quot;H    ~ &quot;00 &quot; &quot;17D2&quot;
+## 3 01369~ 01         3     1 01          1.3 2020-02-22 &quot;H    ~ &quot;10 &quot; &quot;14H2&quot;
+## 4 01714~ 01         3     2 01         61   2020-02-22 &quot;H    ~ &quot;00 &quot; &quot;17D2&quot;
+## 5 02721~ 07         3     1 01       9842.  2020-02-22 &quot;H    ~ &quot;00 &quot; &quot; 662&quot;
+## # ... with 1 more variable: Bedingung &lt;chr&gt;</code></pre>
 
 </div>
             </section>
@@ -260,8 +328,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="readr.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="dplyr.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="tidyr.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -300,7 +368,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/tillschwoerer/R-data-science-book/blob/master/tidyr.Rmd",
+"link": "https://github.com/tillschwoerer/R-data-science-book/blob/master/readr.Rmd",
 "text": null
 },
 "download": null,
