@@ -57,7 +57,7 @@ today()                 # date like YYYY-mm-dd
 ```
 
 ```
-## [1] "2020-05-13"
+## [1] "2020-05-14"
 ```
 
 ```r
@@ -66,7 +66,7 @@ now()                   # timestamp like YYYY-mm-dd HH:MM:SS TZ
 ```
 
 ```
-## [1] "2020-05-13 19:26:36 CEST"
+## [1] "2020-05-14 09:15:59 CEST"
 ```
 
 ```r
@@ -75,7 +75,7 @@ Sys.Date()              # date like YYYY-mm-dd
 ```
 
 ```
-## [1] "2020-05-13"
+## [1] "2020-05-14"
 ```
 
 ```r
@@ -84,7 +84,7 @@ Sys.time()              # timestamp like YYYY-mm-dd HH:MM:SS TZ
 ```
 
 ```
-## [1] "2020-05-13 19:26:36 CEST"
+## [1] "2020-05-14 09:15:59 CEST"
 ```
 
 ```r
@@ -625,7 +625,7 @@ int_season_winter <- season_19_winter %--% (season_20_spring - minutes(1))
 Note that the `%--%` operator in the last line is similar to the calls of the `interval()` function in the lines above.
 
 ### Groupings
-What follows is an intermediate step working with `group_by()`s and `rename()`s. Subseqeuntly the findings towards seasons will be apllied again. 
+What follows is an intermediate step working with `group_by()`s and `rename()`s. Subseqeuntly the findings towards seasons will be applied again. 
 
 The following `group_by()` command creates a unique grouping per hour and then calculates the average temperature for every hour, then pastes this value into each observation per hour.
 Recall that `tag_int` ranges from `2020-03-01` to `2020-03-02`.
@@ -762,7 +762,7 @@ cat(paste("Obtained initial value:", min(df_summer_attempt_1$MESS_DATUM),
 #assert("expected summer-start" , expected_summer_start == min(df_summer_attempt_1$MESS_DATUM))
 #assert("expected summer-end" , expected_summer_end == max(df_summer_attempt_1$MESS_DATUM))
 ```
-While our first approach gets the correct number of records (13,487), the initial value of the interval appear to not be correct since the expected initial value would be `2019-06-21 18:00`. This expected initial value however is refers to the MESZ time zone's time, which is basically obtained by adding two hours to UTC time, i.e MESZ leads UTC be two hours.
+While our first approach gets the correct number of records (13,487), the initial value of the interval appear to not be correct since the expected initial value would be `2019-06-21 18:00`. This expected initial value however is refers to the CET (or more specifically CEST) time zone's time, which is basically obtained by adding two hours to UTC time, i.e CEST leads UTC be two hours.
 
 In order to print the start and end time points correctly we use the `stamp()` function of lubridate. 
 The `stamp()` function creates more human-readable time formats and internally also reads the system's time locale by calling `Sys.getlocale("LC_TIME")`.

@@ -24,7 +24,7 @@
 <meta name="author" content="Tools and Programming Languages for Data Scientists, FH Kiel, Summer Term 2020" />
 
 
-<meta name="date" content="2020-05-13" />
+<meta name="date" content="2020-05-14" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -294,16 +294,16 @@ When people in the USA talk distance between two places, they often give an appr
 <p>With the lubridate package activated, we can now call some simple functions to check where we are in time:</p>
 <div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" title="1"><span class="co"># Lubridate</span></a>
 <a class="sourceLine" id="cb61-2" title="2"><span class="kw">today</span>()                 <span class="co"># date like YYYY-mm-dd</span></a></code></pre></div>
-<pre><code>## [1] &quot;2020-05-13&quot;</code></pre>
+<pre><code>## [1] &quot;2020-05-14&quot;</code></pre>
 <div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" title="1"><span class="co"># Lubridate</span></a>
 <a class="sourceLine" id="cb63-2" title="2"><span class="kw">now</span>()                   <span class="co"># timestamp like YYYY-mm-dd HH:MM:SS TZ</span></a></code></pre></div>
-<pre><code>## [1] &quot;2020-05-13 19:26:36 CEST&quot;</code></pre>
+<pre><code>## [1] &quot;2020-05-14 09:15:59 CEST&quot;</code></pre>
 <div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" title="1"><span class="co"># Base R</span></a>
 <a class="sourceLine" id="cb65-2" title="2"><span class="kw">Sys.Date</span>()              <span class="co"># date like YYYY-mm-dd</span></a></code></pre></div>
-<pre><code>## [1] &quot;2020-05-13&quot;</code></pre>
+<pre><code>## [1] &quot;2020-05-14&quot;</code></pre>
 <div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" title="1"><span class="co"># Base R</span></a>
 <a class="sourceLine" id="cb67-2" title="2"><span class="kw">Sys.time</span>()              <span class="co"># timestamp like YYYY-mm-dd HH:MM:SS TZ</span></a></code></pre></div>
-<pre><code>## [1] &quot;2020-05-13 19:26:36 CEST&quot;</code></pre>
+<pre><code>## [1] &quot;2020-05-14 09:15:59 CEST&quot;</code></pre>
 <div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" title="1"><span class="co"># Base R</span></a>
 <a class="sourceLine" id="cb69-2" title="2"><span class="kw">Sys.timezone</span>()          <span class="co"># actual timezone &quot;Europe/Berlin&quot;</span></a></code></pre></div>
 <pre><code>## [1] &quot;Europe/Berlin&quot;</code></pre>
@@ -638,7 +638,7 @@ In other words: Objects of class <code>Durations</code> refer to physical time a
 </div>
 <div id="groupings" class="section level3">
 <h3><span class="header-section-number">5.5.2</span> Groupings</h3>
-<p>What follows is an intermediate step working with <code>group_by()</code>s and <code>rename()</code>s. Subseqeuntly the findings towards seasons will be apllied again.</p>
+<p>What follows is an intermediate step working with <code>group_by()</code>s and <code>rename()</code>s. Subseqeuntly the findings towards seasons will be applied again.</p>
 <p>The following <code>group_by()</code> command creates a unique grouping per hour and then calculates the average temperature for every hour, then pastes this value into each observation per hour.
 Recall that <code>tag_int</code> ranges from <code>2020-03-01</code> to <code>2020-03-02</code>.</p>
 <div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb132-1" title="1">df_sel &lt;-<span class="st"> </span>df <span class="op">%&gt;%</span></a>
@@ -738,7 +738,7 @@ With the help of assertions (<code>assert()</code>) one can identify logical err
 ## obtained final value:   2019-09-23 07:40:00</code></pre>
 <div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb142-1" title="1"><span class="co">#assert(&quot;expected summer-start&quot; , expected_summer_start == min(df_summer_attempt_1$MESS_DATUM))</span></a>
 <a class="sourceLine" id="cb142-2" title="2"><span class="co">#assert(&quot;expected summer-end&quot; , expected_summer_end == max(df_summer_attempt_1$MESS_DATUM))</span></a></code></pre></div>
-<p>While our first approach gets the correct number of records (13,487), the initial value of the interval appear to not be correct since the expected initial value would be <code>2019-06-21 18:00</code>. This expected initial value however is refers to the MESZ time zone’s time, which is basically obtained by adding two hours to UTC time, i.e MESZ leads UTC be two hours.</p>
+<p>While our first approach gets the correct number of records (13,487), the initial value of the interval appear to not be correct since the expected initial value would be <code>2019-06-21 18:00</code>. This expected initial value however is refers to the CET (or more specifically CEST) time zone’s time, which is basically obtained by adding two hours to UTC time, i.e CEST leads UTC be two hours.</p>
 <p>In order to print the start and end time points correctly we use the <code>stamp()</code> function of lubridate.
 The <code>stamp()</code> function creates more human-readable time formats and internally also reads the system’s time locale by calling <code>Sys.getlocale("LC_TIME")</code>.</p>
 <div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb143-1" title="1">sf &lt;-<span class="st"> </span><span class="kw">stamp</span>(<span class="st">&quot;set to 24 Jun 2019 3:34&quot;</span>) <span class="co"># create a template format as a function</span></a></code></pre></div>
