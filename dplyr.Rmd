@@ -1,6 +1,6 @@
 # Wrangling data: dplyr {#dplyr}
 
-The R package `dplry` is described as a grammar of data manipulation. It provides commands for the most frequently used types of data transformations, either for the purpose of exploration, data cleaning, or augmenting data.
+The R package `dplyr` is described as a grammar of data manipulation. It provides commands for the most frequently used types of data transformations, either for the purpose of exploration, cleaning, or augmenting data.
 
 The package is part of the core tidyverse, which means that we can load it either explictly via `library(dplyr)` or implictly via `library(tidyverse)`. Note that in the following, all commands that are not `dplyr` commands are made explicit via `<package>::<command>`. To demonstrate the main features, we use data on Spotify's daily top 200 charts in Germany in the course of one year. 
 
@@ -23,7 +23,6 @@ df %>%                                              # data
   select(Streams, date, Artist, Track.Name) %>%     # select columns by name
   arrange(-Streams) %>%                             # order rows by some variable in descending order
   slice(1:5)                                        # select rows by position
-
 ```
 
 The second workflow returns the average number of streams per day of week since the beginning of the year 2020. 
@@ -36,7 +35,6 @@ df %>%                                 # data
   mutate(day_of_week=lubridate::wday(date, label=TRUE, abbr=FALSE, week_start=1)) %>%
   group_by(day_of_week) %>%            # group the data 
   summarise(streams = mean(Streams))   # aggregate per group via functions such as mean, min, etc. 
-        
 ```
 
 Note that in this particular case, we can write the code more concise by generating the new variable `day_of_week` inside the `group_by` function.
@@ -102,14 +100,14 @@ df %>% select(-Track.Name)                # select all columns except Track.Name
 df %>% select(starts_with("dance"))       # select all columns starting with "dance" 
 df %>% select(danceability, everything()) # reorder danceability first, then remaining columns
 df %>% select(song = Track.Name)          # select one column (Track.name) and rename it (song)
-df %>% rename(song = Track.Name)          # renames one column, but preserves all the others 
+df %>% rename(song = Track.Name)          # renames one column, but preserves all the others
 ```
 ### Create new columns
 The function `mutate` creates a new variable or overwrites an existing one. Note that we must assign back to make a permanent change to the data. 
 
 ```{r mutate}
 df %>% 
-  mutate(duration_s = round(duration_ms / 1000)) %>%  # create new variable
+  mutate(duration_s = round(duration_ms / 1000)) %>%  # create new variable duration expressed in seconds
   mutate(Track.Name = as.factor(Track.Name)) %>%      # change existing variable
   select(Track.Name,starts_with("duration")) %>%
   head(5)
