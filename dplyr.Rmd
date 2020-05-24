@@ -1,6 +1,6 @@
 # Wrangling data: dplyr {#dplyr}
 
-The R package `dplry` is described as a grammar of data manipulation. It provides commands for the most frequently used types of data transformations, either for the purpose of exploration, data cleaning, or augmenting data.
+The R package `dplyr` is described as a grammar of data manipulation. It provides commands for the most frequently used types of data transformations, either for the purpose of exploration, cleaning, or augmenting data.
 
 The package is part of the core tidyverse, which means that we can load it either explictly via `library(dplyr)` or implictly via `library(tidyverse)`. Note that in the following, all commands that are not `dplyr` commands are made explicit via `<package>::<command>`. To demonstrate the main features, we use data on Spotify's daily top 200 charts in Germany in the course of one year. 
 
@@ -21,21 +21,20 @@ The first workflow returns an ordered list of the 5 tracks with the highest numb
 ```{r workflow1}
 df %>%                                              # data
   select(Streams, date, Artist, Track.Name) %>%     # select columns by name
-  arrange(-Streams) %>%                             # order rows by some variable 
+  arrange(-Streams) %>%                             # order rows by some variable in descending order
   slice(1:5)                                        # select rows by position
-
 ```
-The second workflow returns the average number of streams per day of week since the beginning of the year 2020. For this operation, the day of week is derived from the date and added as an additional variable via the `mutate` function. 
+
+The second workflow returns the average number of streams per day of week since the beginning of the year 2020. 
+For this operation, the day of week is derived from the date and added as an additional variable via the `mutate` function. 
 
 ```{r workflow2}
 df %>%                                 # data              
   filter(date>="2020-01-01") %>%       # select rows where condition evaluates to TRUE
                                        # create an additional variable 
-  mutate(day_of_week=lubridate::wday(date, label=TRUE, abbr=FALSE, 
-                                     locale="American_America.1252", week_start=1)) %>%
+  mutate(day_of_week=lubridate::wday(date, label=TRUE, abbr=FALSE, week_start=1)) %>%
   group_by(day_of_week) %>%            # group the data 
   summarise(streams = mean(Streams))   # aggregate per group via functions such as mean, min, etc. 
-        
 ```
 
 Note that in this particular case, we can write the code more concise by generating the new variable `day_of_week` inside the `group_by` function.
@@ -43,21 +42,22 @@ Note that in this particular case, we can write the code more concise by generat
 ```{r workflow2b, eval=FALSE}
 df %>%                                              
   filter(date>="2020-01-01") %>%                    
-  group_by(day_of_week=lubridate::wday(date, label=TRUE, abbr=FALSE, locale="American_America.1252", week_start=1)) %>% 
+  group_by(day_of_week=lubridate::wday(date, label=TRUE, abbr=FALSE, week_start=1)) %>% 
   summarise(streams = mean(Streams))          
 ```
 
 ## Manipulating rows
 ### Extract rows
-The `filter` function is the most frequently used function to extract a subset of rows. The command extracts all rows where the filter condition(s) evaluate to TRUE. The `distinct` function returns distinct rows by removing duplicates (either for the whole data or the specified variables).
+The `filter` function is the most frequently used function to extract a subset of rows. 
+The command extracts all rows where the filter condition(s) evaluate to TRUE. The `distinct` function returns distinct rows by removing duplicates (either for the whole data or the specified variables).
 
 ```{r filter}
 df %>% 
-  filter(stringr::str_detect(Track.Name, "Santa")) %>% # extract rows where condition is TRUE
-  distinct(Artist, Track.Name)          # extract distinct combinations of the two variables
+  filter(stringr::str_detect(Track.Name, "Santa")) %>%  # extract rows where condition is TRUE
+  distinct(Artist, Track.Name)                          # extract distinct combinations of the two variables
 ```
 
-We can select rows by position via `slice`. If we want to display the first or last n rows, we can also use the base R functions `head` and `tail`. The functions `top_n` of `top_fraq` allow us to extract the  specified number/fraction of rows, according to the ordering of a specified variable. In addition, `top_n` and `top_frac` also operate also on grouped data
+We can select rows by position via `slice`. If we want to display the first or last n rows, we can also use the base R functions `head` and `tail`. The functions `top_n` of `top_fraq` allow us to extract the  specified number/fraction of rows, according to the ordering of a specified variable. In addition, `top_n` and `top_frac` also operate on grouped data.
 
 ```{r slice}
 df %>% slice(c(1,3,5))   # selects rows by position (in the given order)
@@ -92,7 +92,7 @@ df %>%
 
 ## Manipulating columns
 ### Extract and rename columns
-Subset of columns can be extracted via the `select` function. Selection is possible by name or position. Reversely, one can exclude specific columns via negative selection (using `-`). Noteworthy are are the many  helper functions, which are convenient for rapid exploration, but not recommendable for stable software: `start_with`, `last_col`, `everything`, `contains`, etc. One can rename columns while selecting them. If we want to rename a column while preserving the other columns we use the `rename` function.
+Subset of columns can be extracted via the `select` function. Selection is possible by name or position. Reversely, one can exclude specific columns via negative selection (using `-`). Noteworthy are the many helper functions, which are convenient for rapid exploration, but not recommendable for stable software: `start_with`, `last_col`, `everything`, `contains`, etc. One can rename columns while selecting them. If we want to rename a column while preserving the other columns we use the `rename` function.
 ```{r select, eval=FALSE}
 df %>% select(Position, Track.Name)       # select via column name
 df %>% select(1, 2)                       # select via column position
@@ -100,14 +100,14 @@ df %>% select(-Track.Name)                # select all columns except Track.Name
 df %>% select(starts_with("dance"))       # select all columns starting with "dance" 
 df %>% select(danceability, everything()) # reorder danceability first, then remaining columns
 df %>% select(song = Track.Name)          # select one column (Track.name) and rename it (song)
-df %>% rename(song = Track.Name)          # renames one column, but preserves all the others 
+df %>% rename(song = Track.Name)          # renames one column, but preserves all the others
 ```
 ### Create new columns
 The function `mutate` creates a new variable or overwrites an existing one. Note that we must assign back to make a permanent change to the data. 
 
 ```{r mutate}
 df %>% 
-  mutate(duration_s = round(duration_ms / 1000)) %>%  # create new variable
+  mutate(duration_s = round(duration_ms / 1000)) %>%  # create new variable duration expressed in seconds
   mutate(Track.Name = as.factor(Track.Name)) %>%      # change existing variable
   select(Track.Name,starts_with("duration")) %>%
   head(5)
@@ -135,7 +135,7 @@ df %>%
 If there is no predefined function, one can define an anonymous function (which cannot be used outside this context) on the fly:
 ```{r anonymous_function}
 df %>% 
-  mutate_at(vars(danceability, valence), function(x) x*100) %>% # Here we define a custom function in-line
+  mutate_at(vars(danceability, valence), function(x) x*100) %>% # Here we define a custom function in-line that multiplies dancebility and valence by 100
   select(Track.Name,danceability, valence) %>%
   head(5)
 ```
@@ -155,8 +155,7 @@ df %>%
   slice(8:12)
 ```
 
-
-## Summarise
+## Aggregate
 The `summarise` function is the generic way of calculating summary stats for specific variables. Within the function we can apply base R summary functions (`sum`, `mean` or `max`), one of dplyr's specific summary functions (`n`, `n_distinct`) or a user defined summary function. In the standard case the `summarise` function returns one row.
 ```{r summarise}
 df %>% 
@@ -191,8 +190,15 @@ df %>%
   head(5)
 ```
 
+## Window functions
+A window function is a variation on an aggregation function. While `mean` or `sum` take n inputs and return a single output, a window function returns n values. Window functions are used inside `mutate` and `filter` functions.
+
+- Offsets:`lead` and `lag`
+- Cummulative aggregations: `cumsum`, `cummean`,...
+- Rankings: `dense_rank`, `ntile`, ...
 
 ## Combining tables
+
 ## Database backend
 ### Motivation
 As mentioned before, the `dplyr` syntax reveals strong analogies with SQL. What is more, it is even possible to use `dplyr` with a database backend. 
@@ -214,7 +220,7 @@ The idea is to write regular dplyr code. The code is translated into SQL under t
 ### Set up
 First, we need to install a few things: 
 
-- **Database:** In a company setting, the database will already be there. If you want to install a database on your computer, popular choices are PostgreSQL or MySQL. Here is an [overview of possible choices](https://db.rstudio.com/databases/)S For this book we will use an in-memory SQLite database. The benefit is that everyone will be able to run the code without the need to set up a proper database.    
+- **Database:** In a company setting, the database will already be there. If you want to install a database on your computer, popular choices are PostgreSQL or MySQL. Here is an [overview of possible choices](https://db.rstudio.com/databases/) For this book we will use an in-memory SQLite database. The benefit is that everyone will be able to run the code without the need to set up a proper database.    
 - **DBI backend package:** DBI stands for database interface. We need a package that corresponds to our database. In our case we will use the package `RSQLite`. With many other databases, the package `odbc` would be proper choice.
 - **`dbplyr` package** This package needs to be installed, but we never need to load it explictly. Once installed, it is sufficient to load the regular `dplyr` package.
 
@@ -230,7 +236,7 @@ copy_to(con, df, "spotify-charts-germany")
 ```
 
 ### Querying the database
-First, we register the database table via the `tbl` function. 
+First, we register the database table via the `tbl` function, which creates a table from a data source.
 ```{r register-table, paged.print = FALSE}
 spotify_db <- tbl(con, "spotify-charts-germany")
 ```
@@ -254,7 +260,7 @@ spotify_db %>%
   show_query()                                      # shows the translation into SQL
 ```
 
-Alternatively, we could achieve the same by writing the SQL query ourselves, and send the query to the database.
+Alternatively, we could achieve the same by writing the SQL query ourselves, and send the query to the database. You might need to install the packages 'RMySQL' before you are able to execute.
 ```{r workflow1-sql, eval=FALSE}
 query <-  "SELECT Streams, date, Artist, `Track.Name` 
           FROM `spotify-charts-germany`

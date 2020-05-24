@@ -20,54 +20,7 @@ Advice: Many of the examples in the Vignettes just refer to vectors. How can we 
 
 
 
-```{r, include=FALSE, results='hide'}
-#Loading of the libraries
-#install.packages("stringr")
-#install.packages("gutenbergr")
-#install.packages("tidytext")
 
-#Keep in mind that knitr doesn't work, if those commands are not commented out. The packages are necessary to run the script nonetheless.
-
-library(readr)
-library(stringr)
-library(dplyr)
-library(gutenbergr)
-library(tidytext)
-
-#---------------------------------------------------
-
-#Loading of a fulltext example. The time machine from H.G. Wells from the Gutenberg Project.
-
-#//The access to the website is prohibited from a German adress, so the usage of the package might be a legal issue.
-
-tm_text <- gutenberg_download(35)
-
-
-#Loading and formatting of the data set
-
-recipes <- read_csv("data/recipes.csv")
-
-str(recipes)
-recipes.c <- recipes
-    
-
-#The ids of the recipe and of the contributor are de facto factors.
-
-recipes.c$id <- as.factor(recipes$id)
-#check str(recipes$id)
-
-recipes.c$contributor_id <- as.factor(recipes$contributor_id)
-#check str(recipes$contributor_id)
-
-# The nutrition values are num
-
-recipes_test <- str_sub(recipes.c$nutrition[1], 2, str_length(recipes.c$nutrition[1])-1)
-recipes_test <- strsplit(recipes$nutrition[1], ", ")
-recipes_test_1 <- as.numeric(recipes_test[[1]])
-
-#//[!!!] I'm aware this is not consequently done as it is, but I leave it as it is, to not cause any conflicts further down.
-
-```
 
 
 ## Introduction
@@ -97,11 +50,22 @@ Researching the package, we were under the impression that stringR is mostly des
 We want to point out that full text analysis as done in text mining, e.g. the novel The Time Machine by H.G. Wells, doesn't operate on a long text as a whole string. Instead, it'd rather tokenize the text first (Silge Robinson 2017). As a result every word is put in another row, as you can see here:
 
 
-```{r echo=FALSE}
-#tm_text <- tibble(line = 1:4, text = tm_text)
 
-tm_text %>%
-  unnest_tokens(word, text)
+```
+## # A tibble: 32,653 x 2
+##    gutenberg_id word   
+##           <int> <chr>  
+##  1           35 the    
+##  2           35 time   
+##  3           35 machine
+##  4           35 by     
+##  5           35 h      
+##  6           35 g      
+##  7           35 wells  
+##  8           35 1898   
+##  9           35 i      
+## 10           35 the    
+## # ... with 32,643 more rows
 ```
 
 This format will set restrictions on your ability to use the stringR functions, because stringR seems to be designed to operate on full texts and not on single worded strings. However, some stringR methods like str_detect are used frequently in text mining.
@@ -156,10 +120,13 @@ This could be used to compare the length of two strings, especially if they have
 
 To show that punctuation marks and white spaces are also counted, we use here a simple example.
 
-```{r , echo=TRUE}
 
+```r
 str_length("Hello, world!")
+```
 
+```
+## [1] 13
 ```
 
 In the above string there are 13 characters and 10 word characters. If you just want to get just the amount of word characters, you could subset the string by matching every character, which is a word character.
@@ -178,18 +145,17 @@ The idea is to adjust strings of different length to the same length in order to
 
 In our dataset, the id consists sometimes of 5 or 6 digits, as you can see here:
 
-```{r, echo=FALSE}
 
-head(recipes$id,10)
-
+```
+##  [1] 144176 288190 174243 186363 231008 225599  70689 218370  90181 308152
 ```
 
 We want to adjust all of the numbers to the same length. So, we add a zero in front to those 5-digit numbers.
 
-```{r, echo=FALSE}
 
-head(str_pad(recipes$id, width = 6, side = "left", pad = "0"),10)
-
+```
+##  [1] "144176" "288190" "174243" "186363" "231008" "225599" "070689" "218370"
+##  [9] "090181" "308152"
 ```
 
 As we can see, some ids have now a 0 in front. These were 5-digit numbers before. 
@@ -206,11 +172,33 @@ str_trunc(string, width, side = c("right", "left",
 
 We could use the function to show more text from the description column than can be seen in the view(recipes) tab, to get a better impression, of what these texts are about. But we might not need the full text. We just want the first 50 characters, so we cut off to the right.
 
-```{r, echo=TRUE}
 
+```r
 head(str_trunc(recipes$description, width = 50, side = "right"),5)
-recipes %>% mutate(description_short = str_trunc(description, width = 50, side = "right")) %>% select(name, description_short) %>% head()
+```
 
+```
+## [1] "from oregonlive.com.  i loved the beef lettuce ..."
+## [2] "this is just a recipe i came up with when i was..."
+## [3] "i just love this recipe. it's quick, easy to ma..."
+## [4] "this is another of our family favorites that ma..."
+## [5] "finally comfort food for us vegetarians!!  post..."
+```
+
+```r
+recipes %>% mutate(description_short = str_trunc(description, width = 50, side = "right")) %>% select(name, description_short) %>% head()
+```
+
+```
+## # A tibble: 6 x 2
+##   name                                  description_short                       
+##   <chr>                                 <chr>                                   
+## 1 chinese spicy beef lettuce wraps      from oregonlive.com.  i loved the beef ~
+## 2 peanut butter and dark fudge brownie~ this is just a recipe i came up with wh~
+## 3 dorito casserole                      i just love this recipe. it's quick, ea~
+## 4 pink lady squares                     this is another of our family favorites~
+## 5 vegetable pot pie   pies              finally comfort food for us vegetarians~
+## 6 artichoke gratinata                   this is a giada delaurentis recipe that~
 ```
 
 
@@ -221,10 +209,13 @@ str_trim(string, side = c("both", "left", "right")) trims whitespaces from the s
 
 <u>Example</u>
 
-```{r, echo=TRUE}
 
+```r
 str_trim("     Hello, world!        ", side = "left")
+```
 
+```
+## [1] "Hello, world!        "
 ```
 As you can see, the whitespaces on the left are cut out, while the whitespaces on the right are still there.
 
@@ -243,17 +234,22 @@ str_sub(string, start=1L, end = -1L) can be used to extract substrings of a stri
 <u>Example</u>
 
 In our data we have the nutrition given as a character string in the following format
-```{r , echo=FALSE}
-recipes$nutrition[1]
+
+```
+## [1] "[267.4, 18.0, 15.0, 28.0, 42.0, 20.0, 5.0]"
 ```
 This whole term is a string, which we want to split into a list. First, we have to delete the "[" in the beginning of the string and "]" at the end.
 
 Here it is useful, that We can use the str_sub also to eliminate unwanted signs at the beginning and the end of a string.
 
 
-```{r , echo=TRUE }
-str_sub(recipes$nutrition[1], 2,str_length(recipes$nutrition[1])-1)
 
+```r
+str_sub(recipes$nutrition[1], 2,str_length(recipes$nutrition[1])-1)
+```
+
+```
+## [1] "267.4, 18.0, 15.0, 28.0, 42.0, 20.0, 5.0"
 ```
 
 Then we can use the strsplit() function from base R to split the string into a list of strings by using ", " as the seperator. We don't have to care for the brackets additionally then.
@@ -269,14 +265,20 @@ str_subset(string, pattern) gives back strings that contain a pattern match. The
 
 To give an example, we look at the description of a recipe, which looks like the following:
 
-```{r , echo=FALSE }
-recipes$description[1]
+
+```
+## [1] "from oregonlive.com.  i loved the beef lettuce wraps from a restaurant in montauk, ny called east by northeast. this was the closest i have found to recreating it with a few minor adjustments from me."
 ```
 Some of the descriptions contain the source of the recipe. So in this case, we want all the recipes, which originate from oregonlive.com
 
-```{r , echo=TRUE }
-str_subset(recipes$description, "oregonlive.com")
 
+```r
+str_subset(recipes$description, "oregonlive.com")
+```
+
+```
+## [1] "from oregonlive.com.  i loved the beef lettuce wraps from a restaurant in montauk, ny called east by northeast. this was the closest i have found to recreating it with a few minor adjustments from me."                                                                                                                                                                                                                                                                                                                       
+## [2] "this is a recipe in transition. it was made after a conversation with a friend. there is no place that i have been able to find a recipe for bacon lo mein - this was the closest i came on the internet. originally, i found this on oregonlive.com, tuesday, nov. 29, 2005 from philip jones, fort atkinson, wis. however, have tweaked it and now it's mine bad or good! here's to ya'.update: 01/22/2010 - to the reviewer who gave it a thumbs up - did you mean to omit the stars? after all - i got a glowing report! ;)"
 ```
 As you can see, the set of strings has been reduced just to two strings. These are those, which contain "oregon.live"
 
@@ -298,9 +300,21 @@ If you don't simply want the first match, then you can use also str.extract.all(
 We look at the common words love and recipe in the description. The result shows, in which decriptions which word of these comes first or gives back NA if the pattern isn't found at all in the string. 
 
 
-```{r , echo=TRUE }
-head(str_extract(recipes$description, "(love\\w|recipe\\w)"),60)
 
+```r
+head(str_extract(recipes$description, "(love\\w|recipe\\w)"),60)
+```
+
+```
+##  [1] "loved"   NA        NA        NA        NA        NA        NA       
+##  [8] NA        NA        NA        NA        "recipes" NA        NA       
+## [15] NA        NA        NA        NA        NA        NA        "recipes"
+## [22] NA        NA        NA        NA        NA        "recipes" NA       
+## [29] NA        NA        NA        NA        NA        "loves"   NA       
+## [36] NA        "recipel" NA        NA        NA        NA        NA       
+## [43] NA        NA        NA        "recipes" NA        NA        NA       
+## [50] NA        NA        NA        NA        "recipes" "lovel"   NA       
+## [57] NA        NA        NA        NA
 ```
 This example also shows, that you have to be careful with regular expressions. The 55rd entry "lovel" comes from "lovely". Maybe you would rather have "lovely" returned.
 
@@ -310,10 +324,26 @@ This example also shows, that you have to be careful with regular expressions. T
 
 One could also look at the ingredients and check, which recipes contain milk and eggs. Since we want to show that both are present in the dish or just one of these ingredients, we use str_extract_all
 
-```{r , echo=TRUE }
+
+```r
 head(str_extract_all(recipes$ingredients, "milk|eggs"),5)
+```
 
-
+```
+## [[1]]
+## character(0)
+## 
+## [[2]]
+## [1] "eggs" "milk"
+## 
+## [[3]]
+## character(0)
+## 
+## [[4]]
+## [1] "milk"
+## 
+## [[5]]
+## [1] "milk"
 ```
 
 
@@ -335,9 +365,18 @@ As with str_extract, here also exists a str_match_all function to get all the ma
 
 Here we want to match the regular expression (love\\w|recipe\\w).+(beef). This means "love" and "recipe" form one group and beef forms the other. The whole expression as such is also a group.
 
-```{r , echo=TRUE }
-head(str_match(recipes$description, "(love\\w|recipe\\w).+(beef)"),5)
 
+```r
+head(str_match(recipes$description, "(love\\w|recipe\\w).+(beef)"),5)
+```
+
+```
+##      [,1]             [,2]    [,3]  
+## [1,] "loved the beef" "loved" "beef"
+## [2,] NA               NA      NA    
+## [3,] NA               NA      NA    
+## [4,] NA               NA      NA    
+## [5,] NA               NA      NA
 ```
 
 
@@ -356,9 +395,21 @@ str_detect(string, pattern) detects the presence of a pattern match in a string.
 
 Here we search for love and recipe in the description of every recipe. 
 
-```{r , echo=TRUE }
-head(str_detect(recipes$description, "(love\\w|recipe\\w)"),100)
 
+```r
+head(str_detect(recipes$description, "(love\\w|recipe\\w)"),100)
+```
+
+```
+##   [1]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE
+##  [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE
+##  [25] FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE
+##  [37]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE    NA  TRUE FALSE FALSE
+##  [49] FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE
+##  [61] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [73] FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [85] FALSE FALSE FALSE    NA  TRUE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE
+##  [97] FALSE FALSE FALSE  TRUE
 ```
 In contrast to extract, we just see, that one of the strings is in a certain string or not, but not which one of those.
 
@@ -371,9 +422,18 @@ str_which(string, pattern) finds the indices of strings that contain a pattern m
 
 Again we search for "love" and "recipe" in the description column.
 
-```{r , echo=TRUE }
-head(str_which(recipes$description, "(love\\w|recipe\\w)"),100)
 
+```r
+head(str_which(recipes$description, "(love\\w|recipe\\w)"),100)
+```
+
+```
+##   [1]   1  12  21  27  34  37  46  54  55  77  89  96 100 115 125 126 127 146
+##  [19] 152 154 166 169 174 180 191 192 193 200 224 227 234 239 246 276 282 286
+##  [37] 302 309 311 325 333 337 345 346 352 354 367 389 392 402 405 410 417 427
+##  [55] 431 435 440 442 457 463 465 473 483 487 497 509 516 518 522 523 538 550
+##  [73] 555 560 564 573 575 596 604 611 612 620 639 649 666 670 677 695 712 724
+##  [91] 725 732 734 746 768 770 779 780 788 798
 ```
 In these rows there are descriptions, which contain either the word love or recipe.
 
@@ -386,24 +446,45 @@ str_count(string, pattern) counts the number of matches in a string.
 
 "i" occurs very often in the descriptions of the recipes. Let's see how often per description. As a regular expression we have chosen " i ", that is an i surrounded by white spaces. This means in sentences like "I ...." the i is not matched.
 
-```{r , echo=TRUE }
-head(str_count(recipes$description, " i "),100)
 
+```r
+head(str_count(recipes$description, " i "),100)
+```
+
+```
+##   [1]  2  2  0  1  0  1  0  0  2  0  1  0  0  1  0  1  0  0  1  1  0  0  0  1  2
+##  [26]  2  1  8  0  0  0  6  0  0  0  0  3  0  0  0  0  0  0  0 NA  0  0  0  0  2
+##  [51]  2  0  1  4  0  2  2  0  1  0  1  0  1  0  0  1  0  1  0  2  0  0  0  0  2
+##  [76]  0  2  0  1  1  2  0  0  0  1  0  0 NA  2  0  0  0  0  0  0  1  2  0  0  0
 ```
 
 #### str_locate
 
 str_locate(string, pattern) locates the positions of the first pattern match within a string.
 
-```{r , echo=TRUE }
-head(str_locate(recipes$description, " i "),10)
 
+```r
+head(str_locate(recipes$description, " i "),10)
+```
+
+```
+##       start end
+##  [1,]    22  24
+##  [2,]    22  24
+##  [3,]    NA  NA
+##  [4,]   175 177
+##  [5,]    NA  NA
+##  [6,]    40  42
+##  [7,]    NA  NA
+##  [8,]    NA  NA
+##  [9,]   112 114
+## [10,]    NA  NA
 ```
 If you look up the first description string
 
-```{r , echo=FALSE }
-recipes$description[1]
 
+```
+## [1] "from oregonlive.com.  i loved the beef lettuce wraps from a restaurant in montauk, ny called east by northeast. this was the closest i have found to recreating it with a few minor adjustments from me."
 ```
 Then you can see, that the first " i " is indeed from position 22 to 24. The length of 3 (24-22+1) come from 2 whitespaces and the i.
 
@@ -412,17 +493,15 @@ Then you can see, that the first " i " is indeed from position 22 to 24. The len
 
 In this part we will use Italy, a subset of "recipes" that is exclusively containing recipes mentioning "pizza".
 
-``` {r, echo=FALSE}
-Italy <- recipes %>% filter(stringr::str_detect(name, "pizza"))
-```
+
 
 #### str_replace (and replace_all) 
 
 The replace functions of stringr are used to match patterns and replace them with new strings. 
 
 <u>Example</u>
-```{r, echo=TRUE}
 
+```r
 Italy <- Italy %>% 
   mutate(name1 = str_replace(Italy$name, "pizza", "fluffy pizza"))
 ```
@@ -432,7 +511,8 @@ For seo (search engine optimization) we will add the popular word "fluffy" to al
 In order to replace several matches, use str_replace_all and create a vector containing multiple conditions.
 
 
-``` {r, echo=TRUE}
+
+```r
 Italy <- Italy %>% 
   mutate(name2 = str_replace_all(Italy$name, c("pizza" = "fluffy pizza", "easy" = "easy peasy")))
 ```
@@ -449,12 +529,33 @@ str_to_title will change first letter of a string into a capital letter.
 
 
 <u>Example</u>
-``` {r, echo=TRUE}
+
+```r
 p <- c("i","like","pizza","and","i don't share pizzza")
 str_to_upper(p)
+```
+
+```
+## [1] "I"                    "LIKE"                 "PIZZA"               
+## [4] "AND"                  "I DON'T SHARE PIZZZA"
+```
+
+```r
 str_to_sentence(p)
+```
+
+```
+## [1] "I"                    "Like"                 "Pizza"               
+## [4] "And"                  "I don't share pizzza"
+```
+
+```r
 p <- str_c(p, collapse = " ") #make it one sentence (see str_c)
 str_to_sentence(p)
+```
+
+```
+## [1] "I like pizza and i don't share pizzza"
 ```
 
 Attention: Locales will apply language conventions when changing the case. As you know, capitalization is used different in German and English. Above, the default would be locale = "en" but you can change it into every other language. The code for your language can be found in Wikipedia - List of ISO 639-1 codes.
@@ -462,8 +563,22 @@ Attention: Locales will apply language conventions when changing the case. As yo
 Locales also come in handy for the str_order or str_sort fuction. 
 str_sort will sort a list of string vectors by alphabet (locale will determine wich alphabet is applied)
 
-```{r, echo=TRUE}
+
+```r
 str_sort(Italy$name1[1:10], decreasing = FALSE, na_last = TRUE, locale = "en", numeric = FALSE)
+```
+
+```
+##  [1] "fluffy pizza tomato sauce"                            
+##  [2] "karen s slow cooker fluffy pizza chicken"             
+##  [3] "macaroni fluffy pizza casserole"                      
+##  [4] "mini fluffy pizza muffins"                            
+##  [5] "parmesan spinach fluffy pizza"                        
+##  [6] "pizzeria style sausage fluffy pizza"                  
+##  [7] "quick bread fluffy pizza"                             
+##  [8] "strawberry fluffy pizza"                              
+##  [9] "three cheese fluffy pizza with truffle oil"           
+## [10] "yeast free fluffy pizza with fresh basil and tomatoes"
 ```
 
 ### Join and Split
@@ -475,9 +590,21 @@ If you want to merge several strings into one, the str_c function is what you ne
 <u>Example</u>
 In our Pizza example you can first see the join of the first few names into one string separated by ", " and then a vector that is joint into one string using the words "and then" as a form of separation. 
 
-```{r, echo=TRUE}
+
+```r
 str_c(Italy$name2[1],Italy$name2[2], Italy$name2[3], sep = ", ")
+```
+
+```
+## [1] "three cheese fluffy pizza with truffle oil, karen s slow cooker fluffy pizza chicken, yeast free fluffy pizza with fresh basil and tomatoes"
+```
+
+```r
 str_c(Italy$name2[1:3], collapse = " and then ")
+```
+
+```
+## [1] "three cheese fluffy pizza with truffle oil and then karen s slow cooker fluffy pizza chicken and then yeast free fluffy pizza with fresh basil and tomatoes"
 ```
 
 #### str_split
@@ -487,9 +614,26 @@ The str_split function will split a vector of strings into a list of substrings.
 <u>Example</u>
 In our example we will split the column step containing step by step instructions into single substrings. As the steps currently have the format of a list, we can use the comma as a pattern to separate the strings. 
 
-```{r, echo=TRUE}
-Italy$steps %>% str_split("', '") %>% head(2)
 
+```r
+Italy$steps %>% str_split("', '") %>% head(2)
+```
+
+```
+## [[1]]
+## [1] "['follow heating directions for crust"                  
+## [2] "sprinkle mozzarella and parmesan cheese evenly on crust"
+## [3] "dollop the ricotta cheese to your liking on top"        
+## [4] "bake pizza until cheese get bubbly"                     
+## [5] "drizzle truffle oil over cooked pizza"                  
+## [6] "enjoy']"                                                
+## 
+## [[2]]
+## [1] "['place chicken , onion , bell pepper and celery in a slow cooker"                                                                     
+## [2] "in a medium bowl combine the tomato soup , cream of mushroom soup , tomato paste , water , parsley , oregano , basil , salt and pepper"
+## [3] "mix well and pour mixture over chicken and vegetables in slow cooker"                                                                  
+## [4] "stir to coat and add bay leaf"                                                                                                         
+## [5] "cook on low setting for 8 hours , until chicken and vegetables are tender']"
 ```
 If you'd rather have the subset of strings in a matrix, you can use str_split_fixed and choose n for the number of columns in the matrix. 
 
@@ -497,10 +641,18 @@ If you'd rather have the subset of strings in a matrix, you can use str_split_fi
 
 
 <u>Example</u>
-```{r, echo=TRUE}
+
+```r
 pandas <- c("Carl","Jakob","Jakob","Markus","Robert")
 str_glue("Hey {pandas}! I'd recommend the recipe '{str_to_title(Italy$name2[1:5])}' for you." )
+```
 
+```
+## Hey Carl! I'd recommend the recipe 'Three Cheese Fluffy Pizza With Truffle Oil' for you.
+## Hey Jakob! I'd recommend the recipe 'Karen S Slow Cooker Fluffy Pizza Chicken' for you.
+## Hey Jakob! I'd recommend the recipe 'Yeast Free Fluffy Pizza With Fresh Basil And Tomatoes' for you.
+## Hey Markus! I'd recommend the recipe 'Parmesan Spinach Fluffy Pizza' for you.
+## Hey Robert! I'd recommend the recipe 'Macaroni Fluffy Pizza Casserole' for you.
 ```
 
 As you can see, str_glue literally glues strings together to create a new string. Expressions must be written in {}, everything else is up to you tough: you can use data frames, lists and regex. Useful for customized mailing, distribution of tasks ect. 

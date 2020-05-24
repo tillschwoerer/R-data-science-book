@@ -1,0 +1,593 @@
+# Reading data: readr {#readr}
+
+## Abstract
+
+In a large company, the stock of goods is re-labelled in an ERP-system every year after an inventory has been taken. The ERP-system runs on a mainframe computer. The data of the ERP-system are stored in VSAM files. Lists similar to CSV files must be created for data analysis.
+
+The goods are marked manually by departments. The results of the marking are documented in a CSV file.
+
+The list with the labels is then read in as a CSV file by a batch process. As the stock has evolved since the time of identification, the input file must be matched against the stock.
+
+In the batch process, a file with the currently marked status is created before the inventory is updated. After the successful update, a list with the new labels is created.
+
+Since the batches run without human accompaniment during the night, the results must be checked the following day. Often the lists are so large that they cannot be checked at a glance.
+
+The two lists created are automatically sent to the department by email.
+
+With the lists, the user department should carry out a test in the ERP system to determine whether the required markings are visible.
+Since the department cannot read the results from the existing lists, it forwards them to us for processing.
+
+The department needs an Excel file for its test, which should contain the following:
+- all products from both output lists
+- sorted in ascending order by commodity code
+- a column showing the state of the goods, since some goods already have a mark and are again getting a mark, losing or getting a new mark
+- a column with a comparison of the column Kz.MB
+- a column with a comparison of the amount column
+
+The department provides the following for the analysis:
+- two of the created output CSV files
+- the number of updated goods
+
+In consultation with the department, we have identified the following challenge for creating the Excel file:
+- Add column names
+- Deal with leading and trailing blanks (which can have a meaning in some columns)
+- Correctly specify the column types (numbers, date, character, ...)
+- To correctly identify numbers, we need to set the German locale. Otherwise, the decimal mark won't be correctly identified.
+- In order to create readible reports, it is sometimes helpful to display Euro amounts not as a number, but as a character that includes the Euro symbol (€) and comma/big mark signs
+- Format columns T-NR like T000.00.000.000
+- fill a new column with actions or status in the data records
+- create a new column with comparison results for specific columns, such as
+   - Kz.MB
+   - amount
+
+
+## Import data
+
+Before we introduce the library, the technical prerequisites must be created.
+```{r libraries , message=FALSE, warning=FALSE, results='hide'}
+library(dplyr)    # wrangling data (we could also load it via package tidyverse) 
+library(readr)    # reading data (we could also load it via package tidyverse)
+library(stringr)  # manipulating strings
+library(testit)   # check conditions - which library feels better
+library(testthat) # check conditions - which library feels better
+```
+
+We are working with crudly formatted data, to demonstrate the functionalites of the `readr` package. The two input files have the same structure.
+In the first file, called BEFORE, we find information before the update. 
+The second file, called AFTER, lists all records that were changed during the update.
+
+This is how the data looks like:
+```{r first look, message=FALSE, warning=FALSE}
+df <- readr::read_csv(file = "./data/BEFORE.txt")
+head(df, 10)
+```
+
+So we can get an idea of the data.
+
+As we see, readr::read_csv() does not interpret the semicolon as a separator. The function expects the file to contain commas as separators. Before reading the file as a text file with readr::read_file() and replacing all semicolons with commas, we will use the function readr::read_delim() to.
+```{r second look , message=FALSE, warning=FALSE}
+df <- readr::read_delim(file = "./data/BEFORE.txt" , delim = ";")
+head(df, 10)
+```
+We could continue working on this data frame. However, we do not recommend this, since further steps are required to prepare the data. We can save the work steps with the function readr::read_delim(). With this function we get more comfort. The reading in becomes easier and more compact.
+
+### Read data compact
+
+Now we read the data again. It seems a bit complex at first.
+```{r another variant for reading the data}
+df <- readr::read_delim(file = "./data/BEFORE.txt" 
+                 
+                 # Specify semicolon as separator
+                 , delim = ";"
+                 
+                 # Set the missing column names
+                 , col_names = c("T-NR", "Art", "Abt.", "Rhyth.", "FK", "Betrag", "EDV-Datum", 
+                               "Nachfrage", "Kz.MB", "M-Komb", "H-Vers", "leere_Spalte"
+                              )
+                 
+                 # Change data types which are not correctly imported by default
+                 , col_types = 
+                    cols(
+                         "EDV-Datum" = col_date(format = "%d%m%Y")
+                 # We skip the last column, which turns out to be empty
+                      , leere_Spalte = col_skip()
+                    ) 
+                 
+                 # We set the German locale in order to get numbers and dates right
+                 , locale = 
+                      locale(
+                            date_names = "de"
+                          , decimal_mark = ","
+                          , grouping_mark = "."
+                      )
+
+                 # White spaces are sometimes important, so we don't want to trim them
+                 , trim_ws = FALSE)
+head(df,10)
+rm(df)
+```
+
+We prefer the following variant and set the columns afterwards. 
+It is one step more, but more conclusive.
+```{r our variant for reading the data , warning=FALSE , message=FALSE}
+# return a data frame object
+read_input_file <- function(filename){
+    read_delim(file = str_c("./data/", filename , ".txt")
+               , delim = ";"
+               , escape_double = FALSE
+               , col_names = FALSE
+               , col_types = 
+                  cols(
+                        X3 = col_integer()
+                      , X4 = col_integer()
+                      , X7 = col_date(format = "%d%m%Y")
+                      )
+               , trim_ws = FALSE)
+}
+
+df_bf <- read_input_file("BEFORE")
+df_af <- read_input_file("AFTER")
+```
+
+### Remove empty column
+Due to the last semicolon, an empty column is created during import.
+We can remove this in the following way, for example.
+```{r remove column approach 1 , warning=FALSE , message=FALSE}
+df_a1 <- readr::read_delim(file = "./data/BEFORE.txt" , delim = ";")
+if(length(df_a1) == 12){
+  if(is.na(df_a1$X12)){
+     df_a1 <- df_a1[,-12]
+  }
+}
+print(str_c("Count Columns: ", length(colnames(df_a1))))
+rm(df_a1)
+```
+
+Another method is the following:
+```{r remove column approach 2, warning=FALSE , message=FALSE}
+df_a2 <- readr::read_delim(file = "./data/BEFORE.txt" , delim = ";")
+df_a2 <- dplyr::select(df_a2, -X12)
+print(str_c("Count Columns: ", length(colnames(df_a2))))
+rm(df_a2)
+```
+
+A final method is as follows:
+```{r remove column approach 3, warning=FALSE , message=FALSE}
+df_a3 <- readr::read_delim(file = "./data/BEFORE.txt" , delim = ";")
+#df_a3 <- dplyr::select(df_a3, -1)
+df_a3 <- df_a3 %>% select(-12)
+print(str_c("Count Columns: ", length(colnames(df_a3))))
+rm(df_a3)
+```
+
+### Rename columns
+Before we start with the import, it is recommended that we first define the column headings. This will make it easier to address the columns in subsequent steps. Otherwise, readr assigns headings in the form of x1 to xN-1. With this definition we can reuse the headings for the second file.
+```{r read file "before" and "after" }
+df_col_names = c(
+    "T-NR" 
+  , "Art" 
+  , "Abt." 
+  , "Rhyth." 
+  , "FK" 
+  , "Betrag" 
+  , "EDV-Datum" 
+  , "Nachfrage" 
+  , "Kz.MB" 
+  , "M-Komb" 
+  , "H-Vers") 
+```
+
+So we can rename the columns in our current data frame.
+```{r set colnames}
+df_bf <- dplyr::select(df_bf, -X12)
+colnames(df_bf)  <- df_col_names
+df_af <- dplyr::select(df_af, -X12)
+colnames(df_af)  <- df_col_names
+```
+
+### Check the imported files
+
+Before reading in, it is advisable to count the data records beforehand so that there is no surprise at the end.
+```{r constants of input}
+expected_cols_count            <- 11
+expected_date_of_batch         <- lubridate::ymd("2020-02-22")
+expected_rows_of_before        <- 1635
+expected_rows_of_after         <- 2158
+expected_rows_of_update_total  <- 2611
+expected_rows_of_update_init   <- 0
+expected_rows_of_update_new    <- 0
+expected_rows_of_update_actual <- 0
+```
+
+#### Check first key figures
+First we start with the number of columns of each data frame.
+```{r test length of columns }
+# a test function
+# create once and use often and change only once
+check_cols_count <- function(p_df){
+  actual_cols <- length(colnames(p_df))
+  # its our favourite , is more unit-style like junit or sunit
+  test_that("the column is not removed", {
+    expect_equal(length(colnames(p_df)), expected_cols_count)
+  })
+  # is ok
+  assert(str_glue(
+    "expect cols of DF is {expected_cols_count} actual is {actual_cols}") 
+    , expected_cols_count == actual_cols )
+}
+
+check_cols_count(df_bf)
+check_cols_count(df_af)
+```
+
+Then we check the number of data records read in.
+```{r check cols and row count }
+check_rows_count <- function(p_input_df , p_expected_rows) {
+  test_that("the counted rows are not ok", {
+    expect_equal(as.double(count(p_input_df)), p_expected_rows)
+  })
+}
+
+check_rows_count( df_bf , expected_rows_of_before )
+check_rows_count( df_af , expected_rows_of_after )
+```
+
+#### Check column ranges
+
+Now we check the value ranges of the columns with our eye.
+```{r print column ranges}
+print_column_ranges <- function(p_input_df) {
+  for (i in seq(1,length(p_input_df), by=1)) {
+  print(range(p_input_df[[i]]))  
+  }
+}
+
+print_column_ranges(df_bf)
+print_column_ranges(df_af)
+```
+
+#### Sample
+The following value in the Amount column is striking. If we continue to convert the amounts as a double, we would experience a surprise at this value. We expect 50 Cent and would have 50 Euro at the end.
+```{r test parse betrag , message=FALSE, warning=FALSE}
+range_betrag <- range(df_bf$Betrag)
+locale_d <- locale(decimal_mark = ",", grouping_mark = ".")
+betrag_1_c <- first(range_betrag)
+print(paste("Amount 1 as Char", betrag_1_c))
+betrag_1_d <- parse_number(betrag_1_c, locale = locale_d)
+print(paste("Amount 1 as Number", betrag_1_d))
+betrag_2_c <- last(range_betrag)
+betrag_2_c <- trimws(betrag_2_c, which = "both")
+print(paste("Amount 2 as Char", betrag_2_c))
+betrag_2_d <- parse_number(betrag_2_c, locale = locale_d)
+print(paste("Amount 2 as Number", betrag_2_d))
+```
+
+```{r clean test parse betrag, results='hide'}
+rm(range_betrag)
+rm(locale_d)
+rm(betrag_1_d)
+rm(betrag_2_c)
+rm(betrag_2_d)
+```
+
+To get more information about the record with 50 Cent, you can search the file in two ways:
+```{r row query 1}
+a_row <- df_bf[which(df_bf$Betrag == betrag_1_c),]
+head(a_row)
+#or
+a_row <- df_bf[which(df_bf$Betrag == min(df_bf$Betrag)),]
+head(a_row)
+```
+Another way to look for special values:
+```{r row query 2}
+a_row <- df_bf %>% filter(df_bf$Betrag == betrag_1_c)
+head(a_row)
+#or
+a_row <- df_bf %>% filter(df_bf$Betrag == min(Betrag))
+head(a_row)
+rm(betrag_1_c)
+```
+Before we get stress with the value of 50 cents, we now correct it in a simple way.
+```{r correct a value}
+df_bf$Betrag <- ifelse(
+                  df_bf$Betrag == "             50 "
+                                , "           0,50 " 
+                  , df_bf$Betrag)
+a_row <- df_bf %>% filter(df_bf$Betrag == min(Betrag))
+head(a_row)
+rm(a_row)
+```
+
+## Wrangling
+Dplyr offers a number of functions. The design is based on SQL.
+In the first approach we used the functions intersect, union and setdiff. 
+Unfortunately the functions cannot accept any conditions. Nevertheless we used the functions to see the results. Afterwards we use the functions again, but then on the basis of subsets that we form on the column T-NR.
+
+### Function union
+The function Union once applied to the two input files:
+```{r union}
+df_union <- dplyr::union(df_bf , df_af) 
+df_union <- df_union %>% arrange(df_union$`T-NR`)
+head(df_union,10)
+result <- df_union %>% filter(df_union$`T-NR` == "00000141336     " )
+head(result)
+rm(result)
+```
+
+It is clear from the expenditure that the computer date is incorporated into the Union as a distinguishing feature. Therefore, many records appear twice.
+
+With a filter on the column "EDV-Datum" on the current result we can also get the amount of records that are in the input files "BEFORE" and "AFTER".
+```{r union with filter}
+df_act <- df_union %>% filter(df_union$`EDV-Datum` == expected_date_of_batch) 
+head(df_act,10)
+as.numeric(count(df_act))
+df_act_bf <- df_union %>% filter(df_union$`EDV-Datum` < expected_date_of_batch) 
+as.numeric(count(df_act_bf))
+result_act <- df_act %>% filter(df_act$`T-NR` == "00000141336     " )
+head(result_act)
+result_act_bf <- df_act_bf %>% filter(df_act_bf$`T-NR` == "00000141336     " )
+head(result_act_bf)
+
+rm(result_act)
+rm(result_act_bf)
+```
+### Function setdiff
+We should come to the same result with the function setdiff.
+```{r setdiff on union}
+df_act_after <- setdiff(df_union, df_bf)
+as.numeric(count(df_act_after))
+head(df_act_after,10)
+
+df_act_before <- setdiff(df_union, df_af) 
+as.numeric(count(df_act_before))
+head(df_act_before,10)
+```
+### Function intersect
+We get the same number of records with the function intersect.
+```{r intersect on union}
+df_act_on_bf <- intersect(df_union, df_bf)
+as.numeric(count(df_act_on_bf))
+head(df_act_on_bf,10)
+
+df_act_on_af <- intersect(df_union, df_af) 
+as.numeric(count(df_act_on_af))
+head(df_act_on_af,10)
+```
+### Function union with less columns
+As we already noted after the Union result, the functions intersect and setdiff, without excluding the column "EDV-Datum", cannot be used to determine the quantity of records that have only been updated, i.e. that were previously flagged and are now flagged again.
+
+```{r union without column "EDV-Datum"}
+df_union_wo_edv <- union(
+    df_bf %>% select(-`EDV-Datum`)
+  , df_af %>% select(-`EDV-Datum`)  
+)
+result_wo <- df_union_wo_edv %>% filter(df_union_wo_edv$`T-NR` == "00000141336     " )
+as.numeric(count(df_union_wo_edv))
+head(result_wo)
+
+rm(result_wo)
+```
+We can continue to work on this basis to a limited extent. 
+At the end we are missing the column "EDV-Datum". The column can only be added by means of a join. A join is also necessary for the new desired comparison result columns.
+
+Before we form the new columns, we want to determine the comparative figures for the three different states based only on the first column T-NR. Since the T-NR is a unique key, increasing the number of columns would produce different results.
+
+Note about bind_rows: Always sort at the end.
+```{r prepare for comparison}
+df_bf_nr <- df_bf %>% dplyr::select(`T-NR`)
+df_af_nr <- df_af %>% select(`T-NR`)
+
+df_kz_bf_af   <- intersect(df_bf_nr , df_af_nr)
+df_kz_bf_only <- setdiff(df_bf_nr , df_af_nr)
+df_kz_af_only <- setdiff(df_af_nr , df_bf_nr)
+
+df_kz_bf_af_ges <- df_kz_bf_af
+df_kz_bf_af_ges <- bind_rows(df_kz_bf_af_ges, df_kz_bf_only)
+df_kz_bf_af_ges <- bind_rows(df_kz_bf_af_ges, df_kz_af_only)
+as.numeric(count(df_kz_bf_af_ges))
+df_kz_bf_af_ges <- df_kz_bf_af_ges %>% arrange(df_kz_bf_af_ges$`T-NR`)
+
+expected_rows_of_update_new    <- as.numeric(count(df_kz_af_only))
+expected_rows_of_update_init   <- as.numeric(count(df_kz_bf_only))
+expected_rows_of_update_actual <- as.numeric(count(df_kz_bf_af))
+expected_rows_of_update_total <- ( expected_rows_of_update_new 
+                               + expected_rows_of_update_init 
+                               + expected_rows_of_update_actual
+                               )
+print(paste("Total Update" , expected_rows_of_update_total))
+print(paste("Total Expected of file AFTER" , expected_rows_of_after))
+print(paste("Total Read" , expected_rows_of_before + expected_rows_of_after))
+```
+### First test of quantities
+Now a short interim test on the quantities.
+The result of the first union must not be greater than the sum of both input files.
+```{r check first union with input}
+  test_that("first union count is not equal with the sum of both inputs", {
+    expect_equal(as.numeric(count(df_union))
+                 , expected_rows_of_before
+                 + expected_rows_of_after
+                )
+  })
+```
+We also get the sum of both input files when we add up the results of the setdiffs on the union.
+```{r check setdiff with input}
+  test_that("setdiff on the union count is not equal with the sum of both inputs", {
+    expect_equal(as.numeric(count(df_act_after))
+                 + as.numeric(count(df_act_before))
+                 , expected_rows_of_before
+                 +expected_rows_of_after
+                )
+  })
+```
+The same applies to the results of the Intersects on the Union.
+```{r check intersect with input}
+  test_that("intersect on the union count is not equal with the sum of both inputs", {
+    expect_equal(as.numeric(count(df_act_on_bf))
+                 + as.numeric(count(df_act_on_af))
+                 , expected_rows_of_before
+                 +expected_rows_of_after
+                )
+  })
+```
+
+### Add new columns
+#### create output file
+First the base table must be built.
+```{r create output base data frame}
+df_out_after_init <- inner_join(df_bf, df_kz_bf_only, by = "T-NR") 
+df_out_after_act  <- inner_join(df_af, df_kz_bf_af, by = "T-NR")
+df_out_after_new  <- inner_join(df_af, df_kz_af_only, by = "T-NR")
+
+df_out_after_init <- df_out_after_init %>% arrange(df_out_after_init$`T-NR`)
+df_out_after_act <- df_out_after_act %>% arrange(df_out_after_act$`T-NR`)
+df_out_after_new <- df_out_after_new %>% arrange(df_out_after_new$`T-NR`)
+
+```
+
+#### Target state
+Add a column to specify what state is expected after the batch run.
+```{r add column zustand}
+df_col_names[length(df_col_names)+1] <- "Zustand"
+df_out_after_init <- df_out_after_init %>%  mutate(Zustand = "initialisiert")
+df_out_after_init$Nachfrage <- ifelse(df_out_after_init$Zustand == "initialisiert", "", df_out_after_init$Nachfrage)
+df_out_after_act  <- df_out_after_act  %>%  mutate(Zustand = "aktualisiert")
+df_out_after_new  <- df_out_after_new  %>%  mutate(Zustand = "neu")
+```
+
+#### Compare Kz.MB
+Add a column to specify what state is expected after the batch run.
+```{r add column compare Kz.MB}
+df_col_names[length(df_col_names)+1] <- "Vergl.Kz.-MB"
+
+df_bf_comp <- df_bf %>% select(`T-NR`, Kz.MB , Betrag)
+df_out_after_act <- df_out_after_act %>% inner_join(df_bf_comp, by = "T-NR")
+df_out_after_act  <- df_out_after_act %>%  mutate("Vergl.Kz.-MB" = ifelse(df_out_after_act$Kz.MB.x == df_out_after_act$Kz.MB.y , "ok" , str_c("nok-", df_out_after_act$Kz.MB.y)))
+
+df_out_after_act <- select(df_out_after_act, -Kz.MB.y)
+df_out_after_act = rename(df_out_after_act, Kz.MB=Kz.MB.x)
+
+df_out_after_init  <- df_out_after_init %>%  mutate("Vergl.Kz.-MB" = "--" )
+df_out_after_new  <- df_out_after_new %>%  mutate("Vergl.Kz.-MB" = "--" )
+```
+
+#### Compare Betrag
+Add a column to specify what state is expected after the batch run.
+```{r add column compare Betrag}
+df_col_names[length(df_col_names)+1] <- "Vergl.Betrag"
+
+df_out_after_act  <- df_out_after_act %>%  mutate("Vergl.Betrag" = ifelse(df_out_after_act$Betrag.x == df_out_after_act$Betrag.y , "ok" , str_c("nok-", df_out_after_act$Betrag.y)))
+
+df_out_after_act <- select(df_out_after_act, -Betrag.y)
+df_out_after_act = rename(df_out_after_act, Betrag=Betrag.x)
+
+df_out_after_init  <- df_out_after_init %>%  mutate("Vergl.Betrag" = "--" )
+df_out_after_new  <- df_out_after_new %>%  mutate("Vergl.Betrag" = "--" )
+```
+
+#### Merge output data frames
+```{r collect data frames }
+#write_delim(df_out_exact , delim = ";", file.path(getwd() , "df_out_exact.csv"))
+#write_delim(df_kz_bf_af_ges , delim = ";", file.path(getwd() , "df_kz_bf_af_ges.csv"))
+df_out_base <- df_out_after_init
+df_out_base <- bind_rows(df_out_base, df_out_after_act)
+df_out_base <- bind_rows(df_out_base, df_out_after_new)
+df_out_base <- df_out_base %>% arrange(df_out_base$`T-NR`)
+
+count(df_out_base)
+```
+
+
+### Second test of quantities
+In the second test, we try to determine the exact number of data records that were selected in the update batch run.
+The result should be less than or equal to the total number of union without the column "EDV-datum".
+```{r check total update again union without column edv-datum }
+  test_that("all actualized rows count is not less or equal with the union count without EDV-Datum", {
+    expect_lte(expected_rows_of_update_total
+                 , as.numeric(count(df_union_wo_edv))
+                )
+  })
+```
+
+Als nächstes testen wir die Ergebnisse von Merged-Output-File gegen die Ermittlungen der Zahlen auf den Untermengen, die nur die Spalte "T-NR" enthalten.
+```{r check merged-output-file again expected values }
+df_merged_group_by <- df_out_base %>% group_by(df_out_base$Zustand) %>% tally()
+
+  test_that("compare count zustand of output with subset initialize", {
+    expect_equal(expected_rows_of_update_init
+                 , as.numeric(df_merged_group_by %>% filter(df_merged_group_by$`df_out_base$Zustand` == 'initialisiert') %>% select(n))
+                )
+  })
+  test_that("compare count zustand of output with subset aktualisiert", {
+    expect_equal(expected_rows_of_update_actual
+                 , as.numeric(df_merged_group_by %>% filter(df_merged_group_by$`df_out_base$Zustand` == 'aktualisiert') %>% select(n))
+                )
+  })
+  test_that("compare count zustand of output with subset new", {
+    expect_equal(expected_rows_of_update_new
+                 , as.numeric(df_merged_group_by %>% filter(df_merged_group_by$`df_out_base$Zustand` == 'neu') %>% select(n))
+                )
+  })
+  test_that("compare sum of count zustand of output with expected update total", {
+    expect_equal(expected_rows_of_update_total
+                 ,   as.numeric(df_merged_group_by %>% summarise(sum(df_merged_group_by$n)))
+                )
+  })
+```
+
+## Possible column values Formats
+
+### Prepare sums of money
+
+#### Add the Euro symbol
+Our input data sets already contained decimal marks. The only thing missing is the Euro symbol, which we add at the end in our case.
+This procedure does not work at present.
+```{r add euro symbol}
+df_out <- df_union_wo_edv
+#my_symb <- stringi::stri_("\\U+20AC")
+#class(my_symb)
+#typeof(my_symb)
+#ite <- stringi::stri_escape_unicode(my_symb)
+#itest <- "\u20ac"
+#"&euro;"
+#my_str <- "150 €"
+#test <- gsub(intToUtf8(8364),"€",my_str)
+
+#df_out$Betrag <- paste(str_sub(df_out$Betrag, 6, str_length(df_out$Betrag)), "Eur" )
+head(df_out, 10)
+
+```
+
+
+#### As numerical values
+The column `Betrag` is not yet correctly recognized as numeric, due to the fact that we did not trim white spaces. Hence, we need to correct this column in a separate step.
+
+This would make sense if we want to further process data. In our case, we already receive the amounts delivered correctly prepared, to which we have to add a Euro symbol.
+```{r parse an amount column}
+df_test <- df_bf %>% 
+  mutate(Betrag_Neu = readr::parse_number(Betrag, 
+                                  # We trim White psaces
+                                  trim_ws = TRUE,
+                                  # Set the German number separator marks
+                                  locale = locale(decimal_mark = ",", grouping_mark = "."), 
+                                  ))
+head(df_test)
+rm(df_test)
+```
+
+## Save analysis
+Since the Excel export does not generate the correct display for certain columns, we decided to create a new CSV file. The new CSV file can be imported with Excel. When importing into Excel, the user can define appropriate data types for the columns. This became noticeable for the column T-NR, if the T-NR is longer than 15 digits and starts with a 0. The default is standard for Excel and the values are displayed numerically if no character is contained and the leading zeros required by the department are not displayed.
+
+From the newly created CSV file, the department can carry out the following with the help of Excel:
+- Number of records
+  - Total
+  - Updated 
+  - Update marked after
+    - initialisiert
+    - aktualisiert
+    - neu
+
+```{r create output like csv }
+readr::write_delim(df_out_base, delim = ";", file.path(paste0(getwd(),"/data") , "output_from_readr.txt"))
+```
+
+For the future we could imagine that we still consider the input file with the marked goods from the department in the analysis as state "deleted".

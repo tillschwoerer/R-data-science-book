@@ -1,5 +1,5 @@
-rmd_files: ["index.Rmd", "tidyr.Rmd", "dplyr.Rmd", "lubridate.Rmd",
-            "forcats.Rmd", "stringr.Rmd", "datatable.Rmd"]
+
+rmd_files: ["index.Rmd", "readr.Rmd", "tidyr.Rmd", "dplyr.Rmd", "lubridate.Rmd", "forcats.Rmd", "stringr.Rmd", "datatable.Rmd"]
 view: https://github.com/tillschwoerer/R-data-science-book/blob/master/%s
-new_session: no
+new_session: yes
 output_dir: "docs"
