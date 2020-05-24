@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>3 Wrangling data: dplyr | R Data Science Book</title>
-  <meta name="description" content="3 Wrangling data: dplyr | R Data Science Book" />
+  <title>4 Wrangling data: dplyr | R Data Science Book</title>
+  <meta name="description" content="4 Wrangling data: dplyr | R Data Science Book" />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="3 Wrangling data: dplyr | R Data Science Book" />
+  <meta property="og:title" content="4 Wrangling data: dplyr | R Data Science Book" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="tillschwoerer/R-data-science-book" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="3 Wrangling data: dplyr | R Data Science Book" />
+  <meta name="twitter:title" content="4 Wrangling data: dplyr | R Data Science Book" />
   
   
   
@@ -24,7 +24,7 @@
 <meta name="author" content="Tools and Programming Languages for Data Scientists, FH Kiel, Summer Term 2020" />
 
 
-<meta name="date" content="2020-05-08" />
+<meta name="date" content="2020-05-14" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -134,104 +134,105 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#data"><i class="fa fa-check"></i><b>1.2</b> Data</a></li>
 <li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#git-and-github"><i class="fa fa-check"></i><b>1.3</b> Git and GitHub</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="tidyr.html"><a href="tidyr.html"><i class="fa fa-check"></i><b>2</b> Tidying data: tidyr</a></li>
-<li class="chapter" data-level="3" data-path="dplyr.html"><a href="dplyr.html"><i class="fa fa-check"></i><b>3</b> Wrangling data: dplyr</a><ul>
-<li class="chapter" data-level="3.1" data-path="dplyr.html"><a href="dplyr.html#typical-workflows"><i class="fa fa-check"></i><b>3.1</b> Two typial workflows</a></li>
-<li class="chapter" data-level="3.2" data-path="dplyr.html"><a href="dplyr.html#manipulating-rows"><i class="fa fa-check"></i><b>3.2</b> Manipulating rows</a><ul>
-<li class="chapter" data-level="3.2.1" data-path="dplyr.html"><a href="dplyr.html#extract-rows"><i class="fa fa-check"></i><b>3.2.1</b> Extract rows</a></li>
-<li class="chapter" data-level="3.2.2" data-path="dplyr.html"><a href="dplyr.html#arranging-rows"><i class="fa fa-check"></i><b>3.2.2</b> Arranging rows</a></li>
+<li class="chapter" data-level="2" data-path="readr.html"><a href="readr.html"><i class="fa fa-check"></i><b>2</b> Reading data: readr</a></li>
+<li class="chapter" data-level="3" data-path="tidyr.html"><a href="tidyr.html"><i class="fa fa-check"></i><b>3</b> Tidying data: tidyr</a></li>
+<li class="chapter" data-level="4" data-path="dplyr.html"><a href="dplyr.html"><i class="fa fa-check"></i><b>4</b> Wrangling data: dplyr</a><ul>
+<li class="chapter" data-level="4.1" data-path="dplyr.html"><a href="dplyr.html#typical-workflows"><i class="fa fa-check"></i><b>4.1</b> Two typial workflows</a></li>
+<li class="chapter" data-level="4.2" data-path="dplyr.html"><a href="dplyr.html#manipulating-rows"><i class="fa fa-check"></i><b>4.2</b> Manipulating rows</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="dplyr.html"><a href="dplyr.html#extract-rows"><i class="fa fa-check"></i><b>4.2.1</b> Extract rows</a></li>
+<li class="chapter" data-level="4.2.2" data-path="dplyr.html"><a href="dplyr.html#arranging-rows"><i class="fa fa-check"></i><b>4.2.2</b> Arranging rows</a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="dplyr.html"><a href="dplyr.html#manipulating-columns"><i class="fa fa-check"></i><b>3.3</b> Manipulating columns</a><ul>
-<li class="chapter" data-level="3.3.1" data-path="dplyr.html"><a href="dplyr.html#extract-and-rename-columns"><i class="fa fa-check"></i><b>3.3.1</b> Extract and rename columns</a></li>
-<li class="chapter" data-level="3.3.2" data-path="dplyr.html"><a href="dplyr.html#create-new-columns"><i class="fa fa-check"></i><b>3.3.2</b> Create new columns</a></li>
+<li class="chapter" data-level="4.3" data-path="dplyr.html"><a href="dplyr.html#manipulating-columns"><i class="fa fa-check"></i><b>4.3</b> Manipulating columns</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="dplyr.html"><a href="dplyr.html#extract-and-rename-columns"><i class="fa fa-check"></i><b>4.3.1</b> Extract and rename columns</a></li>
+<li class="chapter" data-level="4.3.2" data-path="dplyr.html"><a href="dplyr.html#create-new-columns"><i class="fa fa-check"></i><b>4.3.2</b> Create new columns</a></li>
 </ul></li>
-<li class="chapter" data-level="3.4" data-path="dplyr.html"><a href="dplyr.html#scoped-functions"><i class="fa fa-check"></i><b>3.4</b> Scoped functions</a></li>
-<li class="chapter" data-level="3.5" data-path="dplyr.html"><a href="dplyr.html#aggregate"><i class="fa fa-check"></i><b>3.5</b> Aggregate</a></li>
-<li class="chapter" data-level="3.6" data-path="dplyr.html"><a href="dplyr.html#window-functions"><i class="fa fa-check"></i><b>3.6</b> Window functions</a></li>
-<li class="chapter" data-level="3.7" data-path="dplyr.html"><a href="dplyr.html#combining-tables"><i class="fa fa-check"></i><b>3.7</b> Combining tables</a></li>
-<li class="chapter" data-level="3.8" data-path="dplyr.html"><a href="dplyr.html#database-backend"><i class="fa fa-check"></i><b>3.8</b> Database backend</a><ul>
-<li class="chapter" data-level="3.8.1" data-path="dplyr.html"><a href="dplyr.html#motivation"><i class="fa fa-check"></i><b>3.8.1</b> Motivation</a></li>
-<li class="chapter" data-level="3.8.2" data-path="dplyr.html"><a href="dplyr.html#set-up"><i class="fa fa-check"></i><b>3.8.2</b> Set up</a></li>
-<li class="chapter" data-level="3.8.3" data-path="dplyr.html"><a href="dplyr.html#querying-the-database"><i class="fa fa-check"></i><b>3.8.3</b> Querying the database</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="4" data-path="lubridate.html"><a href="lubridate.html"><i class="fa fa-check"></i><b>4</b> Dates and times: lubridate</a><ul>
-<li class="chapter" data-level="4.1" data-path="lubridate.html"><a href="lubridate.html#what-is-lubridate"><i class="fa fa-check"></i><b>4.1</b> What is Lubridate?</a></li>
-<li class="chapter" data-level="4.2" data-path="lubridate.html"><a href="lubridate.html#basics"><i class="fa fa-check"></i><b>4.2</b> Basics</a></li>
-<li class="chapter" data-level="4.3" data-path="lubridate.html"><a href="lubridate.html#import-data-clean-date-time"><i class="fa fa-check"></i><b>4.3</b> Import data, clean date-time</a></li>
-<li class="chapter" data-level="4.4" data-path="lubridate.html"><a href="lubridate.html#check-and-modify-data"><i class="fa fa-check"></i><b>4.4</b> Check and modify data</a></li>
-<li class="chapter" data-level="4.5" data-path="lubridate.html"><a href="lubridate.html#before-exploration"><i class="fa fa-check"></i><b>4.5</b> Before exploration</a><ul>
-<li class="chapter" data-level="4.5.1" data-path="lubridate.html"><a href="lubridate.html#intervals"><i class="fa fa-check"></i><b>4.5.1</b> Intervals</a></li>
-<li class="chapter" data-level="4.5.2" data-path="lubridate.html"><a href="lubridate.html#groupings"><i class="fa fa-check"></i><b>4.5.2</b> Groupings</a></li>
-</ul></li>
-<li class="chapter" data-level="4.6" data-path="lubridate.html"><a href="lubridate.html#exploration---analysis"><i class="fa fa-check"></i><b>4.6</b> Exploration - Analysis</a><ul>
-<li class="chapter" data-level="4.6.1" data-path="lubridate.html"><a href="lubridate.html#temperatur"><i class="fa fa-check"></i><b>4.6.1</b> Temperatur</a></li>
-<li class="chapter" data-level="4.6.2" data-path="lubridate.html"><a href="lubridate.html#rainfall"><i class="fa fa-check"></i><b>4.6.2</b> Rainfall</a></li>
-<li class="chapter" data-level="4.6.3" data-path="lubridate.html"><a href="lubridate.html#humidity"><i class="fa fa-check"></i><b>4.6.3</b> Humidity</a></li>
-</ul></li>
-<li class="chapter" data-level="4.7" data-path="lubridate.html"><a href="lubridate.html#wrap-up"><i class="fa fa-check"></i><b>4.7</b> Wrap up</a></li>
-</ul></li>
-<li class="chapter" data-level="5" data-path="forcats.html"><a href="forcats.html"><i class="fa fa-check"></i><b>5</b> Categorical data: forcats</a><ul>
-<li class="chapter" data-level="5.1" data-path="forcats.html"><a href="forcats.html#introduction"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
-<li class="chapter" data-level="5.2" data-path="forcats.html"><a href="forcats.html#general-functions"><i class="fa fa-check"></i><b>5.2</b> General functions</a><ul>
-<li class="chapter" data-level="5.2.1" data-path="forcats.html"><a href="forcats.html#create"><i class="fa fa-check"></i><b>5.2.1</b> Create</a></li>
-<li class="chapter" data-level="5.2.2" data-path="forcats.html"><a href="forcats.html#count-values-per-level"><i class="fa fa-check"></i><b>5.2.2</b> Count values per level</a></li>
-<li class="chapter" data-level="5.2.3" data-path="forcats.html"><a href="forcats.html#Inspect-and-set-levels"><i class="fa fa-check"></i><b>5.2.3</b> Inspect and set levels</a></li>
-<li class="chapter" data-level="5.2.4" data-path="forcats.html"><a href="forcats.html#inspect-unique-values"><i class="fa fa-check"></i><b>5.2.4</b> Inspect unique values</a></li>
-</ul></li>
-<li class="chapter" data-level="5.3" data-path="forcats.html"><a href="forcats.html#combine-factors"><i class="fa fa-check"></i><b>5.3</b> Combine factors</a><ul>
-<li class="chapter" data-level="5.3.1" data-path="forcats.html"><a href="forcats.html#combine-factors-with-different-levels"><i class="fa fa-check"></i><b>5.3.1</b> Combine factors with different levels</a></li>
-<li class="chapter" data-level="5.3.2" data-path="forcats.html"><a href="forcats.html#standardise-levels-of-various-factors"><i class="fa fa-check"></i><b>5.3.2</b> Standardise levels of various factors</a></li>
-</ul></li>
-<li class="chapter" data-level="5.4" data-path="forcats.html"><a href="forcats.html#order-of-levels"><i class="fa fa-check"></i><b>5.4</b> Order of levels</a><ul>
-<li class="chapter" data-level="5.4.1" data-path="forcats.html"><a href="forcats.html#manual-reordering"><i class="fa fa-check"></i><b>5.4.1</b> Manual reordering of levels</a></li>
-<li class="chapter" data-level="5.4.2" data-path="forcats.html"><a href="forcats.html#reordering-by-frequency"><i class="fa fa-check"></i><b>5.4.2</b> Reordering by frequency</a></li>
-<li class="chapter" data-level="5.4.3" data-path="forcats.html"><a href="forcats.html#reordering-by-appearance"><i class="fa fa-check"></i><b>5.4.3</b> Reordering by appearance</a></li>
-<li class="chapter" data-level="5.4.4" data-path="forcats.html"><a href="forcats.html#reverse-level-order"><i class="fa fa-check"></i><b>5.4.4</b> Reverse level order</a></li>
-<li class="chapter" data-level="5.4.5" data-path="forcats.html"><a href="forcats.html#shift-levels"><i class="fa fa-check"></i><b>5.4.5</b> Shift levels</a></li>
-<li class="chapter" data-level="5.4.6" data-path="forcats.html"><a href="forcats.html#randomly-shuffle-levels"><i class="fa fa-check"></i><b>5.4.6</b> Randomly shuffle levels</a></li>
-<li class="chapter" data-level="5.4.7" data-path="forcats.html"><a href="forcats.html#reordering-levels-by-other-variables"><i class="fa fa-check"></i><b>5.4.7</b> Reordering levels by other variables</a></li>
-</ul></li>
-<li class="chapter" data-level="5.5" data-path="forcats.html"><a href="forcats.html#change-the-value-of-levels"><i class="fa fa-check"></i><b>5.5</b> Change the value of levels</a><ul>
-<li class="chapter" data-level="5.5.1" data-path="forcats.html"><a href="forcats.html#renaming-the-levels"><i class="fa fa-check"></i><b>5.5.1</b> Renaming the levels</a></li>
-<li class="chapter" data-level="5.5.2" data-path="forcats.html"><a href="forcats.html#anonymize-levels"><i class="fa fa-check"></i><b>5.5.2</b> Anonymize levels</a></li>
-<li class="chapter" data-level="5.5.3" data-path="forcats.html"><a href="forcats.html#collapse-multiple-levels-into-one"><i class="fa fa-check"></i><b>5.5.3</b> Collapse multiple levels into one</a></li>
-<li class="chapter" data-level="5.5.4" data-path="forcats.html"><a href="forcats.html#aggregate-levels-into-a-lump"><i class="fa fa-check"></i><b>5.5.4</b> Aggregate levels into a lump</a></li>
-<li class="chapter" data-level="5.5.5" data-path="forcats.html"><a href="forcats.html#manually-lump-levels"><i class="fa fa-check"></i><b>5.5.5</b> Manually lump levels</a></li>
-</ul></li>
-<li class="chapter" data-level="5.6" data-path="forcats.html"><a href="forcats.html#add-or-drop-levels"><i class="fa fa-check"></i><b>5.6</b> Add or drop levels</a><ul>
-<li class="chapter" data-level="5.6.1" data-path="forcats.html"><a href="forcats.html#add-levels"><i class="fa fa-check"></i><b>5.6.1</b> Add levels</a></li>
-<li class="chapter" data-level="5.6.2" data-path="forcats.html"><a href="forcats.html#drop-levels"><i class="fa fa-check"></i><b>5.6.2</b> Drop levels</a></li>
-<li class="chapter" data-level="5.6.3" data-path="forcats.html"><a href="forcats.html#assign-a-level-to-nas"><i class="fa fa-check"></i><b>5.6.3</b> Assign a level to <code>NAs</code></a></li>
+<li class="chapter" data-level="4.4" data-path="dplyr.html"><a href="dplyr.html#scoped-functions"><i class="fa fa-check"></i><b>4.4</b> Scoped functions</a></li>
+<li class="chapter" data-level="4.5" data-path="dplyr.html"><a href="dplyr.html#aggregate"><i class="fa fa-check"></i><b>4.5</b> Aggregate</a></li>
+<li class="chapter" data-level="4.6" data-path="dplyr.html"><a href="dplyr.html#window-functions"><i class="fa fa-check"></i><b>4.6</b> Window functions</a></li>
+<li class="chapter" data-level="4.7" data-path="dplyr.html"><a href="dplyr.html#combining-tables"><i class="fa fa-check"></i><b>4.7</b> Combining tables</a></li>
+<li class="chapter" data-level="4.8" data-path="dplyr.html"><a href="dplyr.html#database-backend"><i class="fa fa-check"></i><b>4.8</b> Database backend</a><ul>
+<li class="chapter" data-level="4.8.1" data-path="dplyr.html"><a href="dplyr.html#motivation"><i class="fa fa-check"></i><b>4.8.1</b> Motivation</a></li>
+<li class="chapter" data-level="4.8.2" data-path="dplyr.html"><a href="dplyr.html#set-up"><i class="fa fa-check"></i><b>4.8.2</b> Set up</a></li>
+<li class="chapter" data-level="4.8.3" data-path="dplyr.html"><a href="dplyr.html#querying-the-database"><i class="fa fa-check"></i><b>4.8.3</b> Querying the database</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="stringr.html"><a href="stringr.html"><i class="fa fa-check"></i><b>6</b> Character data: stringr</a><ul>
-<li class="chapter" data-level="6.1" data-path="stringr.html"><a href="stringr.html#introduction-1"><i class="fa fa-check"></i><b>6.1</b> Introduction</a><ul>
-<li class="chapter" data-level="6.1.1" data-path="stringr.html"><a href="stringr.html#use-of-stringr-in-the-r-environment"><i class="fa fa-check"></i><b>6.1.1</b> Use of stringR in the R environment</a></li>
-<li class="chapter" data-level="6.1.2" data-path="stringr.html"><a href="stringr.html#types-of-data-which-could-be-used-with-stringr"><i class="fa fa-check"></i><b>6.1.2</b> Types of data, which could be used with stringR</a></li>
+<li class="chapter" data-level="5" data-path="lubridate.html"><a href="lubridate.html"><i class="fa fa-check"></i><b>5</b> Dates and times: lubridate</a><ul>
+<li class="chapter" data-level="5.1" data-path="lubridate.html"><a href="lubridate.html#what-is-lubridate"><i class="fa fa-check"></i><b>5.1</b> What is Lubridate?</a></li>
+<li class="chapter" data-level="5.2" data-path="lubridate.html"><a href="lubridate.html#basics"><i class="fa fa-check"></i><b>5.2</b> Basics</a></li>
+<li class="chapter" data-level="5.3" data-path="lubridate.html"><a href="lubridate.html#import-data-clean-date-time"><i class="fa fa-check"></i><b>5.3</b> Import data, clean date-time</a></li>
+<li class="chapter" data-level="5.4" data-path="lubridate.html"><a href="lubridate.html#check-and-modify-data"><i class="fa fa-check"></i><b>5.4</b> Check and modify data</a></li>
+<li class="chapter" data-level="5.5" data-path="lubridate.html"><a href="lubridate.html#before-exploration"><i class="fa fa-check"></i><b>5.5</b> Before exploration</a><ul>
+<li class="chapter" data-level="5.5.1" data-path="lubridate.html"><a href="lubridate.html#intervals"><i class="fa fa-check"></i><b>5.5.1</b> Intervals</a></li>
+<li class="chapter" data-level="5.5.2" data-path="lubridate.html"><a href="lubridate.html#groupings"><i class="fa fa-check"></i><b>5.5.2</b> Groupings</a></li>
 </ul></li>
-<li class="chapter" data-level="6.2" data-path="stringr.html"><a href="stringr.html#data-set-for-examples"><i class="fa fa-check"></i><b>6.2</b> Data Set for examples</a></li>
-<li class="chapter" data-level="6.3" data-path="stringr.html"><a href="stringr.html#regular-expressions"><i class="fa fa-check"></i><b>6.3</b> Regular Expressions</a></li>
-<li class="chapter" data-level="6.4" data-path="stringr.html"><a href="stringr.html#functions-of-stringr-explained"><i class="fa fa-check"></i><b>6.4</b> Functions of stringR explained</a><ul>
-<li class="chapter" data-level="6.4.1" data-path="stringr.html"><a href="stringr.html#manage-lengths"><i class="fa fa-check"></i><b>6.4.1</b> Manage lengths</a></li>
-<li class="chapter" data-level="6.4.2" data-path="stringr.html"><a href="stringr.html#subset-strings"><i class="fa fa-check"></i><b>6.4.2</b> Subset Strings</a></li>
-<li class="chapter" data-level="6.4.3" data-path="stringr.html"><a href="stringr.html#detect-matches"><i class="fa fa-check"></i><b>6.4.3</b> Detect matches</a></li>
-<li class="chapter" data-level="6.4.4" data-path="stringr.html"><a href="stringr.html#mutate-strings"><i class="fa fa-check"></i><b>6.4.4</b> Mutate Strings</a></li>
-<li class="chapter" data-level="6.4.5" data-path="stringr.html"><a href="stringr.html#join-and-split"><i class="fa fa-check"></i><b>6.4.5</b> Join and Split</a></li>
+<li class="chapter" data-level="5.6" data-path="lubridate.html"><a href="lubridate.html#exploration---analysis"><i class="fa fa-check"></i><b>5.6</b> Exploration - Analysis</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="lubridate.html"><a href="lubridate.html#temperatur"><i class="fa fa-check"></i><b>5.6.1</b> Temperatur</a></li>
+<li class="chapter" data-level="5.6.2" data-path="lubridate.html"><a href="lubridate.html#rainfall"><i class="fa fa-check"></i><b>5.6.2</b> Rainfall</a></li>
+<li class="chapter" data-level="5.6.3" data-path="lubridate.html"><a href="lubridate.html#humidity"><i class="fa fa-check"></i><b>5.6.3</b> Humidity</a></li>
 </ul></li>
-<li class="chapter" data-level="6.5" data-path="stringr.html"><a href="stringr.html#literature"><i class="fa fa-check"></i><b>6.5</b> Literature</a></li>
+<li class="chapter" data-level="5.7" data-path="lubridate.html"><a href="lubridate.html#wrap-up"><i class="fa fa-check"></i><b>5.7</b> Wrap up</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="data-table.html"><a href="data-table.html"><i class="fa fa-check"></i><b>7</b> High performance computing: data.table</a><ul>
-<li class="chapter" data-level="7.1" data-path="data-table.html"><a href="data-table.html#motivation-1"><i class="fa fa-check"></i><b>7.1</b> Motivation</a></li>
-<li class="chapter" data-level="7.2" data-path="data-table.html"><a href="data-table.html#data-exploration"><i class="fa fa-check"></i><b>7.2</b> Data exploration</a><ul>
-<li class="chapter" data-level="7.2.1" data-path="data-table.html"><a href="data-table.html#subsetting-rows"><i class="fa fa-check"></i><b>7.2.1</b> Subsetting rows</a></li>
-<li class="chapter" data-level="7.2.2" data-path="data-table.html"><a href="data-table.html#selecting-columns"><i class="fa fa-check"></i><b>7.2.2</b> Selecting Columns</a></li>
-<li class="chapter" data-level="7.2.3" data-path="data-table.html"><a href="data-table.html#grouping-results"><i class="fa fa-check"></i><b>7.2.3</b> Grouping results</a></li>
-<li class="chapter" data-level="7.2.4" data-path="data-table.html"><a href="data-table.html#editing-data"><i class="fa fa-check"></i><b>7.2.4</b> Editing Data</a></li>
-<li class="chapter" data-level="7.2.5" data-path="data-table.html"><a href="data-table.html#side-effects"><i class="fa fa-check"></i><b>7.2.5</b> Side effects</a></li>
+<li class="chapter" data-level="6" data-path="forcats.html"><a href="forcats.html"><i class="fa fa-check"></i><b>6</b> Categorical data: forcats</a><ul>
+<li class="chapter" data-level="6.1" data-path="forcats.html"><a href="forcats.html#introduction"><i class="fa fa-check"></i><b>6.1</b> Introduction</a></li>
+<li class="chapter" data-level="6.2" data-path="forcats.html"><a href="forcats.html#general-functions"><i class="fa fa-check"></i><b>6.2</b> General functions</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="forcats.html"><a href="forcats.html#create"><i class="fa fa-check"></i><b>6.2.1</b> Create</a></li>
+<li class="chapter" data-level="6.2.2" data-path="forcats.html"><a href="forcats.html#count-values-per-level"><i class="fa fa-check"></i><b>6.2.2</b> Count values per level</a></li>
+<li class="chapter" data-level="6.2.3" data-path="forcats.html"><a href="forcats.html#Inspect-and-set-levels"><i class="fa fa-check"></i><b>6.2.3</b> Inspect and set levels</a></li>
+<li class="chapter" data-level="6.2.4" data-path="forcats.html"><a href="forcats.html#inspect-unique-values"><i class="fa fa-check"></i><b>6.2.4</b> Inspect unique values</a></li>
 </ul></li>
-<li class="chapter" data-level="7.3" data-path="data-table.html"><a href="data-table.html#runtime-comparision"><i class="fa fa-check"></i><b>7.3</b> Runtime comparision</a></li>
-<li class="chapter" data-level="7.4" data-path="data-table.html"><a href="data-table.html#further-resources"><i class="fa fa-check"></i><b>7.4</b> Further resources</a></li>
+<li class="chapter" data-level="6.3" data-path="forcats.html"><a href="forcats.html#combine-factors"><i class="fa fa-check"></i><b>6.3</b> Combine factors</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="forcats.html"><a href="forcats.html#combine-factors-with-different-levels"><i class="fa fa-check"></i><b>6.3.1</b> Combine factors with different levels</a></li>
+<li class="chapter" data-level="6.3.2" data-path="forcats.html"><a href="forcats.html#standardise-levels-of-various-factors"><i class="fa fa-check"></i><b>6.3.2</b> Standardise levels of various factors</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="forcats.html"><a href="forcats.html#order-of-levels"><i class="fa fa-check"></i><b>6.4</b> Order of levels</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="forcats.html"><a href="forcats.html#manual-reordering"><i class="fa fa-check"></i><b>6.4.1</b> Manual reordering of levels</a></li>
+<li class="chapter" data-level="6.4.2" data-path="forcats.html"><a href="forcats.html#reordering-by-frequency"><i class="fa fa-check"></i><b>6.4.2</b> Reordering by frequency</a></li>
+<li class="chapter" data-level="6.4.3" data-path="forcats.html"><a href="forcats.html#reordering-by-appearance"><i class="fa fa-check"></i><b>6.4.3</b> Reordering by appearance</a></li>
+<li class="chapter" data-level="6.4.4" data-path="forcats.html"><a href="forcats.html#reverse-level-order"><i class="fa fa-check"></i><b>6.4.4</b> Reverse level order</a></li>
+<li class="chapter" data-level="6.4.5" data-path="forcats.html"><a href="forcats.html#shift-levels"><i class="fa fa-check"></i><b>6.4.5</b> Shift levels</a></li>
+<li class="chapter" data-level="6.4.6" data-path="forcats.html"><a href="forcats.html#randomly-shuffle-levels"><i class="fa fa-check"></i><b>6.4.6</b> Randomly shuffle levels</a></li>
+<li class="chapter" data-level="6.4.7" data-path="forcats.html"><a href="forcats.html#reordering-levels-by-other-variables"><i class="fa fa-check"></i><b>6.4.7</b> Reordering levels by other variables</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="forcats.html"><a href="forcats.html#change-the-value-of-levels"><i class="fa fa-check"></i><b>6.5</b> Change the value of levels</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="forcats.html"><a href="forcats.html#renaming-the-levels"><i class="fa fa-check"></i><b>6.5.1</b> Renaming the levels</a></li>
+<li class="chapter" data-level="6.5.2" data-path="forcats.html"><a href="forcats.html#anonymize-levels"><i class="fa fa-check"></i><b>6.5.2</b> Anonymize levels</a></li>
+<li class="chapter" data-level="6.5.3" data-path="forcats.html"><a href="forcats.html#collapse-multiple-levels-into-one"><i class="fa fa-check"></i><b>6.5.3</b> Collapse multiple levels into one</a></li>
+<li class="chapter" data-level="6.5.4" data-path="forcats.html"><a href="forcats.html#aggregate-levels-into-a-lump"><i class="fa fa-check"></i><b>6.5.4</b> Aggregate levels into a lump</a></li>
+<li class="chapter" data-level="6.5.5" data-path="forcats.html"><a href="forcats.html#manually-lump-levels"><i class="fa fa-check"></i><b>6.5.5</b> Manually lump levels</a></li>
+</ul></li>
+<li class="chapter" data-level="6.6" data-path="forcats.html"><a href="forcats.html#add-or-drop-levels"><i class="fa fa-check"></i><b>6.6</b> Add or drop levels</a><ul>
+<li class="chapter" data-level="6.6.1" data-path="forcats.html"><a href="forcats.html#add-levels"><i class="fa fa-check"></i><b>6.6.1</b> Add levels</a></li>
+<li class="chapter" data-level="6.6.2" data-path="forcats.html"><a href="forcats.html#drop-levels"><i class="fa fa-check"></i><b>6.6.2</b> Drop levels</a></li>
+<li class="chapter" data-level="6.6.3" data-path="forcats.html"><a href="forcats.html#assign-a-level-to-nas"><i class="fa fa-check"></i><b>6.6.3</b> Assign a level to <code>NAs</code></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="stringr.html"><a href="stringr.html"><i class="fa fa-check"></i><b>7</b> Character data: stringr</a><ul>
+<li class="chapter" data-level="7.1" data-path="stringr.html"><a href="stringr.html#introduction-1"><i class="fa fa-check"></i><b>7.1</b> Introduction</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="stringr.html"><a href="stringr.html#use-of-stringr-in-the-r-environment"><i class="fa fa-check"></i><b>7.1.1</b> Use of stringR in the R environment</a></li>
+<li class="chapter" data-level="7.1.2" data-path="stringr.html"><a href="stringr.html#types-of-data-which-could-be-used-with-stringr"><i class="fa fa-check"></i><b>7.1.2</b> Types of data, which could be used with stringR</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="stringr.html"><a href="stringr.html#data-set-for-examples"><i class="fa fa-check"></i><b>7.2</b> Data Set for examples</a></li>
+<li class="chapter" data-level="7.3" data-path="stringr.html"><a href="stringr.html#regular-expressions"><i class="fa fa-check"></i><b>7.3</b> Regular Expressions</a></li>
+<li class="chapter" data-level="7.4" data-path="stringr.html"><a href="stringr.html#functions-of-stringr-explained"><i class="fa fa-check"></i><b>7.4</b> Functions of stringR explained</a><ul>
+<li class="chapter" data-level="7.4.1" data-path="stringr.html"><a href="stringr.html#manage-lengths"><i class="fa fa-check"></i><b>7.4.1</b> Manage lengths</a></li>
+<li class="chapter" data-level="7.4.2" data-path="stringr.html"><a href="stringr.html#subset-strings"><i class="fa fa-check"></i><b>7.4.2</b> Subset Strings</a></li>
+<li class="chapter" data-level="7.4.3" data-path="stringr.html"><a href="stringr.html#detect-matches"><i class="fa fa-check"></i><b>7.4.3</b> Detect matches</a></li>
+<li class="chapter" data-level="7.4.4" data-path="stringr.html"><a href="stringr.html#mutate-strings"><i class="fa fa-check"></i><b>7.4.4</b> Mutate Strings</a></li>
+<li class="chapter" data-level="7.4.5" data-path="stringr.html"><a href="stringr.html#join-and-split"><i class="fa fa-check"></i><b>7.4.5</b> Join and Split</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="stringr.html"><a href="stringr.html#literature"><i class="fa fa-check"></i><b>7.5</b> Literature</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="data-table.html"><a href="data-table.html"><i class="fa fa-check"></i><b>8</b> High performance computing: data.table</a><ul>
+<li class="chapter" data-level="8.1" data-path="data-table.html"><a href="data-table.html#motivation-1"><i class="fa fa-check"></i><b>8.1</b> Motivation</a></li>
+<li class="chapter" data-level="8.2" data-path="data-table.html"><a href="data-table.html#data-exploration"><i class="fa fa-check"></i><b>8.2</b> Data exploration</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="data-table.html"><a href="data-table.html#subsetting-rows"><i class="fa fa-check"></i><b>8.2.1</b> Subsetting rows</a></li>
+<li class="chapter" data-level="8.2.2" data-path="data-table.html"><a href="data-table.html#selecting-columns"><i class="fa fa-check"></i><b>8.2.2</b> Selecting Columns</a></li>
+<li class="chapter" data-level="8.2.3" data-path="data-table.html"><a href="data-table.html#grouping-results"><i class="fa fa-check"></i><b>8.2.3</b> Grouping results</a></li>
+<li class="chapter" data-level="8.2.4" data-path="data-table.html"><a href="data-table.html#editing-data"><i class="fa fa-check"></i><b>8.2.4</b> Editing Data</a></li>
+<li class="chapter" data-level="8.2.5" data-path="data-table.html"><a href="data-table.html#side-effects"><i class="fa fa-check"></i><b>8.2.5</b> Side effects</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="data-table.html"><a href="data-table.html#runtime-comparision"><i class="fa fa-check"></i><b>8.3</b> Runtime comparision</a></li>
+<li class="chapter" data-level="8.4" data-path="data-table.html"><a href="data-table.html#further-resources"><i class="fa fa-check"></i><b>8.4</b> Further resources</a></li>
 </ul></li>
 </ul>
 
@@ -251,13 +252,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="dplyr" class="section level1">
-<h1><span class="header-section-number">3</span> Wrangling data: dplyr</h1>
+<h1><span class="header-section-number">4</span> Wrangling data: dplyr</h1>
 <p>The R package <code>dplry</code> is described as a grammar of data manipulation. It provides commands for the most frequently used types of data transformations, either for the purpose of exploration, data cleaning, or augmenting data.</p>
 <p>The package is part of the core tidyverse, which means that we can load it either explictly via <code>library(dplyr)</code> or implictly via <code>library(tidyverse)</code>. Note that in the following, all commands that are not <code>dplyr</code> commands are made explicit via <code>&lt;package&gt;::&lt;command&gt;</code>. To demonstrate the main features, we use data on Spotify’s daily top 200 charts in Germany in the course of one year.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">library</span>(tidyverse)     <span class="co"># alternatively use library(tidyverse) which covers dplyr + more</span></a>
-<a class="sourceLine" id="cb2-2" title="2">df &lt;-<span class="st"> </span>readr<span class="op">::</span><span class="kw">read_csv</span>(<span class="st">&quot;data/spotify_charts_germany.csv&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">library</span>(tidyverse)     <span class="co"># alternatively use library(tidyverse) which covers dplyr + more</span></a>
+<a class="sourceLine" id="cb9-2" title="2">df &lt;-<span class="st"> </span>readr<span class="op">::</span><span class="kw">read_csv</span>(<span class="st">&quot;data/spotify_charts_germany.csv&quot;</span>)</a></code></pre></div>
 <div id="typical-workflows" class="section level2">
-<h2><span class="header-section-number">3.1</span> Two typial workflows</h2>
+<h2><span class="header-section-number">4.1</span> Two typial workflows</h2>
 <p>Before looking in detail into specific functions, let’s start with two typical workflows. We will note that</p>
 <ul>
 <li>dplyr works with the pipe (<code>%&gt;%</code>) such that multiple operations can be combined one after the other, without the need to create intermediate results.</li>
@@ -265,10 +266,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>there is a strong analogy to SQL: due to this analogy it is even possible to run dplyr commands with a database backend (the package <code>dbplyr</code> needs to be installed)</li>
 </ul>
 <p>The first workflow returns an ordered list of the 5 tracks with the highest number of streams on a single day:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">df <span class="op">%&gt;%</span><span class="st">                                              </span><span class="co"># data</span></a>
-<a class="sourceLine" id="cb3-2" title="2"><span class="st">  </span><span class="kw">select</span>(Streams, date, Artist, Track.Name) <span class="op">%&gt;%</span><span class="st">     </span><span class="co"># select columns by name</span></a>
-<a class="sourceLine" id="cb3-3" title="3"><span class="st">  </span><span class="kw">arrange</span>(<span class="op">-</span>Streams) <span class="op">%&gt;%</span><span class="st">                             </span><span class="co"># order rows by some variable </span></a>
-<a class="sourceLine" id="cb3-4" title="4"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)                                        <span class="co"># select rows by position</span></a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">df <span class="op">%&gt;%</span><span class="st">                                              </span><span class="co"># data</span></a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="st">  </span><span class="kw">select</span>(Streams, date, Artist, Track.Name) <span class="op">%&gt;%</span><span class="st">     </span><span class="co"># select columns by name</span></a>
+<a class="sourceLine" id="cb10-3" title="3"><span class="st">  </span><span class="kw">arrange</span>(<span class="op">-</span>Streams) <span class="op">%&gt;%</span><span class="st">                             </span><span class="co"># order rows by some variable in descending order</span></a>
+<a class="sourceLine" id="cb10-4" title="4"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)                                        <span class="co"># select rows by position</span></a></code></pre></div>
 <pre><code>## # A tibble: 5 x 4
 ##   Streams date       Artist       Track.Name                                
 ##     &lt;dbl&gt; &lt;date&gt;     &lt;chr&gt;        &lt;chr&gt;                                     
@@ -277,13 +278,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 3 1788621 2019-06-21 Capital Bra  Tilidin                                   
 ## 4 1603796 2019-12-24 Chris Rea    Driving Home for Christmas - 2019 Remaster
 ## 5 1538169 2019-06-22 Capital Bra  Tilidin</code></pre>
-<p>The second workflow returns the average number of streams per day of week since the beginning of the year 2020. For this operation, the day of week is derived from the date and added as an additional variable via the <code>mutate</code> function.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">df <span class="op">%&gt;%</span><span class="st">                                 </span><span class="co"># data              </span></a>
-<a class="sourceLine" id="cb5-2" title="2"><span class="st">  </span><span class="kw">filter</span>(date<span class="op">&gt;=</span><span class="st">&quot;2020-01-01&quot;</span>) <span class="op">%&gt;%</span><span class="st">       </span><span class="co"># select rows where condition evaluates to TRUE</span></a>
-<a class="sourceLine" id="cb5-3" title="3"><span class="st">                                       </span><span class="co"># create an additional variable </span></a>
-<a class="sourceLine" id="cb5-4" title="4"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">day_of_week=</span>lubridate<span class="op">::</span><span class="kw">wday</span>(date, <span class="dt">label=</span><span class="ot">TRUE</span>, <span class="dt">abbr=</span><span class="ot">FALSE</span>, <span class="dt">week_start=</span><span class="dv">1</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb5-5" title="5"><span class="st">  </span><span class="kw">group_by</span>(day_of_week) <span class="op">%&gt;%</span><span class="st">            </span><span class="co"># group the data </span></a>
-<a class="sourceLine" id="cb5-6" title="6"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">streams =</span> <span class="kw">mean</span>(Streams))   <span class="co"># aggregate per group via functions such as mean, min, etc. </span></a></code></pre></div>
+<p>The second workflow returns the average number of streams per day of week since the beginning of the year 2020.
+For this operation, the day of week is derived from the date and added as an additional variable via the <code>mutate</code> function.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">df <span class="op">%&gt;%</span><span class="st">                                 </span><span class="co"># data              </span></a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="st">  </span><span class="kw">filter</span>(date<span class="op">&gt;=</span><span class="st">&quot;2020-01-01&quot;</span>) <span class="op">%&gt;%</span><span class="st">       </span><span class="co"># select rows where condition evaluates to TRUE</span></a>
+<a class="sourceLine" id="cb12-3" title="3"><span class="st">                                       </span><span class="co"># create an additional variable </span></a>
+<a class="sourceLine" id="cb12-4" title="4"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">day_of_week=</span>lubridate<span class="op">::</span><span class="kw">wday</span>(date, <span class="dt">label=</span><span class="ot">TRUE</span>, <span class="dt">abbr=</span><span class="ot">FALSE</span>, <span class="dt">week_start=</span><span class="dv">1</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-5" title="5"><span class="st">  </span><span class="kw">group_by</span>(day_of_week) <span class="op">%&gt;%</span><span class="st">            </span><span class="co"># group the data </span></a>
+<a class="sourceLine" id="cb12-6" title="6"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">streams =</span> <span class="kw">mean</span>(Streams))   <span class="co"># aggregate per group via functions such as mean, min, etc. </span></a></code></pre></div>
 <pre><code>## # A tibble: 7 x 2
 ##   day_of_week streams
 ##   &lt;ord&gt;         &lt;dbl&gt;
@@ -295,19 +297,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 6 Samstag     141063.
 ## 7 Sonntag     112455.</code></pre>
 <p>Note that in this particular case, we can write the code more concise by generating the new variable <code>day_of_week</code> inside the <code>group_by</code> function.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">df <span class="op">%&gt;%</span><span class="st">                                              </span></a>
-<a class="sourceLine" id="cb7-2" title="2"><span class="st">  </span><span class="kw">filter</span>(date<span class="op">&gt;=</span><span class="st">&quot;2020-01-01&quot;</span>) <span class="op">%&gt;%</span><span class="st">                    </span></a>
-<a class="sourceLine" id="cb7-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(<span class="dt">day_of_week=</span>lubridate<span class="op">::</span><span class="kw">wday</span>(date, <span class="dt">label=</span><span class="ot">TRUE</span>, <span class="dt">abbr=</span><span class="ot">FALSE</span>, <span class="dt">week_start=</span><span class="dv">1</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb7-4" title="4"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">streams =</span> <span class="kw">mean</span>(Streams))          </a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">df <span class="op">%&gt;%</span><span class="st">                                              </span></a>
+<a class="sourceLine" id="cb14-2" title="2"><span class="st">  </span><span class="kw">filter</span>(date<span class="op">&gt;=</span><span class="st">&quot;2020-01-01&quot;</span>) <span class="op">%&gt;%</span><span class="st">                    </span></a>
+<a class="sourceLine" id="cb14-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(<span class="dt">day_of_week=</span>lubridate<span class="op">::</span><span class="kw">wday</span>(date, <span class="dt">label=</span><span class="ot">TRUE</span>, <span class="dt">abbr=</span><span class="ot">FALSE</span>, <span class="dt">week_start=</span><span class="dv">1</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb14-4" title="4"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">streams =</span> <span class="kw">mean</span>(Streams))          </a></code></pre></div>
 </div>
 <div id="manipulating-rows" class="section level2">
-<h2><span class="header-section-number">3.2</span> Manipulating rows</h2>
+<h2><span class="header-section-number">4.2</span> Manipulating rows</h2>
 <div id="extract-rows" class="section level3">
-<h3><span class="header-section-number">3.2.1</span> Extract rows</h3>
-<p>The <code>filter</code> function is the most frequently used function to extract a subset of rows. The command extracts all rows where the filter condition(s) evaluate to TRUE. The <code>distinct</code> function returns distinct rows by removing duplicates (either for the whole data or the specified variables).</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb8-2" title="2"><span class="st">  </span><span class="kw">filter</span>(stringr<span class="op">::</span><span class="kw">str_detect</span>(Track.Name, <span class="st">&quot;Santa&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># extract rows where condition is TRUE</span></a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="st">  </span><span class="kw">distinct</span>(Artist, Track.Name)          <span class="co"># extract distinct combinations of the two variables</span></a></code></pre></div>
+<h3><span class="header-section-number">4.2.1</span> Extract rows</h3>
+<p>The <code>filter</code> function is the most frequently used function to extract a subset of rows.
+The command extracts all rows where the filter condition(s) evaluate to TRUE. The <code>distinct</code> function returns distinct rows by removing duplicates (either for the whole data or the specified variables).</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb15-2" title="2"><span class="st">  </span><span class="kw">filter</span>(stringr<span class="op">::</span><span class="kw">str_detect</span>(Track.Name, <span class="st">&quot;Santa&quot;</span>)) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># extract rows where condition is TRUE</span></a>
+<a class="sourceLine" id="cb15-3" title="3"><span class="st">  </span><span class="kw">distinct</span>(Artist, Track.Name)                          <span class="co"># extract distinct combinations of the two variables</span></a></code></pre></div>
 <pre><code>## # A tibble: 13 x 2
 ##    Artist          Track.Name                                                   
 ##    &lt;chr&gt;           &lt;chr&gt;                                                        
@@ -324,8 +327,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 11 Ariana Grande   Santa Baby                                                   
 ## 12 The Jackson 5   Santa Claus Is Coming To Town                                
 ## 13 Mariah Carey    Oh Santa!</code></pre>
-<p>We can select rows by position via <code>slice</code>. If we want to display the first or last n rows, we can also use the base R functions <code>head</code> and <code>tail</code>. The functions <code>top_n</code> of <code>top_fraq</code> allow us to extract the specified number/fraction of rows, according to the ordering of a specified variable. In addition, <code>top_n</code> and <code>top_frac</code> also operate also on grouped data</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>))   <span class="co"># selects rows by position (in the given order)</span></a></code></pre></div>
+<p>We can select rows by position via <code>slice</code>. If we want to display the first or last n rows, we can also use the base R functions <code>head</code> and <code>tail</code>. The functions <code>top_n</code> of <code>top_fraq</code> allow us to extract the specified number/fraction of rows, according to the ordering of a specified variable. In addition, <code>top_n</code> and <code>top_frac</code> also operate on grouped data.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>))   <span class="co"># selects rows by position (in the given order)</span></a></code></pre></div>
 <pre><code>## # A tibble: 3 x 15
 ##   Position Track.Name Artist Streams date       danceability energy loudness
 ##      &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;    &lt;dbl&gt; &lt;date&gt;            &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;
@@ -335,7 +338,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## # ... with 7 more variables: speechiness &lt;dbl&gt;, acousticness &lt;dbl&gt;,
 ## #   instrumentalness &lt;dbl&gt;, liveness &lt;dbl&gt;, valence &lt;dbl&gt;, tempo &lt;dbl&gt;,
 ## #   duration_ms &lt;dbl&gt;</code></pre>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">3</span>)           <span class="co"># selects first n rows (in the given order)</span></a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">3</span>)           <span class="co"># selects first n rows (in the given order)</span></a></code></pre></div>
 <pre><code>## # A tibble: 3 x 15
 ##   Position Track.Name Artist Streams date       danceability energy loudness
 ##      &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;    &lt;dbl&gt; &lt;date&gt;            &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;
@@ -345,7 +348,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## # ... with 7 more variables: speechiness &lt;dbl&gt;, acousticness &lt;dbl&gt;,
 ## #   instrumentalness &lt;dbl&gt;, liveness &lt;dbl&gt;, valence &lt;dbl&gt;, tempo &lt;dbl&gt;,
 ## #   duration_ms &lt;dbl&gt;</code></pre>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">top_n</span>(<span class="dv">3</span>, Streams) <span class="co"># selects top n rows (based on the variable Streams)</span></a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">top_n</span>(<span class="dv">3</span>, Streams) <span class="co"># selects top n rows (based on the variable Streams)</span></a></code></pre></div>
 <pre><code>## # A tibble: 3 x 15
 ##   Position Track.Name Artist Streams date       danceability energy loudness
 ##      &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;    &lt;dbl&gt; &lt;date&gt;            &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;
@@ -355,11 +358,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## # ... with 7 more variables: speechiness &lt;dbl&gt;, acousticness &lt;dbl&gt;,
 ## #   instrumentalness &lt;dbl&gt;, liveness &lt;dbl&gt;, valence &lt;dbl&gt;, tempo &lt;dbl&gt;,
 ## #   duration_ms &lt;dbl&gt;</code></pre>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1">df <span class="op">%&gt;%</span><span class="st">                        </span></a>
-<a class="sourceLine" id="cb16-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(date) <span class="op">%&gt;%</span><span class="st">        </span><span class="co"># group by date </span></a>
-<a class="sourceLine" id="cb16-3" title="3"><span class="st">  </span><span class="kw">top_n</span>(<span class="dv">1</span>, <span class="dt">wt=</span>Streams) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># select 1 row per date, the one with the highest number of streams</span></a>
-<a class="sourceLine" id="cb16-4" title="4"><span class="st">  </span><span class="kw">select</span>(date, Streams, Track.Name, Artist) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb16-5" title="5"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1">df <span class="op">%&gt;%</span><span class="st">                        </span></a>
+<a class="sourceLine" id="cb23-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(date) <span class="op">%&gt;%</span><span class="st">        </span><span class="co"># group by date </span></a>
+<a class="sourceLine" id="cb23-3" title="3"><span class="st">  </span><span class="kw">top_n</span>(<span class="dv">1</span>, <span class="dt">wt=</span>Streams) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># select 1 row per date, the one with the highest number of streams</span></a>
+<a class="sourceLine" id="cb23-4" title="4"><span class="st">  </span><span class="kw">select</span>(date, Streams, Track.Name, Artist) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb23-5" title="5"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 4
 ## # Groups:   date [5]
 ##   date       Streams Track.Name  Artist     
@@ -370,16 +373,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 4 2019-04-02  818911 Cherry Lady Capital Bra
 ## 5 2019-04-03  783832 Cherry Lady Capital Bra</code></pre>
 <p>Another useful feature is selecting rows randomly via <code>sample_n</code> or <code>sample_frac</code> (output hidden).</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">sample_n</span>(<span class="dv">5</span>)                     <span class="co"># Select 5 rows randomly with replacement</span></a>
-<a class="sourceLine" id="cb18-2" title="2">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">sample_frac</span>(<span class="fl">0.1</span>, <span class="dt">replace=</span><span class="ot">TRUE</span>)  <span class="co"># Select a 10% random sample with replacement</span></a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">sample_n</span>(<span class="dv">5</span>)                     <span class="co"># Select 5 rows randomly with replacement</span></a>
+<a class="sourceLine" id="cb25-2" title="2">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">sample_frac</span>(<span class="fl">0.1</span>, <span class="dt">replace=</span><span class="ot">TRUE</span>)  <span class="co"># Select a 10% random sample with replacement</span></a></code></pre></div>
 </div>
 <div id="arranging-rows" class="section level3">
-<h3><span class="header-section-number">3.2.2</span> Arranging rows</h3>
+<h3><span class="header-section-number">4.2.2</span> Arranging rows</h3>
 <p>The function <code>arrange</code> is used to order rows by some variable(s). Use minus (<code>-</code>) or the <code>desc</code> function for arranging in descending order. The following code returns the five most danceable chart tracks of 2019-03-30 by arranging first by date (ascending) and second by danceability (descending).</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb19-2" title="2"><span class="st">  </span><span class="kw">arrange</span>(date, <span class="op">-</span>danceability) <span class="op">%&gt;%</span><span class="st">     </span><span class="co"># orders the data first by date (asc), then by danceability (desc)</span></a>
-<a class="sourceLine" id="cb19-3" title="3"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb19-4" title="4"><span class="st">  </span><span class="kw">select</span>(Track.Name, date, danceability)</a></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb26-2" title="2"><span class="st">  </span><span class="kw">arrange</span>(date, <span class="op">-</span>danceability) <span class="op">%&gt;%</span><span class="st">     </span><span class="co"># orders the data first by date (asc), then by danceability (desc)</span></a>
+<a class="sourceLine" id="cb26-3" title="3"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb26-4" title="4"><span class="st">  </span><span class="kw">select</span>(Track.Name, date, danceability)</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
 ##   Track.Name           date       danceability
 ##   &lt;chr&gt;                &lt;date&gt;            &lt;dbl&gt;
@@ -391,26 +394,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div id="manipulating-columns" class="section level2">
-<h2><span class="header-section-number">3.3</span> Manipulating columns</h2>
+<h2><span class="header-section-number">4.3</span> Manipulating columns</h2>
 <div id="extract-and-rename-columns" class="section level3">
-<h3><span class="header-section-number">3.3.1</span> Extract and rename columns</h3>
-<p>Subset of columns can be extracted via the <code>select</code> function. Selection is possible by name or position. Reversely, one can exclude specific columns via negative selection (using <code>-</code>). Noteworthy are are the many helper functions, which are convenient for rapid exploration, but not recommendable for stable software: <code>start_with</code>, <code>last_col</code>, <code>everything</code>, <code>contains</code>, etc. One can rename columns while selecting them. If we want to rename a column while preserving the other columns we use the <code>rename</code> function.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(Position, Track.Name)       <span class="co"># select via column name</span></a>
-<a class="sourceLine" id="cb21-2" title="2">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="dv">1</span>, <span class="dv">2</span>)                       <span class="co"># select via column position</span></a>
-<a class="sourceLine" id="cb21-3" title="3">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>Track.Name)                <span class="co"># select all columns except Track.Name</span></a>
-<a class="sourceLine" id="cb21-4" title="4">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="kw">starts_with</span>(<span class="st">&quot;dance&quot;</span>))       <span class="co"># select all columns starting with &quot;dance&quot; </span></a>
-<a class="sourceLine" id="cb21-5" title="5">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(danceability, <span class="kw">everything</span>()) <span class="co"># reorder danceability first, then remaining columns</span></a>
-<a class="sourceLine" id="cb21-6" title="6">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="dt">song =</span> Track.Name)          <span class="co"># select one column (Track.name) and rename it (song)</span></a>
-<a class="sourceLine" id="cb21-7" title="7">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">rename</span>(<span class="dt">song =</span> Track.Name)          <span class="co"># renames one column, but preserves all the others </span></a></code></pre></div>
+<h3><span class="header-section-number">4.3.1</span> Extract and rename columns</h3>
+<p>Subset of columns can be extracted via the <code>select</code> function. Selection is possible by name or position. Reversely, one can exclude specific columns via negative selection (using <code>-</code>). Noteworthy are the many helper functions, which are convenient for rapid exploration, but not recommendable for stable software: <code>start_with</code>, <code>last_col</code>, <code>everything</code>, <code>contains</code>, etc. One can rename columns while selecting them. If we want to rename a column while preserving the other columns we use the <code>rename</code> function.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(Position, Track.Name)       <span class="co"># select via column name</span></a>
+<a class="sourceLine" id="cb28-2" title="2">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="dv">1</span>, <span class="dv">2</span>)                       <span class="co"># select via column position</span></a>
+<a class="sourceLine" id="cb28-3" title="3">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>Track.Name)                <span class="co"># select all columns except Track.Name</span></a>
+<a class="sourceLine" id="cb28-4" title="4">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="kw">starts_with</span>(<span class="st">&quot;dance&quot;</span>))       <span class="co"># select all columns starting with &quot;dance&quot; </span></a>
+<a class="sourceLine" id="cb28-5" title="5">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(danceability, <span class="kw">everything</span>()) <span class="co"># reorder danceability first, then remaining columns</span></a>
+<a class="sourceLine" id="cb28-6" title="6">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="dt">song =</span> Track.Name)          <span class="co"># select one column (Track.name) and rename it (song)</span></a>
+<a class="sourceLine" id="cb28-7" title="7">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">rename</span>(<span class="dt">song =</span> Track.Name)          <span class="co"># renames one column, but preserves all the others </span></a></code></pre></div>
 </div>
 <div id="create-new-columns" class="section level3">
-<h3><span class="header-section-number">3.3.2</span> Create new columns</h3>
+<h3><span class="header-section-number">4.3.2</span> Create new columns</h3>
 <p>The function <code>mutate</code> creates a new variable or overwrites an existing one. Note that we must assign back to make a permanent change to the data.</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb22-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">duration_s =</span> <span class="kw">round</span>(duration_ms <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># create new variable</span></a>
-<a class="sourceLine" id="cb22-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Track.Name =</span> <span class="kw">as.factor</span>(Track.Name)) <span class="op">%&gt;%</span><span class="st">      </span><span class="co"># change existing variable</span></a>
-<a class="sourceLine" id="cb22-4" title="4"><span class="st">  </span><span class="kw">select</span>(Track.Name,<span class="kw">starts_with</span>(<span class="st">&quot;duration&quot;</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb22-5" title="5"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb29-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">duration_s =</span> <span class="kw">round</span>(duration_ms <span class="op">/</span><span class="st"> </span><span class="dv">1000</span>)) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># create new variable</span></a>
+<a class="sourceLine" id="cb29-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Track.Name =</span> <span class="kw">as.factor</span>(Track.Name)) <span class="op">%&gt;%</span><span class="st">      </span><span class="co"># change existing variable</span></a>
+<a class="sourceLine" id="cb29-4" title="4"><span class="st">  </span><span class="kw">select</span>(Track.Name,<span class="kw">starts_with</span>(<span class="st">&quot;duration&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb29-5" title="5"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
 ##   Track.Name     duration_ms duration_s
 ##   &lt;fct&gt;                &lt;dbl&gt;      &lt;dbl&gt;
@@ -422,7 +425,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div id="scoped-functions" class="section level2">
-<h2><span class="header-section-number">3.4</span> Scoped functions</h2>
+<h2><span class="header-section-number">4.4</span> Scoped functions</h2>
 <p>There are scoped variants of ,<code>mutate</code> which affect multiple columns at once:</p>
 <ul>
 <li><code>mutate_all</code>: all columns</li>
@@ -430,7 +433,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><code>mutate_if</code>: all columns that satisfy a condition</li>
 </ul>
 <p>Equivalent scoped variants exist for <code>select</code>and <code>summarise</code> as well.</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate_all</span>(as.character) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">5</span>) <span class="co"># change ALL columns to character type</span></a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate_all</span>(as.character) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">5</span>) <span class="co"># change ALL columns to character type</span></a></code></pre></div>
 <pre><code>## # A tibble: 5 x 15
 ##   Position Track.Name Artist Streams date  danceability energy loudness
 ##   &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;   
@@ -442,10 +445,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## # ... with 7 more variables: speechiness &lt;chr&gt;, acousticness &lt;chr&gt;,
 ## #   instrumentalness &lt;chr&gt;, liveness &lt;chr&gt;, valence &lt;chr&gt;, tempo &lt;chr&gt;,
 ## #   duration_ms &lt;chr&gt;</code></pre>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb26-2" title="2"><span class="st">  </span><span class="kw">mutate_at</span>(<span class="kw">vars</span>(danceability, valence), round, <span class="dt">digits=</span><span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># Round all specified columns</span></a>
-<a class="sourceLine" id="cb26-3" title="3"><span class="st">  </span><span class="kw">select</span>(Track.Name,danceability, valence, energy) <span class="op">%&gt;%</span><span class="st">        </span><span class="co"># We see that energy was not rounded</span></a>
-<a class="sourceLine" id="cb26-4" title="4"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb33-2" title="2"><span class="st">  </span><span class="kw">mutate_at</span>(<span class="kw">vars</span>(danceability, valence), round, <span class="dt">digits=</span><span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># Round all specified columns</span></a>
+<a class="sourceLine" id="cb33-3" title="3"><span class="st">  </span><span class="kw">select</span>(Track.Name,danceability, valence, energy) <span class="op">%&gt;%</span><span class="st">        </span><span class="co"># We see that energy was not rounded</span></a>
+<a class="sourceLine" id="cb33-4" title="4"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 4
 ##   Track.Name     danceability valence energy
 ##   &lt;chr&gt;                 &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;
@@ -455,10 +458,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 4 Wolke 10                0.8     0.4  0.797
 ## 5 Puerto Rico             0.7     0.6  0.766</code></pre>
 <p>If there is no predefined function, one can define an anonymous function (which cannot be used outside this context) on the fly:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb28-2" title="2"><span class="st">  </span><span class="kw">mutate_at</span>(<span class="kw">vars</span>(danceability, valence), <span class="cf">function</span>(x) x<span class="op">*</span><span class="dv">100</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># Here we define a custom function in-line</span></a>
-<a class="sourceLine" id="cb28-3" title="3"><span class="st">  </span><span class="kw">select</span>(Track.Name,danceability, valence) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb28-4" title="4"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb35-2" title="2"><span class="st">  </span><span class="kw">mutate_at</span>(<span class="kw">vars</span>(danceability, valence), <span class="cf">function</span>(x) x<span class="op">*</span><span class="dv">100</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># Here we define a custom function in-line that multiplies dancebility and valence by 100</span></a>
+<a class="sourceLine" id="cb35-3" title="3"><span class="st">  </span><span class="kw">select</span>(Track.Name,danceability, valence) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb35-4" title="4"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
 ##   Track.Name     danceability valence
 ##   &lt;chr&gt;                 &lt;dbl&gt;   &lt;dbl&gt;
@@ -468,11 +471,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 4 Wolke 10               77      39.3
 ## 5 Puerto Rico            68.7    62.9</code></pre>
 <p>The typical use case for <code>mutate_if</code> is changing the variable types of all variables satisfying a specific condition.</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb30-2" title="2"><span class="st">  </span><span class="kw">mutate_if</span>(is.character, as.factor) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># IF column has type character, change it to factor</span></a>
-<a class="sourceLine" id="cb30-3" title="3"><span class="st">  </span><span class="kw">glimpse</span>()                               <span class="co"># We see that Track.Name and Artist were coerced to factor</span></a></code></pre></div>
-<pre><code>## Rows: 73,200
-## Columns: 15
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb37-2" title="2"><span class="st">  </span><span class="kw">mutate_if</span>(is.character, as.factor) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># IF column has type character, change it to factor</span></a>
+<a class="sourceLine" id="cb37-3" title="3"><span class="st">  </span><span class="kw">glimpse</span>()                               <span class="co"># We see that Track.Name and Artist were coerced to factor</span></a></code></pre></div>
+<pre><code>## Observations: 73,200
+## Variables: 15
 ## $ Position         &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,...
 ## $ Track.Name       &lt;fct&gt; Cherry Lady, Affalterbach, Blackberry Sky, Wolke 1...
 ## $ Artist           &lt;fct&gt; Capital Bra, Shindy, Eno, MERO, Fero47, Capital Br...
@@ -489,10 +492,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## $ tempo            &lt;dbl&gt; 114.445, 115.897, 102.996, 100.003, 140.039, 179.8...
 ## $ duration_ms      &lt;dbl&gt; 135597, 173220, 156497, 172827, 193573, 203067, 20...</code></pre>
 <p>Note that the condition above (<code>is.character</code>) refers to the column as a whole, i.e. the condition returns a single TRUE or FALSE. If we want to mutate a column conditional on the single elements within the column, we use the regular <code>mutate</code> function combined with an <code>if_else</code>:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb32-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Top10 =</span> <span class="kw">if_else</span>(Position<span class="op">&lt;=</span><span class="dv">10</span>, <span class="st">&quot;Top 10&quot;</span>, <span class="st">&quot;Top 11-200&quot;</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb32-3" title="3"><span class="st">  </span><span class="kw">select</span>(Position, Top10, Track.Name) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb32-4" title="4"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">8</span><span class="op">:</span><span class="dv">12</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb39-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Top10 =</span> <span class="kw">if_else</span>(Position<span class="op">&lt;=</span><span class="dv">10</span>, <span class="st">&quot;Top 10&quot;</span>, <span class="st">&quot;Top 11-200&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb39-3" title="3"><span class="st">  </span><span class="kw">select</span>(Position, Top10, Track.Name) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb39-4" title="4"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">8</span><span class="op">:</span><span class="dv">12</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
 ##   Position Top10      Track.Name 
 ##      &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      
@@ -503,24 +506,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 5       12 Top 11-200 Jay Jay</code></pre>
 </div>
 <div id="aggregate" class="section level2">
-<h2><span class="header-section-number">3.5</span> Aggregate</h2>
+<h2><span class="header-section-number">4.5</span> Aggregate</h2>
 <p>The <code>summarise</code> function is the generic way of calculating summary stats for specific variables. Within the function we can apply base R summary functions (<code>sum</code>, <code>mean</code> or <code>max</code>), one of dplyr’s specific summary functions (<code>n</code>, <code>n_distinct</code>) or a user defined summary function. In the standard case the <code>summarise</code> function returns one row.</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb34-2" title="2"><span class="st">  </span><span class="kw">filter</span>(date <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(date)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb34-3" title="3"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">observations =</span> <span class="kw">n</span>(),                       <span class="co"># number of observations (dplyr function)</span></a>
-<a class="sourceLine" id="cb34-4" title="4">            <span class="dt">artists =</span> <span class="kw">n_distinct</span>(Artist),             <span class="co"># number of distinct observations (dplyr)</span></a>
-<a class="sourceLine" id="cb34-5" title="5">            <span class="dt">total_streams =</span> <span class="kw">sum</span>(Streams),             <span class="co"># sum (base R) </span></a>
-<a class="sourceLine" id="cb34-6" title="6">            <span class="dt">mean_valence =</span> <span class="kw">mean</span>(valence, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)) <span class="co"># mean (base R)</span></a></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb41-2" title="2"><span class="st">  </span><span class="kw">filter</span>(date <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(date)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb41-3" title="3"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">observations =</span> <span class="kw">n</span>(),                       <span class="co"># number of observations (dplyr function)</span></a>
+<a class="sourceLine" id="cb41-4" title="4">            <span class="dt">artists =</span> <span class="kw">n_distinct</span>(Artist),             <span class="co"># number of distinct observations (dplyr)</span></a>
+<a class="sourceLine" id="cb41-5" title="5">            <span class="dt">total_streams =</span> <span class="kw">sum</span>(Streams),             <span class="co"># sum (base R) </span></a>
+<a class="sourceLine" id="cb41-6" title="6">            <span class="dt">mean_valence =</span> <span class="kw">mean</span>(valence, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)) <span class="co"># mean (base R)</span></a></code></pre></div>
 <pre><code>## # A tibble: 1 x 4
 ##   observations artists total_streams mean_valence
 ##          &lt;int&gt;   &lt;int&gt;         &lt;dbl&gt;        &lt;dbl&gt;
 ## 1          200     127      20562166        0.520</code></pre>
 <p>However, we can also apply <code>summarise</code> to grouped data. Then one row is returned per group.</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb36-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(<span class="dt">month =</span> stringr<span class="op">::</span><span class="kw">str_sub</span>(date, <span class="dv">1</span>, <span class="dv">7</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb36-3" title="3"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">artists =</span> <span class="kw">n_distinct</span>(Artist),             <span class="co"># number of distinct observations (dplyr)</span></a>
-<a class="sourceLine" id="cb36-4" title="4">            <span class="dt">total_streams =</span> <span class="kw">sum</span>(Streams),             <span class="co"># sum (base R) </span></a>
-<a class="sourceLine" id="cb36-5" title="5">            <span class="dt">mean_valence =</span> <span class="kw">mean</span>(valence, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)) <span class="co"># mean (base R)</span></a></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb43-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(<span class="dt">month =</span> stringr<span class="op">::</span><span class="kw">str_sub</span>(date, <span class="dv">1</span>, <span class="dv">7</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb43-3" title="3"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">artists =</span> <span class="kw">n_distinct</span>(Artist),             <span class="co"># number of distinct observations (dplyr)</span></a>
+<a class="sourceLine" id="cb43-4" title="4">            <span class="dt">total_streams =</span> <span class="kw">sum</span>(Streams),             <span class="co"># sum (base R) </span></a>
+<a class="sourceLine" id="cb43-5" title="5">            <span class="dt">mean_valence =</span> <span class="kw">mean</span>(valence, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)) <span class="co"># mean (base R)</span></a></code></pre></div>
 <pre><code>## # A tibble: 13 x 4
 ##    month   artists total_streams mean_valence
 ##    &lt;chr&gt;     &lt;int&gt;         &lt;dbl&gt;        &lt;dbl&gt;
@@ -538,8 +541,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 12 2020-02     215     775863340        0.511
 ## 13 2020-03     182     726353808        0.521</code></pre>
 <p>The <code>count</code> function is a useful shortcut for <code>group_by</code> followed by <code>summarise(n = n())</code>.</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" title="1"><span class="co"># df %&gt;% group_by(Artist) %&gt;% summarise(n = n()) %&gt;% ungroup() %&gt;% head(5)</span></a>
-<a class="sourceLine" id="cb38-2" title="2">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(Artist) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">5</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1"><span class="co"># df %&gt;% group_by(Artist) %&gt;% summarise(n = n()) %&gt;% ungroup() %&gt;% head(5)</span></a>
+<a class="sourceLine" id="cb45-2" title="2">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">count</span>(Artist) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">5</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 2
 ##   Artist                  n
 ##   &lt;chr&gt;               &lt;int&gt;
@@ -549,11 +552,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 4 24kGoldn               26
 ## 5 5 Seconds of Summer   109</code></pre>
 <p>Sometimes, we want to add the (group) aggregates as a new column to the existing data frame. In this case we just use <code>mutate</code> rather than <code>summarise</code>.</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb40-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(date) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb40-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Total_Streams =</span> <span class="kw">sum</span>(Streams), <span class="dt">Share =</span> Streams<span class="op">/</span>Total_Streams) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb40-4" title="4"><span class="st">  </span><span class="kw">select</span>(Streams, Total_Streams, Share, Artist) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb40-5" title="5"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb47-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(date) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb47-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Total_Streams =</span> <span class="kw">sum</span>(Streams), <span class="dt">Share =</span> Streams<span class="op">/</span>Total_Streams) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb47-4" title="4"><span class="st">  </span><span class="kw">select</span>(Streams, Total_Streams, Share, Artist) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb47-5" title="5"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>)</a></code></pre></div>
 <pre><code>## Adding missing grouping variables: `date`</code></pre>
 <pre><code>## # A tibble: 5 x 5
 ## # Groups:   date [1]
@@ -566,7 +569,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 5 2019-03-30  557781      30400557 0.0183 Fero47</code></pre>
 </div>
 <div id="window-functions" class="section level2">
-<h2><span class="header-section-number">3.6</span> Window functions</h2>
+<h2><span class="header-section-number">4.6</span> Window functions</h2>
 <p>A window function is a variation on an aggregation function. While <code>mean</code> or <code>sum</code> take n inputs and return a single output, a window function returns n values. Window functions are used inside <code>mutate</code> and <code>filter</code> functions.</p>
 <ul>
 <li>Offsets:<code>lead</code> and <code>lag</code></li>
@@ -575,12 +578,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 </div>
 <div id="combining-tables" class="section level2">
-<h2><span class="header-section-number">3.7</span> Combining tables</h2>
+<h2><span class="header-section-number">4.7</span> Combining tables</h2>
 </div>
 <div id="database-backend" class="section level2">
-<h2><span class="header-section-number">3.8</span> Database backend</h2>
+<h2><span class="header-section-number">4.8</span> Database backend</h2>
 <div id="motivation" class="section level3">
-<h3><span class="header-section-number">3.8.1</span> Motivation</h3>
+<h3><span class="header-section-number">4.8.1</span> Motivation</h3>
 <p>As mentioned before, the <code>dplyr</code> syntax reveals strong analogies with SQL. What is more, it is even possible to use <code>dplyr</code> with a database backend.</p>
 <p><strong>What does this mean? And when is this useful?</strong></p>
 <p>In a company setting, raw data is usually stored in some form of database. When we want to work with the data in R, the standard way would be to open a connection to the database and read in the data into R’s memory. However, if the size of data is large, there may be problems with this approach:</p>
@@ -594,30 +597,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The idea is to write regular dplyr code. The code is translated into SQL under the hood. The data is retrieved from the database and only the results are actually read into R’s memory.</p>
 </div>
 <div id="set-up" class="section level3">
-<h3><span class="header-section-number">3.8.2</span> Set up</h3>
+<h3><span class="header-section-number">4.8.2</span> Set up</h3>
 <p>First, we need to install a few things:</p>
 <ul>
-<li><strong>Database:</strong> In a company setting, the database will already be there. If you want to install a database on your computer, popular choices are PostgreSQL or MySQL. Here is an <a href="https://db.rstudio.com/databases/">overview of possible choices</a>S For this book we will use an in-memory SQLite database. The benefit is that everyone will be able to run the code without the need to set up a proper database.<br />
+<li><strong>Database:</strong> In a company setting, the database will already be there. If you want to install a database on your computer, popular choices are PostgreSQL or MySQL. Here is an <a href="https://db.rstudio.com/databases/">overview of possible choices</a> For this book we will use an in-memory SQLite database. The benefit is that everyone will be able to run the code without the need to set up a proper database.<br />
 </li>
 <li><strong>DBI backend package:</strong> DBI stands for database interface. We need a package that corresponds to our database. In our case we will use the package <code>RSQLite</code>. With many other databases, the package <code>odbc</code> would be proper choice.</li>
 <li><strong><code>dbplyr</code> package</strong> This package needs to be installed, but we never need to load it explictly. Once installed, it is sufficient to load the regular <code>dplyr</code> package.</li>
 </ul>
 <p>Second, we need to connect R to the database. The arguments look slightly different, depending on the database that you are using. Usually, you would also need to specify a user name and password.</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1">con &lt;-<span class="st"> </span>DBI<span class="op">::</span><span class="kw">dbConnect</span>(RSQLite<span class="op">::</span><span class="kw">SQLite</span>(), <span class="dt">dbname =</span> <span class="st">&quot;:memory:&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1">con &lt;-<span class="st"> </span>DBI<span class="op">::</span><span class="kw">dbConnect</span>(RSQLite<span class="op">::</span><span class="kw">SQLite</span>(), <span class="dt">dbname =</span> <span class="st">&quot;:memory:&quot;</span>)</a></code></pre></div>
 <p>Third, we need to have data in our database. In a company setting, the data would already be there. In our case, we create a table <code>spotify-charts-germany</code> in the database and copy the corresponding data from R’s memory (df) into this table.</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" title="1"><span class="kw">copy_to</span>(con, df, <span class="st">&quot;spotify-charts-germany&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1"><span class="kw">copy_to</span>(con, df, <span class="st">&quot;spotify-charts-germany&quot;</span>)</a></code></pre></div>
 </div>
 <div id="querying-the-database" class="section level3">
-<h3><span class="header-section-number">3.8.3</span> Querying the database</h3>
-<p>First, we register the database table via the <code>tbl</code> function.</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1">spotify_db &lt;-<span class="st"> </span><span class="kw">tbl</span>(con, <span class="st">&quot;spotify-charts-germany&quot;</span>)</a></code></pre></div>
+<h3><span class="header-section-number">4.8.3</span> Querying the database</h3>
+<p>First, we register the database table via the <code>tbl</code> function, which creates a table from a data source.</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" title="1">spotify_db &lt;-<span class="st"> </span><span class="kw">tbl</span>(con, <span class="st">&quot;spotify-charts-germany&quot;</span>)</a></code></pre></div>
 <p>Now we can query this database table using regular <code>dplyr</code> syntax. Note that this works smoothly for the majority but not for all <code>dplyr</code> commands. For instance the <code>slice</code> function is not implemented, i.e. it has no translation to SQL. Hence, in the following statement we extract the first five rows via <code>head(5)</code> instead of <code>slice(1:5)</code>. Otherwise the sequence of commands looks identical to the one <a href="dplyr.html#typical-workflows">presented above based on a normal R data frame/tibble</a>.</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" title="1">spotify_db <span class="op">%&gt;%</span><span class="st">                                      </span><span class="co"># reference to the database table</span></a>
-<a class="sourceLine" id="cb46-2" title="2"><span class="st">  </span><span class="kw">select</span>(Streams, date, Artist, Track.Name) <span class="op">%&gt;%</span><span class="st">     </span><span class="co"># select columns by name</span></a>
-<a class="sourceLine" id="cb46-3" title="3"><span class="st">  </span><span class="kw">arrange</span>(<span class="op">-</span>Streams) <span class="op">%&gt;%</span><span class="st">                             </span><span class="co"># order rows by some variable   </span></a>
-<a class="sourceLine" id="cb46-4" title="4"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>)                                           <span class="co"># select rows by position  </span></a></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" title="1">spotify_db <span class="op">%&gt;%</span><span class="st">                                      </span><span class="co"># reference to the database table</span></a>
+<a class="sourceLine" id="cb53-2" title="2"><span class="st">  </span><span class="kw">select</span>(Streams, date, Artist, Track.Name) <span class="op">%&gt;%</span><span class="st">     </span><span class="co"># select columns by name</span></a>
+<a class="sourceLine" id="cb53-3" title="3"><span class="st">  </span><span class="kw">arrange</span>(<span class="op">-</span>Streams) <span class="op">%&gt;%</span><span class="st">                             </span><span class="co"># order rows by some variable   </span></a>
+<a class="sourceLine" id="cb53-4" title="4"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>)                                           <span class="co"># select rows by position  </span></a></code></pre></div>
 <pre><code>## # Source:     lazy query [?? x 4]
-## # Database:   sqlite 3.29.0 [:memory:]
+## # Database:   sqlite 3.30.1 [:memory:]
 ## # Ordered by: -Streams
 ##   Streams  date Artist       Track.Name                                
 ##     &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;                                     
@@ -627,30 +630,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 4 1603796 18254 Chris Rea    Driving Home for Christmas - 2019 Remaster
 ## 5 1538169 18069 Capital Bra  Tilidin</code></pre>
 <p>We can actually see the SQL generated by dplyr in the background via <code>show_query</code>.</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" title="1">spotify_db <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb48-2" title="2"><span class="st">  </span><span class="kw">select</span>(Streams, date, Artist, Track.Name) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb48-3" title="3"><span class="st">  </span><span class="kw">arrange</span>(<span class="op">-</span>Streams) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb48-4" title="4"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb48-5" title="5"><span class="st">  </span><span class="kw">show_query</span>()                                      <span class="co"># shows the translation into SQL</span></a></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1">spotify_db <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb55-2" title="2"><span class="st">  </span><span class="kw">select</span>(Streams, date, Artist, Track.Name) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb55-3" title="3"><span class="st">  </span><span class="kw">arrange</span>(<span class="op">-</span>Streams) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb55-4" title="4"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb55-5" title="5"><span class="st">  </span><span class="kw">show_query</span>()                                      <span class="co"># shows the translation into SQL</span></a></code></pre></div>
 <pre><code>## &lt;SQL&gt;
 ## SELECT `Streams`, `date`, `Artist`, `Track.Name`
 ## FROM `spotify-charts-germany`
 ## ORDER BY -`Streams`
 ## LIMIT 5</code></pre>
-<p>Alternatively, we could achieve the same by writing the SQL query ourselves, and send the query to the database.</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1">query &lt;-<span class="st">  &quot;SELECT Streams, date, Artist, `Track.Name` </span></a>
-<a class="sourceLine" id="cb50-2" title="2"><span class="st">          FROM `spotify-charts-germany`</span></a>
-<a class="sourceLine" id="cb50-3" title="3"><span class="st">          ORDER BY Streams DESC</span></a>
-<a class="sourceLine" id="cb50-4" title="4"><span class="st">          LIMIT 5&quot;</span></a>
-<a class="sourceLine" id="cb50-5" title="5">RMySQL<span class="op">::</span><span class="kw">dbSendQuery</span>(con, query)</a></code></pre></div>
+<p>Alternatively, we could achieve the same by writing the SQL query ourselves, and send the query to the database. You might need to install the packages ‘RMySQL’ before you are able to execute.</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" title="1">query &lt;-<span class="st">  &quot;SELECT Streams, date, Artist, `Track.Name` </span></a>
+<a class="sourceLine" id="cb57-2" title="2"><span class="st">          FROM `spotify-charts-germany`</span></a>
+<a class="sourceLine" id="cb57-3" title="3"><span class="st">          ORDER BY Streams DESC</span></a>
+<a class="sourceLine" id="cb57-4" title="4"><span class="st">          LIMIT 5&quot;</span></a>
+<a class="sourceLine" id="cb57-5" title="5">RMySQL<span class="op">::</span><span class="kw">dbSendQuery</span>(con, query)</a></code></pre></div>
 <p>It is important to understand that the data is not in R’s memory until we explicitly <code>collect</code> the data. Once the data is collected, it behaves like any regular R data frame.</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1">rdata &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb51-2" title="2"><span class="st">  </span>spotify_db <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb51-3" title="3"><span class="st">  </span><span class="kw">select</span>(Streams, date, Artist, Track.Name) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb51-4" title="4"><span class="st">  </span><span class="kw">arrange</span>(<span class="op">-</span>Streams) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb51-5" title="5"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb51-6" title="6"><span class="st">  </span><span class="kw">collect</span>()                   <span class="co"># this pulls the data into R&#39;s memory</span></a>
-<a class="sourceLine" id="cb51-7" title="7"><span class="kw">class</span>(rdata)                  <span class="co"># this is a regular R data frame / tibble</span></a></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" title="1">rdata &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb58-2" title="2"><span class="st">  </span>spotify_db <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb58-3" title="3"><span class="st">  </span><span class="kw">select</span>(Streams, date, Artist, Track.Name) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb58-4" title="4"><span class="st">  </span><span class="kw">arrange</span>(<span class="op">-</span>Streams) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb58-5" title="5"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb58-6" title="6"><span class="st">  </span><span class="kw">collect</span>()                   <span class="co"># this pulls the data into R&#39;s memory</span></a>
+<a class="sourceLine" id="cb58-7" title="7"><span class="kw">class</span>(rdata)                  <span class="co"># this is a regular R data frame / tibble</span></a></code></pre></div>
 <pre><code>## [1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
 
 </div>
