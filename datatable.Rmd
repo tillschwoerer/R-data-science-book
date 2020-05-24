@@ -1,6 +1,5 @@
 # High performance computing: data.table {#data.table}
 
-
 Okay, let's get started with this chapter on high performance computing using the R package data.table. 
 
 ```{r echo=FALSE}
@@ -8,30 +7,24 @@ print("Hello data.table")
 ```
 
 If `data.table` is not yet installed, we install it via:
+
 ```{r eval=FALSE}
 install.packages("data.table" , repos="http://cran.us.r-project.org")
 ```
 
 We load `data.table` package and - to demonstrate the differences - also the `tidyverse` library.
+
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse) 
 library(data.table)
 ```
 
-Data.table objects are similar to a data.frame object but with some extensions. Let us first load some data with the `data.table` file reader fread(), which is optimised for performance and creates a `data.table` object.
+`data.table` objects are similar to a `data.frame` object but with some extensions. Let us first load some data with the `data.table` file reader fread(), which is optimised for performance and creates a `data.table` object. For comparison purposes we also load an additional `data.frame`, respectively tibble object. This is necessary because dplyr functions convert `data.table` objects into objects of type `data.frame`.
 
-```{r}
-inpOlympic <- if (file.exists("data/olympic-games.csv")) {
-   "data/olympic-games.csv"
-} 
-
-
-inpSpoti <- if (file.exists("data/spotify_charts_germany.csv")) {
-   "data/spotify_charts_germany.csv"
-} 
-
-olympics <- fread(inpOlympic)
-spotify <- fread(inpSpoti)
+```{r message=FALSE, warning=FALSE}
+olympics <- fread("data/olympic-games.csv")
+spotify <- fread("data/spotify_charts_germany.csv")
+olympics_df <- read_csv("data/olympic-games.csv")
 ```
 
 ## Motivation
@@ -47,17 +40,15 @@ setDT(matrix)
 class(matrix)
 ```
 
-
-
-
 So what are the main differences between `data.table` and `tidyverse`? Why or when would we want to use one or the other
 
-- **Performance:** data.tables are heavily optimised for speed. If performance is crucial, then data.tables might be the better choice.
-- **Syntax:** data.table syntax is concise while tidyverse syntax is more expressive. Code sequences that span multiple lines are easier to read in case of tidyverse syntax due to the pipe (`%>%`) operator. Overall, the choice is a matter of personal preferences here.
-- **Mutability:** data.tables are mutable, i.e. they can be changed in place (by reference). If this is a desired feature, then we might opt for data.tables.
-- **Quoted and unquoted names:** in data.tables we usually have the option to use either quoted column names (which makes writing functions easier) or unquoted column names (which is convenient for exploration). In dplyr the default is unquoted column names and it is a bit trickier to use quoted column names.
+- **Performance:** `data.table` objects are heavily optimised for speed. If performance is crucial, then `data.table` objects might be the better choice.
+- **Syntax:** `data.table` syntax is concise while `tidyverse` syntax is more expressive. Code sequences that span multiple lines are easier to read in case of tidyverse syntax due to the pipe (`%>%`) operator. Overall, the choice is a matter of personal preferences here.
+- **Mutability:** `data.table` objects are mutable, i.e. they can be changed in place (by reference). If this is a desired feature, then we might opt for `data.table` objects.
+- **Quoted and unquoted names:** in `data.table` objects we usually have the option to use either quoted column names (which makes writing functions easier) or unquoted column names (which is convenient for exploration). In dplyr the default is unquoted column names and it is a bit trickier to use quoted column names.
 
-Before we go into the details, let's start with two motivating examples of differences between data.table and tidyverse syntax. First, we want to know the 5 sports with the highest average weight of players in the 2016 summer olympic games.
+Before we go into the details, let's start with two motivating examples of differences between `data.table` and `tidyverse` syntax. First, we want to know the 5 sports with the highest average weight of players in the 2016 summer olympic games.
+
 ```{r}
 # data.table syntax is short
 olympics[game=="2016 Summer", .(weight = mean(weight, na.rm=T)), sport][order(-weight)][1:5]
@@ -80,57 +71,53 @@ olympics[,age:=as.numeric(age)]   # age is coerced from character to numeric
 ```
 
 ```{r eval=FALSE}
-# tidyverse's tibbles are immutable, i.e. we need to reassign to make permanent changes to the data
-olympics <- olympics %>% mutate(age_numeric =as.numeric(age))
+# tidyverse's tibbles are immutable, we need to reassign to make permanent changes to the data
+olympics_df <- olympics_df %>% mutate(age_numeric =as.numeric(age))
 ```
-
-
 
 ## Data exploration
 
-As mentioned before the datatype data.table has the following structure: dt[i,j,by], where i conditon on the rows, j select the colums and by defines the groups by which results are aggregated. We'll start by setting conditions on the rows.
-
-
+As mentioned before the datatype `data.table` has the following structure: dt[i,j,by], where i sets conditions on the rows, j selects the colums and by defines the groups by which results are aggregated. We'll start by setting conditions on the rows.
 
 ### Subsetting rows
-We can condition on the rows one time, which gives us all swimmers.
+We can set conditions on the rows one time, which gives us all swimmers.
 
-again, for repetition the code tidyverse syntax
+Again, for repetition the `tidyverse` syntax:
 
 ```{r eval=FALSE}
-swimmers <- olympics %>% filter(sport == "Swimming")
+swimmers <- olympics_df %>% filter(sport == "Swimming")
 ```
 and in `data.table` syntax
 ```{r}
 swimmers <- olympics[sport == "Swimming"]
-olympics[sport=="Swimming"]                # or without assinging operator
+olympics[sport=="Swimming"]                # or without assigning
 ```
 
-
-And two or more times with the '&' operator ('|' operator for the logical or),for example all gold medal winners in swimming.
+And few times with the '&' operator ('|' operator for the logical or), for example all gold medal winners in swimming.
 
 ```{r}
 swimmers_gold <- olympics[sport == "Swimming" & medal == "Gold"]
 
-
-swimmers_gold_without_doping <- swimmers_gold[!country=="Russia" & country!= "China"]  #the `!` operator negates the logical expression 
+#the `!` operator negates the logical expression 
+swimmers_gold[!country=="Russia" & country!= "China"]  
 ```
 
 The `i` argument also allows for regular expressions
 
 ```{r}
-Michael_Phelps <- olympics[sport=="Swimming" & athlete %like% "Phelps"]
+Michael_Phelps <- olympics[sport=="Swimming" & athlete %like% "Phelps" & country %in% c("United States")]
 ```
-
-
 
 The columns can be treated like variables so the expression `olympics$sport` is not necessary here but would work too. In additon we can select for the row numbers:
 
-tidyverse:
+`tidyverse`:
+
 ```{r eval=FALSE}
 var <- swimmers %>% slice(1:5)
 ```
-data.table
+
+`data.table`:
+
 ```{r}
 var <- swimmers[1:5]
 ```
@@ -138,49 +125,59 @@ var <- swimmers[1:5]
 This is especially useful after ordering the data:
 
 ```{r}
-height <- swimmers[order(height)]
+var <- swimmers[order(height)]
 ```
+
 or in decreasing order( here we pick the first element, so the tallest swimmer)
-```{r}
-height <- swimmers[order(-height)][1:1]
-```
-The order function, called on data.table objects calls the internal `forder()` function which is optimised on such objects. Counting rows is possible with different aproaches:
 
 ```{r}
-usmedals <- olympics[sport == "Swimming" & !is.na(medal), length(medal)]
-```
-or with the .N approach
-```{r}
-usmedals <- olympics[sport == "Swimming" & !is.na(medal), .N]
-usmedals
+swimmers[order(-height)][1:1]
 ```
 
-As you see above we come now to the second argument of data.table objects:
+The order function, called on `data.table` objects calls the internal `forder()` function which is optimised on such objects. Counting rows is possible with different aproaches:
+
+```{r}
+medals <- olympics[sport == "Swimming" & !is.na(medal), length(medal)]
+```
+
+or with the .N approach:
+
+```{r}
+medals <- olympics[sport == "Swimming" & !is.na(medal), .N]
+medals
+```
+
+As you see above we come now to the second argument of `data.table` objects:
 
 ### Selecting Columns
 
-Now we want to condition on the colums too. Here we can either write the column names as unquoted names inside a list. Note we can use the `.` as an abbreviation for `list` here.  
+Now we want to set conditions on the colums too. Here we can either write the column names as unquoted names inside a list. Note we can use the `.`-notation as an abbreviation for `list` here.  
+
 ```{r}
 swimmers_gold[, list(athlete, country, medal)][1:5]   # list with unquoted column names 
 swimmers_gold[,    .(athlete,country, medal)][1:5]   # . is an abbreviation for lists
 ```
-Or we can write the quoted column names inside the `c()` function. 
+
+Or we can write the quoted column names inside the `c()` function:
+
 ```{r}
 swimmers[,  c("athlete", "medal")][1:5] #
 ```
 
-The tidyverse syntax for comparison was
+The `tidyverse` syntax for comparison is:
 
 ```{r eval=FALSE}
 swimmers %>% select("athlete", "medal")
 ```
 
 This syntax also allows us to define the column in a separate step.
+
 ```{r}
 cols <- c("athlete", "medal")  # columns are defined in a separate step
 swimmers_gold[, ..cols][1:5]        # note the .. syntax  
 ```
-or using the 'with' statement
+
+or using the 'with' statement:
 
 ```{r}
 colums <- swimmers_gold[, cols, with = FALSE]
@@ -189,77 +186,96 @@ head(colums)
 
 and operations on the rows and colums at the same time:
 
-
 ```{r}
 var <- olympics[sport == "Swimming" & medal == "Gold", ..cols]
 ```
-
 
 We can also execute functions on the columns e.g. to find out the average age of all olympians
 
 ```{r}
 olympics[, mean(age, na.rm=T)]
 ```
+
 and last but not least we can directly plot within the `j` argument (even if the informative value is questionable here)
 
-```{r eval=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE}
 spotify[,plot(danceability,Streams)]
 ```
 
 ### Grouping results
 
-Now we'll consider the third parameter of the data.table object DT[i, j, by].
+Now we'll consider the third parameter of the `data.table` object DT[i, j, by].
 Let's count the competitions grouped by sports.
 (Hint: if we have a look at the data in teamsports, every athlete is listed so caution with this result.)
 
 ```{r}
 sports <- olympics[, .N, by = "sport"]
-```
-So using all three arguments we find all swimmers, and grouping they by the country
-```{r}
-sw <- olympics[sport== "Swimming", .N,by = country]
-```
-grouping by more colums
-```{r}
-sw <- olympics[sport== "Swimming", .N,by = .(country,discipline)]
-```
-If we want to order the data we have to change by to keyby
-```{r}
-sw <- olympics[sport== "Swimming", .N,keyby = .(country,discipline)]
-```
-Chaining operations on the data.table object:
-```{r}
-ordOlym <- olympics[,.N, by = .(country,game)][order(-game,country)]
+sports[1:5]
 ```
 
+So using all three arguments we find all swimmers, and grouping they by the country:
+
+```{r}
+sw <- olympics[sport== "Swimming", .N,by = country]
+sw[1:5]
+```
+
+grouping by more colums:
+
+```{r}
+sw <- olympics[sport== "Swimming", .N,by = .(country,discipline)]
+sw[1:5]
+```
+
+If we want to order the data we have to change by to keyby.
+
+```{r}
+sw <- olympics[sport== "Swimming", .N,keyby = .(country,discipline)]
+sw[1:5]
+```
+
+Chaining operations on the `data.table` object:
+
+```{r}
+ordOlym <- olympics[,.N, by = .(country,game)][order(-game,country)]
+ordOlym[1:5]
+```
 
 ### Editing Data
 
-When we want to edit a Data set of the class dataframe like
+In contrast to `data.frame` objects, `data.table` objects are mutable. When we want to edit a Data set of the class dataframe like
+
 ```{r}
 df = data.frame(name = c("D","a","t","a"), a = 1:4, b = 5:8, c = 9:12)
 df
 df$c <- 13:16
 df
 ```
-this is done via copying the data set and a bad performance. `Datatable` provides the ':=' operator for an better performance. Here the Data object isn't copied but edited by reference.
 
-Adding a column
+this is done via copying the data set and results in a bad performance. `Data.table` provides the ':=' operator for an better performance. Here the Data object isn't copied but edited by reference.
+
+Adding a column:
+
 ```{r}
 spotify[, ':='(duration_s=duration_ms/1000)]
 ```
+
 this column is added 'by reference' which is done with a higher performance than adding a column to a `data.frame` object. In addition we do not have to assign the expression back to the variable.
-Edit an column
+
+Edit an column:
+
 ```{r}
 olympics[sex=='M', sex := 'Male']
 olympics[sex=='F', sex := 'Female']
 ```
-Deleting an column by reference
+
+Deleting an column by reference:
+
 ```{r}
 spotify[, duration_ms := NULL]
 ```
 
-### Side effects
+### Side effects of the mutability
 
 Sometimes we're in the situation that we want to work with a `data.table` object but not on the object itself but on a copy. For example we want to add again the column duration_ms by reference, then the variable spotify_cols change too.
 
@@ -269,7 +285,6 @@ spotify_cols
 
 spotify[, ':='(duration_ms=duration_s*1000)]
 spotify_cols
-
 ```
 
 If we want to prevent these side effect we have to work on a copy. So again:
@@ -278,25 +293,18 @@ If we want to prevent these side effect we have to work on a copy. So again:
 spotify[, duration_ms := NULL]   # deleting by reference
 spotify_cols
 
-
 spotify_cols <- copy(names(spotify))
 spotify[, ':='(duration_ms=duration_s*1000)]
 spotify_cols
-
 ```
-
-
-
 
 ## Runtime comparision
 
 Let us now compare the runtime of some expression made in `data.table` and `tidyverse`. Performance differs depending on the type of operation, and will likely also depend on the size of the data set. Here we test separately sorting, filtering, and grouping/aggregating for our data set of about 270.000 observations. 
 
-
 ```{r eval=FALSE}
 install.packages("microbenchmark")
 ```
-
 
 ```{r paged.print = FALSE}
 library(microbenchmark)              # package for performance comparisons
@@ -316,7 +324,6 @@ microbenchmark(
   times = 5
 )
 
-
 # Grouping
 microbenchmark(
   olympics_tbl %>% group_by(athlete) %>% summarise(mean(height, na.rm=T)),  # dplyr
@@ -324,7 +331,6 @@ microbenchmark(
   times = 5
 ) 
 ```
-
 
 ## Further resources
 Here are links to further resources on the package `data.table`:
